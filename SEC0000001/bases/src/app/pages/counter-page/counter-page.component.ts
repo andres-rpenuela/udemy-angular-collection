@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, signal, WritableSignal} from '@angular/core';
 
 @Component({
   selector: 'app-counter-page',
@@ -9,6 +9,14 @@ import { Component } from '@angular/core';
 })
 export class CounterPageComponent {
     protected counter:number = 0;
+    protected counterSignal : WritableSignal<number> = signal(0)
+
+    constructor() {
+      setInterval(() => {
+        console.log('Ping');
+        this.counterSignal.update(value => value + 1);
+      }, 2000);
+    }
 
     public add(unit:number){
       this.counter += unit;
@@ -20,5 +28,6 @@ export class CounterPageComponent {
 
     public reset(){
       this.counter = 0;
+      this.counterSignal.set(0);
     }
 }
