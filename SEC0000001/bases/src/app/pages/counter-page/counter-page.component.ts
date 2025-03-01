@@ -1,11 +1,12 @@
-import {Component, signal, WritableSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, signal, WritableSignal} from '@angular/core';
 
 @Component({
   selector: 'app-counter-page',
   imports: [],
   templateUrl: './counter-page.component.html',
   standalone: true,
-  styleUrl: './counter-page.component.css'
+  styleUrl: './counter-page.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush // desactiva la detección de cambios zonejs
 })
 export class CounterPageComponent {
     protected counter:number = 0;
@@ -14,6 +15,7 @@ export class CounterPageComponent {
     constructor() {
       setInterval(() => {
         console.log('Ping');
+        this.counter+=1; // esto no es detectado, si esta en ZoneLess
         this.counterSignal.update(value => value + 1);
       }, 2000);
     }
