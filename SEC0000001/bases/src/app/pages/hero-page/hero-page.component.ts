@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, signal, WritableSignal} from '@angular/core';
+import {Component, computed, Signal, signal, WritableSignal} from '@angular/core';
 import {UpperCasePipe} from '@angular/common';
 
 @Component({
@@ -11,18 +11,28 @@ import {UpperCasePipe} from '@angular/common';
   standalone: true
 })
 export class HeroPageComponent {
-    protected name: WritableSignal<string> = signal('Ironman');
-    protected age: WritableSignal<number> = signal(45);
+  protected name: WritableSignal<string> = signal('Ironman');
+  protected age: WritableSignal<number> = signal(45);
 
-    constructor() {}
+  constructor() {}
 
-    protected getHeroDescription():string {
-      return `${ this.name() } - ${ this.age() }`;
-    }
+
+  protected getHeroDescription():string {
+    return `${ this.name() } - ${ this.age() }`;
+  }
+
+  // señal comptuada
+  protected heroDescription : Signal<string> = computed( () => {
+    return this.getHeroDescription();
+  });
+
+  protected nameCapitalization : Signal<string> = computed( () => {
+    return this.name().toUpperCase();
+  });
 
   protected changeHero():void{
-      this.name.set('Spiderman');
-      this.age.set(22);
+    this.name.set('Spiderman');
+    this.age.set(22);
   }
 
   protected resetForm():void{
@@ -31,6 +41,6 @@ export class HeroPageComponent {
   }
 
   protected chageAge():void{
-      this.age.set(60);
+    this.age.set(60);
   }
 }
