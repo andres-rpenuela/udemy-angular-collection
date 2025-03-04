@@ -12,11 +12,11 @@
   <div class="col-12 col-sm-6">
     <h3>Listado</h3>
     <ol>
-      <li>Goku</li>
-      <li>Goku</li>
-      <li>Goku</li>
-      <li>Goku</li>
-      <li>Goku</li>
+      @for ( person of getPerson();track  person.name; let idx=$index, e = $even, o = $odd ){
+        <li> {{ 'position in array: '+idx +'(par: '+e+',impar: '+o+')'+': Nombre'+ person.name + ', Poder' + person.power }}</li>
+      } @empty {
+        <li>There are not persons</li>
+      }
     </ol>
   </div>
 </section>
