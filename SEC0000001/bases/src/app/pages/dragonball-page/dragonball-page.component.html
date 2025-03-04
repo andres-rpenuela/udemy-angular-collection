@@ -12,8 +12,11 @@
   <div class="col-12 col-sm-6">
     <h3>Listado</h3>
     <ol>
-      @for ( person of getPerson();track  person.name; let idx=$index, e = $even, o = $odd ){
-        <li> {{ 'position in array: '+idx +'(par: '+e+',impar: '+o+')'+': Nombre'+ person.name + ', Poder' + person.power }}</li>
+      @for ( character of getCharacters();track  character.name; let idx=$index, e = $even, o = $odd ){
+        <li> {{ 'position in array: '+idx +'(par: '+e+',impar: '+o+')'}} <br>
+          Nombre: <span>{{  character.name  }} </span> -
+          Poder: <span class="text-danger"> {{ character.power }} </span>
+        </li>
       } @empty {
         <li>There are not persons</li>
       }
