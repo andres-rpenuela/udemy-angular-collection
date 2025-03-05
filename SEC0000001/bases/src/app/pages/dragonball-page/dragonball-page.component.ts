@@ -1,8 +1,11 @@
-import {Component, signal, Signal, WritableSignal} from '@angular/core';
+import {Component, computed, signal, Signal, WritableSignal} from '@angular/core';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-dragonball-page',
-  imports: [],
+  imports: [
+    NgClass
+  ],
   templateUrl: './dragonball-page.component.html',
   styleUrl: './dragonball-page.component.css',
   standalone: true
@@ -16,8 +19,17 @@ export class DragonballPageComponent {
     ]);
 
     public getCharacters(): Character[]{
+
       return this._characters();
+
     }
+
+  public powerClasses = computed(() => {
+      return {
+        'text-danger': true,
+        'border':true
+      }
+    })
 }
 
 interface Character{
