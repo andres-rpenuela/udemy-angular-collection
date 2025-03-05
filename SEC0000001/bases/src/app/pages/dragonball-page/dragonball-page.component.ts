@@ -11,7 +11,7 @@ export class DragonballPageComponent {
 
     private _characters : WritableSignal<Character[]> = signal([
       { id: 1,  name:'Goku',      power:300.19  },
-      { id: 2,  name:'Crilin',    power:290.19  },
+      { id: 2,  name:'Crilin',    power:290  },
       { id: 3,  name:'Son Gohan', power:290.19  }
     ]);
 

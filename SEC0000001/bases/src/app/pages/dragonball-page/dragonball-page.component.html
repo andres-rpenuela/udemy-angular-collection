@@ -15,7 +15,9 @@
       @for ( character of getCharacters();track  character.name; let idx=$index, e = $even, o = $odd ){
         <li> {{ 'position in array: '+idx +'(par: '+e+',impar: '+o+')'}} <br>
           Nombre: <span>{{  character.name  }} </span> -
-          Poder: <span class="text-danger"> {{ character.power }} </span>
+          <!-- Poder: <span class="text-danger"> {{ character.power }} </span> -->
+          Poder: <span [class.text-danger]=" character.power > 300"
+                       [class.text-warning]=" character.power < 300"> {{ character.power }} </span>
         </li>
       } @empty {
         <li>There are not persons</li>
