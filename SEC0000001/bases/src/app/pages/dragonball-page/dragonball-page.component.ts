@@ -1,10 +1,11 @@
 import {Component, computed, signal, Signal, WritableSignal} from '@angular/core';
-import {NgClass} from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-dragonball-page',
   imports: [
-    NgClass
+    NgClass,
+    NgIf
   ],
   templateUrl: './dragonball-page.component.html',
   styleUrl: './dragonball-page.component.css',
@@ -15,7 +16,8 @@ export class DragonballPageComponent {
     private _characters : WritableSignal<Character[]> = signal([
       { id: 1,  name:'Goku',      power:300.19  },
       { id: 2,  name:'Crilin',    power:290  },
-      { id: 3,  name:'Son Gohan', power:290.19  }
+      { id: 3,  name:'Son Gohan', power:290.19  },
+      { id: 3,  name:'Yancha', power:100  }
     ]);
 
     public getCharacters(): Character[]{
