@@ -4,16 +4,16 @@
 <section class="row">
   <div class="col-12 col-sm-6">
     <h3>Agregar:</h3>
-    <input type="text" class="form-control" placeholder="Nombre" />
-    <input type="number" class="form-control" placeholder="Poder"/>
-    <button class="mt-2 btn btn-primary">Agregar</button>
+    <input type="text" class="form-control" placeholder="Nombre" [value]="name()" (change)="name.set( inputName.value )" #inputName/>
+    <input type="number" class="form-control" placeholder="Poder" [value]="power()" (change)="power.set( inputPower.valueAsNumber )" #inputPower/>
+    <button class="mt-2 btn btn-primary" (click)="created()">Agregar</button>
   </div>
 
   <div class="col-12 col-sm-6">
     <h3>Listado</h3>
     <ol>
       @for ( character of getCharacters();track  character.name; let idx=$index, e = $even, o = $odd ){
-        <li> {{ 'position in array: '+idx +'(par: '+e+',impar: '+o+')'}} <br>
+        <li> {{ 'position in array: '+ idx +'(par: '+e+',impar: '+o+')'}} <br>
           Nombre: <span>{{  character.name  }} </span> -
           <!-- forma tradicional -->
           <!-- Poder: <span class="text-danger"> {{ character.power }} </span> -->
