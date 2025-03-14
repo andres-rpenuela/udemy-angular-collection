@@ -5,8 +5,8 @@ import {NgClass, NgIf} from '@angular/common';
 @Component({
   selector: 'app-dragonball-page',
   imports: [
-    NgClass,
-    NgIf
+    //NgClass,
+   // NgIf
   ],
   templateUrl: './dragonball-page.component.html',
   styleUrl: './dragonball-page.component.css',
@@ -15,7 +15,7 @@ import {NgClass, NgIf} from '@angular/common';
 export class DragonballPageComponent {
 
   name: WritableSignal<string> = signal('name');
-  power: WritableSignal<number> = signal(100);
+  power: WritableSignal<number|undefined> = signal(100);
 
   private _characters : WritableSignal<Character[]> = signal([
     { id: 1,  name:'Goku',      power:300.19  },
@@ -38,12 +38,22 @@ export class DragonballPageComponent {
   });
 
   created():void{
+    // operation good
+    /*
     this._characters.update(value =>{
       value.push({id:this._characters.length,name:this.name(),power:this.power()})
       return value;
     })
+     */
+    // simplify (great), con el operador ??, ponemos un valor por defecto si es undefined la señal this.power
+    this._characters.update( list => [...list,{id:this._characters.length,name:this.name(),power:this.power()??0}]);
+    this.cleanInputs();
   }
 
+  cleanInputs():void{
+    this.name.set('');
+    this.power.set(undefined);
+  }
 
 }
 
