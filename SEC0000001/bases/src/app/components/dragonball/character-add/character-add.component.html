@@ -1,0 +1,5 @@
+<h3>{{title()}}</h3>
+<hr>
+<input type="text" class="mt-2 form-control" placeholder="name" [value]="name()" (change)="name.set( inputName.value )" #inputName/>
+<input type="number" class="mt-2 form-control" placeholder="power" [value]="power()" (change)="power.set( inputPower.valueAsNumber )" #inputPower/>
+<button type="button" class="mt-2 btn btn-primary" (click)="add()">Agregar</button>
