@@ -1,2 +1,12 @@
-<p>dragonball-super-page works!</p>
-<app-character-list [characters]="getCharacters()"/>
+<h1>DragonBall Super Page</h1>
+<hr>
+<section class="row">
+  <div class="col-12 col-sm-6">
+    <!-- componete dragon-ball-add -->
+  </div>
+  <div class="col-12 col-sm-6">
+    <app-character-list
+      listTitle="Lista de personajes"
+      [characters]="getCharacters()"/>
+  </div>
+</section>
