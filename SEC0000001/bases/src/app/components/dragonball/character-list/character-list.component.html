@@ -1,0 +1,11 @@
+<h3>{{listTitle}}</h3> <!-- <h3>{{listTitle()}}</h3> -->
+<ul>
+<!--  @for (item of characters; track item.id) {-->
+  @for (item of characters(); track item.id) {
+    <li [class.text-danger]="item.power > 100"
+        [class.text-warning]=" item.power < 100"> {{ item.name }} : {{ item.power }}</li>
+
+  } @empty {
+    <li>There are no items.</li>
+  }
+</ul>

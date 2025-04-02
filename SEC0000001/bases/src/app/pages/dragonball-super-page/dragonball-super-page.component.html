@@ -1,0 +1,12 @@
+<h1>DragonBall Super Page</h1>
+<hr>
+<section class="row">
+  <div class="col-12 col-sm-6">
+    <app-character-add title="Agregar Personaje" (character)="add($event)"/>
+  </div>
+  <div class="col-12 col-sm-6">
+    <app-character-list
+      listTitle="Lista de personajes"
+      [characters]="getCharacters()"/>
+  </div>
+</section>

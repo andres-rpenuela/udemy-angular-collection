@@ -1,0 +1,45 @@
+import {effect, Injectable, signal, WritableSignal} from '@angular/core';
+import {Character} from '../interfaces/character.interface';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CharacterService {
+  private _characters : WritableSignal<Character[]> = signal([]);
+
+  constructor() {
+    this._characters.set( this.loadFromLocalStorage() );
+  }
+
+  // effect, this call when this signal created or updated
+  saveToLocalStorage = effect( () =>{
+    console.log(`Length of characters saved ${this._characters().length}`);
+    // save
+    localStorage.setItem('characters', JSON.stringify(this._characters() ));
+  })
+
+  // funcion para cargar el local
+  private readonly loadFromLocalStorage = () : Character[] =>{
+    const characters : string|null = localStorage.getItem('characters');
+
+    return  characters ? JSON.parse( characters ): [];
+  }
+
+  // methods
+  public getCharacter():Character[]{
+    return this._characters();
+  }
+
+  public addCharacter(character:Character):void{
+    character.id = this.nextId();
+    this._characters.update(list => [...list, character]);
+  }
+
+  private nextId(): number {
+    // Obtener el último id sin eliminar el elemento
+    const lastCharacter = [...this._characters()].at(-1);
+    const lastId = lastCharacter ? lastCharacter.id : null;
+
+    return lastId ? lastId +1 : 1;
+  }
+}
