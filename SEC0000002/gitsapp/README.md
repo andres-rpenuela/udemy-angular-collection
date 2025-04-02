@@ -2,6 +2,47 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.5.
 
+## Usar tailwindcss como framework css
+Alternativa a boostrap
+
+1. Ir a la guía de la web [https://tailwindcss.com/](https://tailwindcss.com/docs/installation/framework-guides)
+
+> **Guia agular**:
+> [link](https://tailwindcss.com/docs/installation/framework-guides/angular)
+
+2. Instalar en local la dependencia en el proyecto
+```bash
+# ng new my-project --style css
+# cd my-project
+
+npm install tailwindcss @tailwindcss/postcss postcss --force
+```
+
+3. Configurar PostCSS Plugins
+   1. Crear un fichero en la raiz del proyecto, **nombre**: `.postcssrc.json`
+   2. Importar el plugin `@tailwindcss/postcss`
+   ```json
+    {
+      "plugins": {
+        "@tailwindcss/postcss": {}
+      }
+    }
+    ```
+
+4. Importar en el CSS del proyecto `styles.css` el framework`tailwindcss`
+  ```css
+  @import "tailwindcss";
+  ```
+6. Levantar `ng serve`, con el codigo ejemplo, en `app.component.html`
+  ```html
+  <h1 class="text-3xl font-bold underline">
+    Hello world!
+  </h1>
+  ```
+
+> Más doc: [tailwindcss](https://tailwindcss.com/docs/installation/using-vite)
+
+
 ## Development server
 
 To start a local development server, run:
