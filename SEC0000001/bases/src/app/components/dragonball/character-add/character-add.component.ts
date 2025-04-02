@@ -12,7 +12,7 @@ export class CharacterAddComponent {
   title:InputSignal<string> = input.required<string>();
 
   name:WritableSignal<string|null> = signal<string>('');
-  power:WritableSignal<number|null> = signal<number>(0);
+  power:WritableSignal<number|null> = signal<number|null>(null);
 
   //@Output() character = new EventEmitter<Character>();
   readonly character:OutputEmitterRef<Character> = output<Character>();
