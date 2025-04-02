@@ -1,4 +1,4 @@
-import {Injectable, signal, WritableSignal} from '@angular/core';
+import {effect, Injectable, signal, WritableSignal} from '@angular/core';
 import {Character} from '../interfaces/character.interface';
 
 @Injectable({
@@ -16,6 +16,13 @@ export class CharacterService {
     ]);
   }
 
+  // effect, this call when this signal created or updated
+  saveToLocalStorage = effect( () =>{
+    console.log(`Length of characters saved ${this._characters().length}`);
+    // save
+    localStorage.setItem('characters', JSON.stringify(this._characters() ));
+  })
+  // methods
   public getCharacter():Character[]{
     return this._characters();
   }
