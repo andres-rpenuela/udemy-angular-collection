@@ -8,12 +8,7 @@ export class CharacterService {
   private _characters : WritableSignal<Character[]> = signal([]);
 
   constructor() {
-    this._characters.set([
-      { id: 1,  name:'Goku',      power:300.19  },
-      { id: 2,  name:'Crilin',    power:290  },
-      { id: 3,  name:'Son Gohan', power:290.19  },
-      { id: 4,  name:'Yancha', power:100  }
-    ]);
+    this._characters.set( this.loadFromLocalStorage() );
   }
 
   // effect, this call when this signal created or updated
@@ -22,6 +17,14 @@ export class CharacterService {
     // save
     localStorage.setItem('characters', JSON.stringify(this._characters() ));
   })
+
+  // funcion para cargar el local
+  private readonly loadFromLocalStorage = () : Character[] =>{
+    const characters : string|null = localStorage.getItem('characters');
+
+    return  characters ? JSON.parse( characters ): [];
+  }
+
   // methods
   public getCharacter():Character[]{
     return this._characters();
