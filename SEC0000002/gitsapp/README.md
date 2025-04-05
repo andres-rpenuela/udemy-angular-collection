@@ -154,3 +154,22 @@ Y en la plantilla html, hacer refenrica
 ```angular181html
 <a>{{envs.companyName}}</a>
 ```
+<hr/>
+
+## Path alias
+Se pueden definrir **alias paths**, para importar de manera más legible dependencias de componetes
+
+```typescript
+// sin alias
+import {environment} from '../../../../../environments/environment';
+// con un alias
+import {environment} from '@environments/environment';
+```
+
+Para ello en el fichero de configuración ```tsconfign.json```, añadir las propieades dentro del objeot ```compilerOptions```
+```json
+ "baseUrl": ".",
+  "paths": {
+      "@environments/*": ["src/environments/*"]
+  }
+```
