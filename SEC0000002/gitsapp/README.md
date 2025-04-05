@@ -98,3 +98,59 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+<hr/>
+
+## Enviroments
+
+Angular CLI, cuenta con un comando para crear los scirpts de enviroment, uno para producción y otro para desarrollo,
+añadiendo automáticamente en el JSON una configuración para reempelzar el de producción por el de desarrollo automáticmanete
+
+```bash
+# ir al proyecto
+cd gitsapp/
+
+# generar scripts de enviroments
+ng g environments
+#- o - 
+ng generate environments
+```
+
+Esto añade en `angular.json`, automáticmante: 
+
+```json
+// ...
+    "sourceMap": true,
+    "fileReplacements": [
+      {
+        "replace": "src/environments/environment.ts",
+        "with": "src/environments/environment.development.ts"
+      }
+    ]
+  }
+// ...
+```
+
+Para hacer uso de las propiedades en un componente, se debe importar, el de producción
+
+```angular181html
+import { Component } from '@angular/core';
+import {environment} from '../../../../../environments/environment';
+
+@Component({
+  selector: 'gifs-side-menu-header',
+  imports: [],
+  templateUrl: './gifs-side-menu-header.component.html',
+  styleUrl: './gifs-side-menu-header.component.css',
+  standalone: true
+})
+export class GifsSideMenuHeaderComponent {
+
+  protected envs   = environment
+}
+```
+Y en la plantilla html, hacer refenrica 
+
+```angular181html
+<a>{{envs.companyName}}</a>
+```
