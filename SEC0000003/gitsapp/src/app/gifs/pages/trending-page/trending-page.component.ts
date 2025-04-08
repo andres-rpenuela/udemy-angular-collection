@@ -1,5 +1,6 @@
-import {Component, signal, WritableSignal} from '@angular/core';
+import {Component, inject, signal, WritableSignal} from '@angular/core';
 import {GifsListComponent} from '../../components/gifs-list/gifs-list.component';
+import {GiphyService} from '../../services/giphy.service';
 
 
 const imageUrls: string[] = [
@@ -31,4 +32,7 @@ export default class TrendingPageComponent{
 
   //protected readonly imageUrls = imageUrls;
   protected imageUrls:WritableSignal<string[]> = signal(imageUrls)
+
+  // servico, inyecta
+  giphyService:GiphyService = inject(GiphyService);
 }
