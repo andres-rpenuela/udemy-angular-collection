@@ -6,12 +6,14 @@ import type {GiphyResponse} from '../interfaces/ghipy.interface';
 import type {Gif} from '../interfaces/gif.interface';
 import {GifMapper} from '../mappers/gif.mapper';
 import {map, Observable, tap} from 'rxjs';
+import {GifHistoryService} from './gif-history.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GiphyService {
   private http = inject(HttpClient);
+  private gifHistory = inject(GifHistoryService);
 
   public gifs: WritableSignal<Gif[]> = signal<Gif[]>( [] );
   public trendingGifsLoading = signal<boolean>(true);
@@ -55,7 +57,9 @@ export class GiphyService {
           tap( resp => console.log( {tap1: resp } ) ),
           // map, barre cada uno de los elementos de la respusta y realiza alguna operacion
           map( resp => GifMapper.giphyItemsToGifArray( resp.data )),
-          tap( resp => console.log( {tap2: resp } ) )
+          tap( resp => console.log( {tap2: resp } ) ),
+          // historial
+          tap( items => this.gifHistory.addNewSearch(query,items))
         );
 
       //   .subscribe( (resp) => {

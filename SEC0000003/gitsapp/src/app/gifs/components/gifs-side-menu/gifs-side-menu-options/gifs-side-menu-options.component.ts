@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, input} from '@angular/core';
 import {MenuOption} from '../../../interfaces/menu-option.interface';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 
@@ -13,6 +13,8 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
   standalone: true
 })
 export class GifsSideMenuOptionsComponent {
+
+  historyGifs = input.required<string[]>();
 
   menuOptions:MenuOption[] = [
     {

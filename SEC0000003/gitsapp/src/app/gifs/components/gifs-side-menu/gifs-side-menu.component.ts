@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {GifsSideMenuHeaderComponent} from './gifs-side-menu-header/gifs-side-menu-header.component';
 import {GifsSideMenuOptionsComponent} from './gifs-side-menu-options/gifs-side-menu-options.component';
+import {GifHistoryService} from '../../services/gif-history.service';
 
 @Component({
   selector: 'gifs-side-menu',
@@ -13,5 +14,5 @@ import {GifsSideMenuOptionsComponent} from './gifs-side-menu-options/gifs-side-m
   standalone: true
 })
 export class GifsSideMenuComponent {
-
+    public gifsHistory = inject(GifHistoryService);
 }

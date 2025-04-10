@@ -5,7 +5,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@environments/*": ["src/environments/*"]
+      "@environments/*": ["src/environments/*"],
+      "@interfaces/gifs/*": ["src/app/gifs/interfaces/*"],
+      "@models/gifs/*": ["src/app/gifs/models/*"]
     },
     "outDir": "./dist/out-tsc",
     "strict": true,
