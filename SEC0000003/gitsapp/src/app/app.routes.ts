@@ -19,6 +19,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./gifs/pages/search-page/search-page.component')
       },
+      // load lazy, opcion con "export default ..." de un componente standalone o modulo
+      // con argumento dinamico:: "/:{name-param}" tantos como se deese
+      {
+        path: 'history/:query',
+        loadComponent: () =>
+          import('./gifs/pages/gif-history-page/gif-history-page.component')
+      },
       {
         path: '**',
         redirectTo: 'trending'
