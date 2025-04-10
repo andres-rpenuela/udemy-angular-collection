@@ -1,4 +1,4 @@
-import {Component, inject, signal, WritableSignal} from '@angular/core';
+import {Component, computed, inject, signal, WritableSignal} from '@angular/core';
 import {GifsListComponent} from '../../components/gifs-list/gifs-list.component';
 import {GiphyService} from '../../services/giphy.service';
 
@@ -31,7 +31,7 @@ export default class TrendingPageComponent{
   // nota: con readonly, no se puede hacer .set(x) o .updated(x) si es uana señal, o cambiar el valor si es una propiedad
 
   //protected readonly imageUrls = imageUrls;
-  protected imageUrls:WritableSignal<string[]> = signal(imageUrls)
+  //protected imageUrls:WritableSignal<string[]> = signal(imageUrls)
 
   // servico, inyecta
   giphyService:GiphyService = inject(GiphyService);

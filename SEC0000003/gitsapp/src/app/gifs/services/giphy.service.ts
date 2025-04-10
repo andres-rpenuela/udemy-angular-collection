@@ -12,9 +12,12 @@ import {GifMapper} from '../mappers/gif.mapper';
 export class GiphyService {
   private http = inject(HttpClient);
 
-  protected gifs: WritableSignal<Gif[]> = signal<Gif[]>( [] );
+  public gifs: WritableSignal<Gif[]> = signal<Gif[]>( [] );
+  public trendingGifsLoading = signal<boolean>(true);
+
   constructor() {
     this.loadTrendingGifs();
+    console.log('Service creado'); // debug
   }
 
   public loadTrendingGifs():void {
@@ -25,10 +28,13 @@ export class GiphyService {
         }
     }).subscribe(
       resp => {
-        console.table(resp);
+        console.table(resp); // debug
+
         const data = GifMapper.giphyItemsToGifArray( resp.data );
         this.gifs.set( data );
-        console.table(data);
+        this.trendingGifsLoading.set(false);
+
+        console.table(data); // debug
       }
     )
   }
