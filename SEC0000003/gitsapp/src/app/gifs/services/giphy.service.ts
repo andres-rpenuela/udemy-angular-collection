@@ -5,6 +5,7 @@ import {environment} from '@environments/environment.development';
 import type {GiphyResponse} from '../interfaces/ghipy.interface';
 import type {Gif} from '../interfaces/gif.interface';
 import {GifMapper} from '../mappers/gif.mapper';
+import {map, Observable, tap} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -39,19 +40,28 @@ export class GiphyService {
     )
   }
 
-  searchGifs(query: string) {
+  searchGifs(query: string): Observable<Gif[]> {
 
-      this.http.get<GiphyResponse>(`${environment.giphyURL}/gifs/search`, { params:
+      return this.http.get<GiphyResponse>(`${environment.giphyURL}/gifs/search`, { params:
           {
             api_key: environment.giphyApiKey,
             limit: 20,
             q: query
 
           }
-      }).subscribe( (resp) => {
-          const data: Gif[] = GifMapper.giphyItemsToGifArray( resp.data );
-          console.table(data)
-        }
-      )
+      })
+        .pipe(
+          // tap no permite operaciones de transformaciones, solo algunos efectos secundarios
+          tap( resp => console.log( {tap1: resp } ) ),
+          // map, barre cada uno de los elementos de la respusta y realiza alguna operacion
+          map( resp => GifMapper.giphyItemsToGifArray( resp.data )),
+          tap( resp => console.log( {tap2: resp } ) )
+        );
+
+      //   .subscribe( (resp) => {
+      //     const data: Gif[] = GifMapper.giphyItemsToGifArray( resp.data );
+      //     console.table(data)
+      //   }
+      // )
   }
 }
