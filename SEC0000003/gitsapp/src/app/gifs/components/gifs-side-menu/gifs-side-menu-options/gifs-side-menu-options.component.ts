@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, output, OutputEmitterRef} from '@angular/core';
 import {MenuOption} from '../../../interfaces/menu-option.interface';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 
@@ -15,6 +15,7 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
 export class GifsSideMenuOptionsComponent {
 
   historyGifs = input.required<string[]>();
+  clearStoreEmmit: OutputEmitterRef<void> = output();
 
   menuOptions:MenuOption[] = [
     {
@@ -30,4 +31,8 @@ export class GifsSideMenuOptionsComponent {
       route: '/dashboard/search',
     }
   ]
+
+  clearStoreEvent(){
+    this.clearStoreEmmit.emit();
+  }
 }

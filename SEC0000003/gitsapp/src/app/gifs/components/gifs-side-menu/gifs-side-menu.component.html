@@ -2,5 +2,7 @@
   <!-- gifs-side-menu-header-->
   <gifs-side-menu-header/>
   <!-- gifs-side-menu-options -->
-  <gifs-side-menu-options [historyGifs]="gifsHistory.searchHistoryKey()"/>
+  <gifs-side-menu-options
+      [historyGifs]="gifsHistory.searchHistoryKey()"
+      (clearStoreEmmit)="gifsHistory.clearHistory()"/>
 </div>
