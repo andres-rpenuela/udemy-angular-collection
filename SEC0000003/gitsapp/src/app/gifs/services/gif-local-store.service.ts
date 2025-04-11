@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Gif} from '@interfaces/gifs/gif.interface';
+import {GifHistory} from '@models/gifs/gifs.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,5 +35,14 @@ export class GifLocalStoreService {
       }
     }
     return items;
+  }
+
+  saveGifHistory(keyGifs: string, gifHistory: GifHistory) {
+    const gifHistoryString = JSON.stringify(gifHistory) ?? '{}'; // recorg [key]: arrayGifs
+    localStorage.setItem(keyGifs, gifHistoryString);
+  }
+
+  loadGifHistory(keyGifs: string){
+    return JSON.parse( localStorage.getItem(keyGifs) ?? '{} '); // recorg [key]: arrayGifs
   }
 }
