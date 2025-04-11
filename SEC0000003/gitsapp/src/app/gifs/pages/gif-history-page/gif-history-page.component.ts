@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, computed, inject, OnDestroy, OnInit, Signal, signal} from '@angular/core';
 import {Gif} from '@interfaces/gifs/gif.interface';
 import {GifHistoryService} from '../../services/gif-history.service';
 import {ActivatedRoute, Params} from '@angular/router';
@@ -26,10 +26,8 @@ export default class GifHistoryPageComponent implements OnInit, OnDestroy{
   public query = toSignal( inject(ActivatedRoute).params.pipe(
     map( params => params['query'])
   ));
+  public historyGifs: Signal<Gif[]> = computed( () => this.gifHistoryService.getHistoryGifs( this.query() ))
 
-
-
-  public historyGifs = signal<Gif[]>([]) ;
 
   // services
   public gifHistoryService = inject(GifHistoryService);
@@ -40,8 +38,6 @@ export default class GifHistoryPageComponent implements OnInit, OnDestroy{
     //   this.historyGifs.set( this.gifHistoryService.searchHistory()[ params['query'] ] );
     //   console.table( this.historyGifs() );
     // })
-
-    this.historyGifs.set( this.gifHistoryService.getHistoryGifs( this.query() ));
   }
 
   ngOnDestroy() {
