@@ -41,7 +41,7 @@ export default class GifHistoryPageComponent implements OnInit, OnDestroy{
     //   console.table( this.historyGifs() );
     // })
 
-    this.historyGifs.set( this.gifHistoryService.searchHistory()[ this.query() ] );
+    this.historyGifs.set( this.gifHistoryService.getHistoryGifs( this.query() ));
   }
 
   ngOnDestroy() {

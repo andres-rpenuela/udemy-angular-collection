@@ -14,4 +14,8 @@ export class GifHistoryService {
   public addNewSearch(key:string,gifs:Gif[]):void {
     this.searchHistory.update(history => ({...history, [key.toLowerCase()]:gifs}))
   }
+
+  public getHistoryGifs( query : string): Gif[] {
+    return this.searchHistory()[query] ?? [];
+  }
 }
