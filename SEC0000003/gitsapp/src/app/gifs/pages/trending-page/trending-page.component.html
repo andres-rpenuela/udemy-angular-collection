@@ -5,7 +5,10 @@
 <!--</section>-->
 
 <!-- masonry -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="h-screen bg-blue-100 overflow-y-scroll grid grid-cols-2 md:grid-cols-4 gap-4"
+     (scroll)="onScroll($event)"
+     #groupDiv
+>
   @for(gifs of gifsGroup(); track $index){
     <div class="grid gap-4">
       @for(gif of gifs;track gif.id){

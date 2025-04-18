@@ -1,4 +1,4 @@
-import {Component, computed, inject, Signal, signal, WritableSignal} from '@angular/core';
+import {Component, computed, ElementRef, inject, Signal, signal, viewChild, WritableSignal} from '@angular/core';
 import {GifsListComponent} from '../../components/gifs-list/gifs-list.component';
 import {GiphyService} from '../../services/giphy.service';
 import {Gif} from '@interfaces/gifs/gif.interface';
@@ -22,7 +22,7 @@ const imageUrls: string[] = [
 @Component({
   selector: 'app-trending-page',
   imports: [
-    GifsListComponent
+    //GifsListComponent
   ],
   templateUrl: './trending-page.component.html',
   styleUrl: './trending-page.component.css',
@@ -37,6 +37,9 @@ export default class TrendingPageComponent{
   // servico, inyecta
   giphyService:GiphyService = inject(GiphyService);
 
+  // ref., html
+  public groupDivRef : Signal<ElementRef | undefined> = viewChild<ElementRef>('groupDiv');
+
   public gifsGroup :Signal<Gif[][]> = computed<Gif[][]>( () =>{
     return this.convertArrayToMatrix( this.giphyService.gifs(),3);
   });
@@ -48,5 +51,13 @@ export default class TrendingPageComponent{
       }
     return result; // [ [g1,g2,g3,gN], [g1,g2,g3.gN] ...]
 
+  }
+
+  onScroll(event : Event){
+    //console.log(event);  // debug
+
+    // scrollDiv es la referencia al <div id="groupDiv">
+    const scrollDiv = this.groupDivRef()?.nativeElement ?? null; // carga div y todos sus hijos
+    console.log(scrollDiv); // debug
   }
 }
