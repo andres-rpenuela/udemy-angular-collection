@@ -1,5 +1,18 @@
-<section class="py-5">
-<!--  <gifs-list [gifs]="imageUrls"/>-->
-<!--  <gifs-list [gifs]="imageUrls()"/>-->
-  <gifs-list [gifs]="giphyService.gifs()"/>
-</section>
+<!--<section class="py-5">-->
+<!--&lt;!&ndash;  <gifs-list [gifs]="imageUrls"/>&ndash;&gt;-->
+<!--&lt;!&ndash;  <gifs-list [gifs]="imageUrls()"/>&ndash;&gt;-->
+<!--  <gifs-list [gifs]="giphyService.gifs()"/>-->
+<!--</section>-->
+
+<!-- masonry -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+  @for(gifs of gifsGroup(); track $index){
+    <div class="grid gap-4">
+      @for(gif of gifs;track gif.id){
+        <div>
+          <img class="h-full w-full rounded-lg object-cover" [src]="gif.url" [alt]="gif.url">
+        </div>
+      }
+    </div>
+  }
+</div>

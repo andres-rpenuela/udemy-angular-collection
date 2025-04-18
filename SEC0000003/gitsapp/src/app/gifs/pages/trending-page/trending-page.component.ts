@@ -1,6 +1,7 @@
-import {Component, computed, inject, signal, WritableSignal} from '@angular/core';
+import {Component, computed, inject, Signal, signal, WritableSignal} from '@angular/core';
 import {GifsListComponent} from '../../components/gifs-list/gifs-list.component';
 import {GiphyService} from '../../services/giphy.service';
+import {Gif} from '@interfaces/gifs/gif.interface';
 
 
 const imageUrls: string[] = [
@@ -35,4 +36,17 @@ export default class TrendingPageComponent{
 
   // servico, inyecta
   giphyService:GiphyService = inject(GiphyService);
+
+  public gifsGroup :Signal<Gif[][]> = computed<Gif[][]>( () =>{
+    return this.convertArrayToMatrix( this.giphyService.gifs(),3);
+  });
+
+  convertArrayToMatrix(source: any[], columns: number): any[][] {
+    const result: any[][] = [];
+      for (let i = 0; i < source.length; i += columns) {
+        result.push(source.slice(i, i + columns));
+      }
+    return result; // [ [g1,g2,g3,gN], [g1,g2,g3.gN] ...]
+
+  }
 }
