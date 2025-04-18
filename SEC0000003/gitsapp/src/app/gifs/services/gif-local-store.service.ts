@@ -14,8 +14,9 @@ export class GifLocalStoreService {
   }
 
   public getGifsByKey(key:string): Gif[]{
-    const maybeGifs: string | null = localStorage.getItem(key);
-    return maybeGifs ? JSON.parse( maybeGifs ) : [] ;
+    const maybeGifs: string | null = localStorage.getItem('gifs');
+    const gifs = maybeGifs ? JSON.parse( maybeGifs ) : [];
+    return gifs ? (gifs[key] ?? [] ) : []
   }
 
   public removeGifById(key:string):void{
