@@ -59,5 +59,18 @@ export default class TrendingPageComponent{
     // scrollDiv es la referencia al <div id="groupDiv">
     const scrollDiv = this.groupDivRef()?.nativeElement ?? null; // carga div y todos sus hijos
     console.log(scrollDiv); // debug
+
+    // si no hay un scrollDiv no hace nada, para estar evitnado verificar con el operador ?
+    if( !scrollDiv ) return;
+
+    // variables
+    const scrollTop = scrollDiv.scrollTop; // Posicion de scroll que hay
+    const clientHeight = scrollDiv.clientHeight; // Tamaño de la pantalla disponible
+    const scrollHeight = scrollDiv.scrollHeight; // Tamaño maximo posible del scroll
+    const isAtBottom = scrollTop + clientHeight >= (scrollHeight-(scrollHeight * 0.15)); // comprueba cuando esta scroll el 85% del div
+
+    console.log( "scrollTop: "+ scrollTop+", clientHeight:"+ clientHeight+ ", scrollHeight: "+scrollHeight," is 85% scroll: " +isAtBottom );
+
+
   }
 }
