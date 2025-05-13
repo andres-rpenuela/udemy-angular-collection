@@ -16,26 +16,42 @@ export class GiphyService {
   private gifHistory = inject(GifHistoryService);
 
   public gifs: WritableSignal<Gif[]> = signal<Gif[]>( [] );
-  public trendingGifsLoading = signal<boolean>(true);
+  public trendingGifsLoading = signal<boolean>(false);
 
   constructor() {
     this.loadTrendingGifs();
     console.log('Service creado'); // debug
   }
 
+  private trendingPage = signal<number>(0);
+
   public loadTrendingGifs():void {
+
+    // asegura que si ya esta cargando no lance una petición de nuevo
+    if( this.trendingGifsLoading() ) return;
+
+    // si esta a false, lo ponemos a true para bloquearlo y lanzar una petición
+    this.trendingGifsLoading.set(true);
+
     this.http.get<GiphyResponse>( `${environment.giphyURL}/gifs/trending`, { params:
         {
           api_key: environment.giphyApiKey,
-          limit: 20
+          limit: 20,
+          offset: this.trendingPage()*20
         }
     }).subscribe(
       resp => {
         console.table(resp); // debug
 
+        // volcamos los gifs de la pteición
         const data = GifMapper.giphyItemsToGifArray( resp.data );
-        this.gifs.set( data );
+        this.gifs.update( currentGifs => [...currentGifs,...data]  );
+
+        // desbloqueamos la siguiente busqueda
         this.trendingGifsLoading.set(false);
+
+        // acutalizmoas la pagina siguiente
+        this.trendingPage.update(page => page+1);
 
         console.table(data); // debug
       }
