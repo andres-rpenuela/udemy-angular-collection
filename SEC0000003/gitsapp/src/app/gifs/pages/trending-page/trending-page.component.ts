@@ -69,6 +69,10 @@ export default class TrendingPageComponent{
     const scrollHeight = scrollDiv.scrollHeight; // Tamaño maximo posible del scroll
     const isAtBottom = scrollTop + clientHeight >= (scrollHeight-(scrollHeight * 0.15)); // comprueba cuando esta scroll el 85% del div
 
+    if( isAtBottom){ // Se carga la siguiente página de gifs
+      this.giphyService.loadTrendingGifs();
+    }
+
     console.log( "scrollTop: "+ scrollTop+", clientHeight:"+ clientHeight+ ", scrollHeight: "+scrollHeight," is 85% scroll: " +isAtBottom );
 
 
