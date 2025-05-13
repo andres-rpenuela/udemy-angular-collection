@@ -1,7 +1,7 @@
-import {Component, computed, ElementRef, inject, Signal, signal, viewChild, WritableSignal} from '@angular/core';
-import {GifsListComponent} from '../../components/gifs-list/gifs-list.component';
+import {AfterViewInit, Component, computed, ElementRef, inject, OnDestroy, Signal, viewChild} from '@angular/core';
 import {GiphyService} from '../../services/giphy.service';
 import {Gif} from '@interfaces/gifs/gif.interface';
+import {ScrollStateService} from '../../../shared/services/scroll-state.services';
 
 
 const imageUrls: string[] = [
@@ -28,7 +28,7 @@ const imageUrls: string[] = [
   styleUrl: './trending-page.component.css',
   standalone: true
 })
-export default class TrendingPageComponent{
+export default class TrendingPageComponent implements AfterViewInit{
   // nota: con readonly, no se puede hacer .set(x) o .updated(x) si es uana señal, o cambiar el valor si es una propiedad
 
   //protected readonly imageUrls = imageUrls;
@@ -36,6 +36,7 @@ export default class TrendingPageComponent{
 
   // servico, inyecta
   giphyService:GiphyService = inject(GiphyService);
+  scrollStateService:ScrollStateService = inject(ScrollStateService);
 
   // ref., html
   public groupDivRef : Signal<ElementRef | undefined> = viewChild<ElementRef>('groupDiv');
@@ -65,6 +66,8 @@ export default class TrendingPageComponent{
 
     // variables
     const scrollTop = scrollDiv.scrollTop; // Posicion de scroll que hay
+    this.scrollStateService.setTrendingScrollState(scrollTop); // se actualiza en el servicio
+
     const clientHeight = scrollDiv.clientHeight; // Tamaño de la pantalla disponible
     const scrollHeight = scrollDiv.scrollHeight; // Tamaño maximo posible del scroll
     const isAtBottom = scrollTop + clientHeight >= (scrollHeight-(scrollHeight * 0.15)); // comprueba cuando esta scroll el 85% del div
@@ -76,5 +79,16 @@ export default class TrendingPageComponent{
     console.log( "scrollTop: "+ scrollTop+", clientHeight:"+ clientHeight+ ", scrollHeight: "+scrollHeight," is 85% scroll: " +isAtBottom );
 
 
+  }
+
+  // despues de cargar el compone y montar la vista
+  ngAfterViewInit(): void {
+    // desplazamos a la posicion del scroll que hay en memoria (servicio)
+    // 1. Obtenemos el div donde se carga los gifs
+    const scrollDiv = this.groupDivRef()?.nativeElement ?? null; // carga div y todos sus hijos
+    if( !scrollDiv ) return; // si no existe no hacemos nada
+
+    // 2.movemos a la posicion del scroll indicada
+    scrollDiv.scrollTop = this.scrollStateService.getTrendingScrollState();
   }
 }
