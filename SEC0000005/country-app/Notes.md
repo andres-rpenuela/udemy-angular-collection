@@ -6,6 +6,8 @@
 ng new country-app --style css
 cd country-app
 ```
+----
+
 ## Instalar Tailwind 
 
 ```bash
@@ -33,11 +35,32 @@ añadir el import de Tailwind CSS
 @import "tailwindcss";
 ```
 
-## Levantar el ser seridor
+## Correr angular
 
 ```bash
 ng serve -o --port 4020
 ```
 --- 
 
-# Instalar daisy ui
+## Instalar daisy ui
+Requiere de tener instalado **Tailwind CSS**
+
+```bash
+npm install daisyui@latest --force
+```
+
+## Importar Daisy UI
+
+```CSS
+@plugin "daisyui";
+```
+
+## Correr angular
+
+```bash
+ng serve -o --port 4020
+```
+
+Links
+* [Daisy-UI](https://daisyui.com/docs/install/angular/)
+* [Tailwinds-CSS](https://tailwindcss.com/docs/installation/framework-guides/angular)
