@@ -15,6 +15,14 @@ export const countryRoutes:Routes = [
       //   path: 'by-capital',
       //   loadComponent: () => import('./components/by-capital/by-capital.component').then(m => m.ByCapitalComponent),
       // },
+      { // carga perezosa
+        path: 'by-country',
+        loadComponent: () => import('./components/by-country/by-country.component').then(m => m.ByCountryComponent)
+      },
+      { // carga perezosa
+        path: 'by-region',
+        loadComponent: () => import('./components/by-region/by-region.component').then(m => m.ByRegionComponent)
+      },
       { // si no es ninguna de la anterior, redirecciona
         path: '**',
         redirectTo: 'by-capital'
