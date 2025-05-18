@@ -1,1 +1,16 @@
-<p>by-capital works!</p>
+<section class="flex flex-row gap-2 mt-2">
+  <input
+    type="text"
+    class="input input-bordered mr-2 w-56"
+    placeholder="Buscar por capital"
+    autofocus
+    #inputCapital
+    (keyup)="onDeBounce(inputCapital.value)"
+  >
+  <!--
+      (keyup.enter)="onSearch(inputCapital.value)"
+    >
+  -->
+
+  <button class="btn btn-primary" (click)="onSearch(inputCapital.value)">Buscar</button>
+</section>
