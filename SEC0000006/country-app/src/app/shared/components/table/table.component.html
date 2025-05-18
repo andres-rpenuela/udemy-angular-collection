@@ -1,0 +1,18 @@
+<table class="table table-md mt-2 w-full">
+  <thead>
+  <tr>
+    @for( row of headTable(); track $index){
+      <th>{{row | titlecase }}</th>
+    }
+  </tr>
+  </thead>
+  <tbody >
+  <tr>
+    @for ( rows of bodyTable(); track $index){
+      @for ( row of rows; track $index){
+        <td>{{row  | titlecase }}</td>
+      }
+    }
+  </tr>
+  </tbody>
+</table>
