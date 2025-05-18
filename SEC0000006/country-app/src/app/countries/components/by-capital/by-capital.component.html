@@ -9,12 +9,18 @@
 <section class="mt-5 w-full">
   <h1 class="text-2x1 font-bold text-center flex items-center justify-center bg-gray-300">Resultado de la busqueda por capitales</h1>
   <hr>
-  <div class="mt-5">
+  <div class="mt-5" *ngIf="!hasError(); else isError">
     <app-shared-table
       [headTable]="headTable"
       [bodyTable]="bodyTable()" *ngIf="bodyTable().length > 0; else noResultSearch"></app-shared-table>
     <ng-template #noResultSearch>
-      <p class="bg-base-200"> No hay resultado.</p>
+      <p class="bg-base-200" *ngIf="!isLoading()"> No hay resultado.</p>
+      <p class="bg-base-200" *ngIf="isLoading()"> Buscando.</p>
     </ng-template>
   </div>
+  <ng-template #isError>
+    <div class="mt-5">
+      <p class="bg-error h-20"> {{ this.hasError() }}</p>
+    </div>
+  </ng-template>
 </section>

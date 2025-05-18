@@ -1,0 +1,25 @@
+<table class="table table-md mt-2 w-full">
+  <thead>
+  <tr>
+    @for( row of headTable(); track $index){
+      <th>{{row | titlecase }}</th>
+    }
+  </tr>
+  </thead>
+  <tbody >
+    @for ( country of bodyTable(); track country.cca2; let index = $index){
+      <tr>
+        <td>{{  index + 1 }}</td>
+        <td> {{ country.flag }}</td>
+        <td>
+            <img [src]="country.flags.svg" [alt]="country.flags.alt" class="w-10"/>
+        </td>
+        <td>{{country.name.common | titlecase }}</td>
+        <td>{{country.population }}</td>
+        <td>
+          <a class="link-primary">Mas informacion</a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

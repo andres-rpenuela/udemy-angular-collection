@@ -1,7 +1,8 @@
 import {Component, signal, WritableSignal} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {SearchComponent} from '../../../shared/components/search/search.component';
-import {TableComponent} from '../../../shared/components/table/table.component';
+import {TableComponent} from '../table/table.component';
+import {RestCountry} from '../../interfaces/rest-countries.interface';
 
 @Component({
   selector: 'app-country-by-country',
@@ -19,7 +20,7 @@ export class ByCountryComponent {
   readonly placeholderSearch : string = 'Buscar por pais';
 
   readonly headTable : string[] = ['#','Icono','Bandera','Nombre','Capital','Poblacion'];
-  readonly bodyTable : WritableSignal<string[][]> = signal<string[][]>([]);
+  readonly bodyTable : WritableSignal<RestCountry[]> = signal<RestCountry[]>([]);
 
   valueSearch(value: string) {
       this.countrySignal.set(value);

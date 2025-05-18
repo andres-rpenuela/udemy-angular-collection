@@ -1,6 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {EMPTY, Observable} from 'rxjs';
+import {RestCountry} from '../interfaces/rest-countries.interface';
 
 const API_URL = 'https://restcountries.com'
 @Injectable({
@@ -10,7 +11,7 @@ export class CountryService {
   // requiere proveer HttpClient en AppConfig en Angular 19+, al no usar en modulos
   private http = inject(HttpClient);
 
-  public searchByCapital( query: string): Observable<any> {
+  public searchByCapital( query: string): Observable<RestCountry[]> {
     console.log(`Search by capital: ${query}`);
     const lowerCaseQuery = query.toLowerCase().trim();
     if (lowerCaseQuery.length === 0) {
@@ -18,6 +19,6 @@ export class CountryService {
     }
 
     //console.table( this.http.get(`${ API_URL }/v3.1/capital/${ lowerCaseQuery }`) );
-    return this.http.get(`${ API_URL }/v3.1/capital/${ lowerCaseQuery }`);
+    return this.http.get<RestCountry[]>(`${ API_URL }/v3.1/capital/${ lowerCaseQuery }`);
   }
 }
