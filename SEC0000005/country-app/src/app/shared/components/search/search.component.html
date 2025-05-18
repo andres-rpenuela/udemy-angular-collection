@@ -1,0 +1,14 @@
+<input
+  type="text"
+  class="input input-bordered mr-2 w-56"
+  [placeholder]="placeholderSearch()"
+  autofocus
+  #inputCapital
+  (keyup)="onDeBounce(inputCapital.value)"
+>
+<!--
+    (keyup.enter)="onSearch(inputCapital.value)"
+  >
+-->
+
+<button class="btn btn-primary" (click)="emitValue(inputCapital.value)">Buscar</button>

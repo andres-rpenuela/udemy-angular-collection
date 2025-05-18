@@ -1,38 +1,35 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {debounceTime, distinctUntilChanged, Subject, Subscription} from 'rxjs';
+import {Component, effect, signal, WritableSignal} from '@angular/core';
+import {SearchComponent} from '../../../shared/components/search/search.component';
+import {TableComponent} from '../../../shared/components/table/table.component';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-country-by-capital',
-  imports: [],
+  imports: [
+    SearchComponent,
+    TableComponent,
+    NgIf
+  ],
   templateUrl: './by-capital.component.html',
   styleUrl: './by-capital.component.css',
   standalone: true
 })
-export class ByCapitalComponent implements OnInit, OnDestroy{
-  private searchSubject: Subject<string> = new Subject<string>();
-  private searchSub : Subscription | undefined;
+export class ByCapitalComponent{
+    readonly capitalSng =signal<string>('');
 
-  onDeBounce(value : string){
-    this.searchSubject.next(value);
+    readonly headTable : string[] = ['#','Icono','Bandera','Nombre','Capital','Poblacion'];
+    readonly bodyTable : WritableSignal<string[][]> = signal<string[][]>([]);
 
-  }
-  onSearch(value:string){
-    console.log(value);
-  }
+    readonly placeholderSearch : string = 'Buscar por capital';
 
-  ngOnInit() {
-    this.searchSub = this.searchSubject
-      .pipe(
-        debounceTime(500), // garantiza que sólo el último valor emitido
-        distinctUntilChanged() //  evita que se emita el mismo valor dos veces seguidas
-      )
-      .subscribe(valueToSend => {
-        // Aquí va tu lógica para buscar o filtrar
-        this.onSearch(valueToSend)
+    constructor() {
+      effect( () => {
+        console.log(`Value received: ${this.capitalSng()}` )
       });
-  }
+    }
 
-  ngOnDestroy(): void {
-    this.searchSub?.unsubscribe(); // evita fugas de memoria
-  }
+    public valueSearch(value: string): void{
+      console.log("hola")
+      this.capitalSng.set(value);
+    }
 }
