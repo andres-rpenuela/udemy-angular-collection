@@ -23,6 +23,10 @@ export const countryRoutes:Routes = [
         path: 'by-region',
         loadComponent: () => import('./components/by-region/by-region.component').then(m => m.ByRegionComponent)
       },
+      { // ruta dinamica + carga perezosa
+        path: 'by/:country',
+        loadComponent: () => import('./components/country/country.component').then(m => m.CountryComponent)
+      },
       { // si no es ninguna de la anterior, redirecciona
         path: '**',
         redirectTo: 'by-capital'
