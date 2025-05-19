@@ -12,12 +12,12 @@
         <td>{{  index + 1 }}</td>
         <td> {{ country.flag }}</td>
         <td>
-            <img [src]="country.flags.svg" [alt]="country.flags.alt" class="w-10"/>
+            <img [src]="country.flagUrl" [alt]="country.flag" class="w-10"/>
         </td>
-        <td>{{country.name.common | titlecase }}</td>
+        <td>{{country.name | titlecase }}</td>
         <td>{{country.population }}</td>
         <td>
-          <a class="link-primary">Mas informacion</a>
+          <a class="link-primary cursor-pointer">Mas informacion</a>
         </td>
       </tr>
     }

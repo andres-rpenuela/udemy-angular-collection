@@ -1,6 +1,7 @@
 import {Component, effect, input, InputSignal} from '@angular/core';
 import {TitleCasePipe} from '@angular/common';
 import {RestCountry} from '../../interfaces/rest-countries.interface';
+import {Country} from '../../interfaces/country.interface';
 
 @Component({
   selector: 'app-shared-table',
@@ -13,7 +14,7 @@ import {RestCountry} from '../../interfaces/rest-countries.interface';
 })
 export class TableComponent {
   readonly headTable : InputSignal<string[]>  = input.required<string[]>()
-  readonly bodyTable : InputSignal<RestCountry[]> = input.required<RestCountry[]>();
+  readonly bodyTable : InputSignal<Country[]> = input.required<Country[]>();
 
   constructor() {
     effect(() => {

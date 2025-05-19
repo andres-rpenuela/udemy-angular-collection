@@ -3,9 +3,9 @@ import {SearchComponent} from '../../../shared/components/search/search.componen
 import {TableComponent} from '../table/table.component';
 import {NgIf} from '@angular/common';
 import {CountryService} from '../../services/country.service';
-import {catchError, delay, of, single} from 'rxjs';
+import {catchError, delay, of} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {RestCountry} from '../../interfaces/rest-countries.interface';
+import type {Country} from '../../interfaces/country.interface'; // importando solo la información de tip
 
 @Component({
   selector: 'app-country-by-capital',
@@ -22,7 +22,7 @@ export class ByCapitalComponent {
   readonly capitalSng =signal<string>('');
 
   readonly headTable : string[] = ['#','Icono','Bandera','Nombre','Capital','Poblacion'];
-  readonly bodyTable : WritableSignal<RestCountry[]> = signal<RestCountry[]>([]);
+  readonly bodyTable : WritableSignal<Country[]> = signal<Country[]>([]);
 
   readonly placeholderSearch : string = 'Buscar por capital';
 
@@ -55,7 +55,7 @@ export class ByCapitalComponent {
     // empieza la busqueda y limpia los valores
     this.isLoading.set(true);
     this.hasError.set( null );
-    this.bodyTable.set( [] );
+    this.bodyTable.set( [] ); // opcional, si quremos que apareza "Buscando"
 
     this.countryService.searchByCapital( this.capitalSng() )
       .pipe(
@@ -66,7 +66,7 @@ export class ByCapitalComponent {
           this.bodyTable.set([]);
           return of([]);
         }),
-        delay(500)
+        delay(100)
       )
       .subscribe( countries => {
         this.isLoading.set(false);

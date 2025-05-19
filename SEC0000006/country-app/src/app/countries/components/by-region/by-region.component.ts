@@ -1,7 +1,7 @@
 import {Component, signal, WritableSignal} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {TableComponent} from '../table/table.component';
-import {RestCountry} from '../../interfaces/rest-countries.interface';
+import type {Country} from '../../interfaces/country.interface';
 
 @Component({
   selector: 'app-country-by-region',
@@ -15,6 +15,6 @@ import {RestCountry} from '../../interfaces/rest-countries.interface';
 })
 export class ByRegionComponent {
   readonly headTable : string[] = ['#','Icono','Bandera','Nombre','Capital','Poblacion'];
-  readonly bodyTable : WritableSignal<RestCountry[]> = signal<RestCountry[]>([]);
+  readonly bodyTable : WritableSignal<Country[]> = signal<Country[]>([]);
 
 }
