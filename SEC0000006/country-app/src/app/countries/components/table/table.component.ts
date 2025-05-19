@@ -2,12 +2,14 @@ import {Component, effect, input, InputSignal} from '@angular/core';
 import {DecimalPipe, TitleCasePipe} from '@angular/common';
 import {RestCountry} from '../../interfaces/rest-countries.interface';
 import {Country} from '../../interfaces/country.interface';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-shared-table',
   imports: [
     TitleCasePipe,
-    DecimalPipe
+    DecimalPipe,
+    RouterLink
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.css',
