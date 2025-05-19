@@ -54,28 +54,37 @@ export class ByCapitalComponent {
 
     // empieza la busqueda y limpia los valores
     this.isLoading.set(true);
-    this.hasError.set( null );
-    this.bodyTable.set( [] ); // opcional, si quremos que apareza "Buscando"
+    // this.hasError.set( null );
+    // this.bodyTable.set( [] ); // opcional, si quremos que apareza "Buscando"
 
     this.countryService.searchByCapital( this.capitalSng() )
       .pipe(
         takeUntilDestroyed(this.destroyRef),// cancela automáticamente la suscripción al destruir el componente.
-        catchError(err => {
+        // catchError(err => {
+        //   console.error('Error al buscar países:', err);
+        //   this.hasError.set(`Error al buscar países: CODE:  ${err.error.code},MESSAGE: ${err.error.message}`);
+        //   this.bodyTable.set([]);
+        //   return of([]);
+        // }),
+        delay(100)
+      )
+      .subscribe( {
+        next: countries => {
+
+          if( countries.length > 0 && this.hasError() != null ){
+            this.hasError.set( null );
+          }
+
+          console.log(countries)
+          this.bodyTable.set( countries );
+          this.isLoading.set(false);
+        },
+        error: ( err ) => {
           console.error('Error al buscar países:', err);
           this.hasError.set(`Error al buscar países: CODE:  ${err.error.code},MESSAGE: ${err.error.message}`);
           this.bodyTable.set([]);
-          return of([]);
-        }),
-        delay(100)
-      )
-      .subscribe( countries => {
-        this.isLoading.set(false);
-        if( countries.length > 0){
-          this.hasError.set( null );
+          this.isLoading.set(false);
         }
-
-        console.log(countries)
-        this.bodyTable.set( countries );
       } );
   }
 }
