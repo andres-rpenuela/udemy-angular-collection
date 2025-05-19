@@ -80,8 +80,8 @@ export class ByCapitalComponent {
           this.isLoading.set(false);
         },
         error: ( err ) => {
-          console.error('Error al buscar países:', err);
-          this.hasError.set(`Error al buscar países: CODE:  ${err.error.code},MESSAGE: ${err.error.message}`);
+          //console.error('Error al buscar países:', err);
+          this.hasError.set(`${err}`);
           this.bodyTable.set([]);
           this.isLoading.set(false);
         }

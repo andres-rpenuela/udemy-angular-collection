@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {EMPTY, map, Observable} from 'rxjs';
+import {catchError, EMPTY, map, Observable, throwError} from 'rxjs';
 import type {RestCountry} from '../interfaces/rest-countries.interface';
 import type {Country} from '../interfaces/country.interface';
 import {CountryMappers} from '../mappers/country.mapper';
@@ -23,7 +23,11 @@ export class CountryService {
     //console.table( this.http.get(`${ API_URL }/v3.1/capital/${ lowerCaseQuery }`) );
     return this.http.get<RestCountry[]>(`${ API_URL }/v3.1/capital/${ lowerCaseQuery }`)
       .pipe(
-        map(CountryMappers.restCountriesToCountries)
+        map(CountryMappers.restCountriesToCountries),
+        catchError(err => { // en Angular 16+, capturar error y personalizado, es opcional esta opcion
+          console.error('Error al buscar países:', err);
+          return throwError( () => new Error("No se puedo obtnere paies con esa query"));
+        }),
       );
   }
 }
