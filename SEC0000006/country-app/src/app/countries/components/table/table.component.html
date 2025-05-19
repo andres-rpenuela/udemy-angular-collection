@@ -15,7 +15,9 @@
             <img [src]="country.flagUrl" [alt]="country.flag" class="w-10"/>
         </td>
         <td>{{country.name | titlecase }}</td>
-        <td>{{country.population }}</td>
+        <td>
+          <span class="badge badge-secondary">{{country.population | number }}</span>
+        </td>
         <td>
           <a class="link-primary cursor-pointer">Mas informacion</a>
         </td>
