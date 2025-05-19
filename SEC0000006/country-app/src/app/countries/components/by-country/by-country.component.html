@@ -1,7 +1,7 @@
 <!-- Country Search Input -->
 <section class="flex flex-row gap-2 mt-2">
   <app-shared-search
-    (valueEmmit)="valueSearch($event)"
+    (valueEmmit)="this.countrySignal.set($event)"
     [placeholderSearch]="placeholderSearch"></app-shared-search>
 </section>
 
@@ -10,11 +10,21 @@
   <h1 class="text-2x1 font-bold text-center flex items-center justify-center bg-gray-300">Resultado de la busqueda por paises</h1>
   <hr>
   <div class="mt-5">
-    <app-shared-table
-      [headTable]="headTable"
-      [bodyTable]="bodyTable()" *ngIf="bodyTable().length > 0; else noResultSearch"></app-shared-table>
-    <ng-template #noResultSearch>
-      <p class="bg-base-200"> No hay resultado.</p>
-    </ng-template>
+    @if ( this.countryResource.error()){
+      <div class="mt-5">
+        <p class="bg-error h-20"> {{ this.countryResource.error() }}</p>
+      </div>
+    } @else {
+      <app-shared-table
+        [headTable]="headTable"
+        [bodyTable]="countryResource.value()!" *ngIf="countryResource.hasValue(); else noResultSearch"></app-shared-table>
+      <ng-template #noResultSearch>
+        @if( this.countryResource.isLoading() ){
+          <p class="bg-base-200"> Buscando ... </p>
+        }@else{
+          <p class="bg-base-200"> No hay resultado.</p>
+        }
+      </ng-template>
+    }
   </div>
 </section>

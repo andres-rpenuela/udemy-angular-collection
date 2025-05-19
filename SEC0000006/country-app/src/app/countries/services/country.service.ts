@@ -30,4 +30,23 @@ export class CountryService {
         }),
       );
   }
+
+
+  public searchHByCountry( query: string): Observable<Country[]>{
+    console.log(`Search by country: ${query}`);
+
+    const lowerCaseQuery = query.toLowerCase().trim();
+    if (lowerCaseQuery.length === 0) {
+      return EMPTY; // Retorna un observable vacío si el query está vacío
+    }
+
+    return this.http.get<RestCountry[]>(`${ API_URL }/v3.1/name/${ lowerCaseQuery }`)
+      .pipe(
+        map(CountryMappers.restCountriesToCountries),
+        catchError(err => { // en Angular 16+, capturar error y personalizado, es opcional esta opcion
+          console.error('Error al buscar países:', err);
+          return throwError( () => new Error("No se puede obtener el pais con esa query"));
+        }),
+      );
+  }
 }
