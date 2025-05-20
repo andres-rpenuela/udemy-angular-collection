@@ -8,7 +8,7 @@ export class CountryMappers {
     public static mapRestCountryToCountry(source:RestCountry): Country {
       return {
         cca2: source.cca2,
-        name: source.translations['spa']?.common || source.name.common,
+        name:  source.translations?.['spa']?.common ?? source.name.common,
         capital: source.capital?.[0] || '',
         flagUrl: source.flags.svg || source.flags.png,
         flag: source.flag,

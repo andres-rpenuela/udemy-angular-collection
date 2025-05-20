@@ -44,11 +44,32 @@ export class CountryService {
     return this.http.get<RestCountry[]>(`${ API_URL }/v3.1/name/${ lowerCaseQuery }`)
       .pipe(
         map(CountryMappers.restCountriesToCountries),
-        delay(3000),
         catchError(err => { // en Angular 16+, capturar error y personalizado, es opcional esta opcion
           console.error('Error al buscar países:', err);
           return throwError( () => new Error("No se puede obtener el pais con esa query"));
         }),
       );
+  }
+
+  public searchCountryByAlphaCode(query: string): Observable<Country | undefined >{ // https://restcountries.com/v3.1/alpha/{code}
+    console.log(`Search by alpha code: ${query}`);
+
+    const lowerCaseQuery = query.toLowerCase().trim();
+
+    if( lowerCaseQuery.length === 0 ){
+      return EMPTY;
+    }
+
+    return  this.http.get<RestCountry[]>(`${ API_URL}/v3.1/alpha/${ lowerCaseQuery }`)
+      .pipe(
+        map(CountryMappers.restCountriesToCountries),
+        map(country => country.at(0)), // si no encuentra, devuelve undefine
+        delay(3000),
+        catchError( err => {
+          console.error('Error al buscar paises: ', err);
+          return throwError( () => new Error("No se puede obtener el pai con esa query"));
+        })
+      );
+
   }
 }
