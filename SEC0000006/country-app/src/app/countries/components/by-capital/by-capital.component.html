@@ -11,9 +11,12 @@
   <hr>
 <!--  <div class="mt-5" *ngIf="!hasError(); else isError">-->
   <div class="mt-5" *ngIf="!countryResource.error(); else isError">
+    <!-- debug -->
     <app-shared-table
       [headTable]="headTable"
-      [bodyTable]="this.countryResource.value()!" *ngIf="this.countryResource.hasValue(); else noResultSearch"></app-shared-table>
+      [bodyTable]="this.countryResource.value()!"
+      *ngIf="this.countryResource?.hasValue() && (this.countryResource.value()?.length ?? 0) > 0; else noResultSearch">
+    </app-shared-table>
     <ng-template #noResultSearch>
       <p class="bg-base-200" *ngIf="!this.countryResource.isLoading()"> No hay resultado.</p>
       <p class="bg-base-200" *ngIf="this.countryResource.isLoading()"> Buscando.</p>
@@ -22,7 +25,6 @@
   <ng-template #isError>
     <div class="mt-5">
       <p class="bg-error h-20"> {{ this.countryResource.error() }}</p>
-
     </div>
   </ng-template>
 </section>

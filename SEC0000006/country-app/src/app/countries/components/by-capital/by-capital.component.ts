@@ -1,10 +1,10 @@
 import {Component, DestroyRef, effect, inject, resource, signal, WritableSignal} from '@angular/core';
 import {SearchComponent} from '../../../shared/components/search/search.component';
 import {TableComponent} from '../table/table.component';
-import {NgIf} from '@angular/common';
+import {JsonPipe, NgIf} from '@angular/common';
 import {CountryService} from '../../services/country.service';
-import {catchError, delay, firstValueFrom, of} from 'rxjs';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {catchError, delay, EMPTY, firstValueFrom, of} from 'rxjs';
+import {rxResource, takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import type {Country} from '../../interfaces/country.interface'; // importando solo la información de tip
 
 @Component({
@@ -12,7 +12,8 @@ import type {Country} from '../../interfaces/country.interface'; // importando s
   imports: [
     SearchComponent,
     TableComponent,
-    NgIf
+    NgIf,
+    JsonPipe
   ],
   templateUrl: './by-capital.component.html',
   styleUrl: './by-capital.component.css',
@@ -88,19 +89,30 @@ export class ByCapitalComponent {
   //     } );
   // }
 
-  // Simplicando con resources (Angular 19+, experimental)
-  public countryResource = resource({
-    request: () => ({  query: this.capitalSng() }),
-    loader: async( { request, previous, abortSignal} ) => {
-      if( !this.capitalSng()?.trim()) return []; // si no hay valor, se devuelve un valor vacio
+  // Simplicando con resources (Angular 19+, experimental) + promesas
+  // https://angular.dev/guide/signals/resource
+  // public countryResource = resource({ // resource trabaja con promesas
+  //   request: () => ({  query: this.capitalSng() }),
+  //   loader: async( { request, previous, abortSignal} ) => {
+  //     if( !this.capitalSng()?.trim()) return []; // si no hay valor, se devuelve un valor vacio
+  //
+  //     //return this.countryService.searchByCapital(request.query) // esto devuelve un observable
+  //     // convertimos el observable en una promesa con `firstValueFrom`, que espera a que el observable emita un valor
+  //     // y esta se resuelve con el primer valor emitido con "await" o si ocurre un error
+  //     // alternativa al await, se puede suar then y cath de firstValueFrom( obsrrvable )
+  //     return await firstValueFrom( this.countryService.searchByCapital(request.query) );
+  //   }
+  // })
 
-      //return this.countryService.searchByCapital(request.query) // esto devuelve un observable
-      // convertimos el observable en una promesa con `firstValueFrom`, que espera a que el observable emita un valor
-      // y esta se resuelve con el primer valor emitido con "await" o si ocurre un error
-      // alternativa al await, se puede suar then y cath de firstValueFrom( obsrrvable )
-      return await firstValueFrom( this.countryService.searchByCapital(request.query) );
+  // Simplicando con rxResources (Angular 19+, experimental) + observable
+  // https://angular.dev/api/core/rxjs-interop/rxResource
+  public countryResource = rxResource({ // rxResource trabaja con observable
+    request: () => ({query: this.capitalSng() }),
+    loader: ( { request }) => {
+      if( !request.query?.trim()) return of([]); //return EMPTY;
+      return this.countryService.searchByCapital( request.query )
     }
-  })
+  });
 
   public valueSearch(value: string): void{
     // actualiza el valor respectivo
