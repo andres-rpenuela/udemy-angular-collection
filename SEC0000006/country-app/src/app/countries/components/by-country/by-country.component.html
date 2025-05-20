@@ -17,7 +17,9 @@
     } @else {
       <app-shared-table
         [headTable]="headTable"
-        [bodyTable]="countryResource.value()!" *ngIf="countryResource.hasValue(); else noResultSearch"></app-shared-table>
+        [bodyTable]="countryResource.value()!"
+        *ngIf="countryResource.hasValue() && (countryResource.value()?.length  ?? 0) > 0; else noResultSearch">
+      </app-shared-table>
       <ng-template #noResultSearch>
         @if( this.countryResource.isLoading() ){
           <p class="bg-base-200"> Buscando ... </p>

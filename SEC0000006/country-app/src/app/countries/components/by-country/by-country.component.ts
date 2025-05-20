@@ -1,10 +1,11 @@
-import {Component, inject, resource, signal, WritableSignal} from '@angular/core';
+import {Component, inject, signal, WritableSignal} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {SearchComponent} from '../../../shared/components/search/search.component';
 import {TableComponent} from '../table/table.component';
 import type {Country} from '../../interfaces/country.interface';
 import {CountryService} from '../../services/country.service';
-import {firstValueFrom} from 'rxjs';
+import {firstValueFrom, of} from 'rxjs';
+import {rxResource} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-country-by-country',
@@ -25,13 +26,21 @@ export class ByCountryComponent {// https://restcountries.com/v3.1/name/{name}
   readonly bodyTable : WritableSignal<Country[]> = signal<Country[]>([]);
 
   public countryService: CountryService = inject(CountryService);
-  public countryResource = resource({
-    request: () => ( { query : this.countrySignal() } ),
-    loader: async ({request}) => {
-      if( !this.countrySignal()?.trim()) return []; // si no hay valor, se devuelve un valor vacio
+  // public countryResource = resource({
+  //   request: () => ( { query : this.countrySignal() } ),
+  //   loader: async ({request}) => {
+  //     if( !this.countrySignal()?.trim()) return []; // si no hay valor, se devuelve un valor vacio
+  //
+  //     return await firstValueFrom(  this.countryService.searchHByCountry( request.query ));
+  //   }
+  // });
 
-      return await firstValueFrom(  this.countryService.searchHByCountry( request.query ));
+  public countryResource = rxResource({
+    request: () => ( { query : this.countrySignal() } ),
+    loader: ({request}) => {
+      if( !this.countrySignal()?.trim()) return of([]); // si no hay valor, se devuelve un valor vacio
+
+      return  this.countryService.searchHByCountry( request.query );
     }
   });
-
 }
