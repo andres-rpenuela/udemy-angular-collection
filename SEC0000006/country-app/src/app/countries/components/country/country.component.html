@@ -3,9 +3,13 @@
     [messageError]="getErrorCountryResource()">
   </app-shared-not-found>
 }
+<!-- -->
+@if( countryResource.isLoading() ){
+  <h1 class="test-3xl">Cargando...</h1>
+}
 
-@if( countryResource.hasValue() ){
+@if( countryResource.hasValue() && !countryResource.isLoading() ){
   <h1>{{ countryCode }}</h1>
-  <h3> Nombre: {{ countryResource.value()!.name }}</h3>
-
+  <hr>
+  <app-country-information [countryData]="countryResource.value()!"></app-country-information>
 }

@@ -5,6 +5,7 @@ import {of} from 'rxjs';
 import {CountryService} from '../../services/country.service';
 import {NotFoundComponent} from '../../../shared/components/not-found/not-found.component';
 import {JsonPipe} from '@angular/common';
+import {CountryInformationComponent} from './country-information/country-information.component';
 
 @Component({
   selector: 'app-country',
@@ -13,7 +14,8 @@ import {JsonPipe} from '@angular/common';
   styleUrls: ['./country.component.css'],
   imports: [
     NotFoundComponent,
-    JsonPipe
+    JsonPipe,
+    CountryInformationComponent
   ],
   // imports: [RouterModule]  // ✅ requerdio cuando  usas un componente standalone y accedes a servicios con Inject(), ya Angular no puede garantizar que el módulo (como RouterModule)
 })
