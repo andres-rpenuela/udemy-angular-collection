@@ -19,6 +19,10 @@ export class TableComponent {
   readonly headTable : InputSignal<string[]>  = input.required<string[]>()
   readonly bodyTable : InputSignal<Country[]> = input.required<Country[]>();
 
+  readonly messageError = input<string | unknown | null |undefined >(null);
+  readonly isEmpty = input<boolean>(false);
+  readonly isLoading = input<boolean>(false);
+
   constructor() {
     effect(() => {
       console.log('Head:', this.headTable());

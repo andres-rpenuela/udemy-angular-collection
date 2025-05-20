@@ -12,7 +12,7 @@
         <td>{{  index + 1 }}</td>
         <td> {{ country.flag }}</td>
         <td>
-            <img [src]="country.flagUrl" [alt]="country.flag" class="w-10"/>
+          <img [src]="country.flagUrl" [alt]="country.flag" class="w-10"/>
         </td>
         <td>{{country.name | titlecase }}</td>
         <td>
@@ -23,6 +23,25 @@
             [routerLink]="['/country/by/', country.cca2 ]"
             class="link-primary cursor-pointer">Mas informacion</a>
         </td>
+      </tr>
+    }
+
+    <!-- -->
+    @if( messageError() ){
+      <tr class="bg-error">
+        <td colspan="8"  class="text-center"> {{ messageError() }}</td>
+      </tr>
+    }
+
+    @if( isEmpty() && !isLoading() ){
+      <tr class="bg-warning">
+        <td colspan="8"  class="text-center" > No hay resultados.</td>
+      </tr>
+    }
+
+    @if( isLoading() ){
+      <tr class="bg-base-200">
+        <td colspan="8"  class="text-center"> Buscando...</td>
       </tr>
     }
   </tbody>

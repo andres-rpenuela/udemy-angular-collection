@@ -9,24 +9,34 @@
 <section class="mt-5 w-full">
   <h1 class="text-2x1 font-bold text-center flex items-center justify-center bg-gray-300">Resultado de la busqueda por paises</h1>
   <hr>
+<!--  <div class="mt-5">-->
+<!--    @if ( this.countryResource.error()){-->
+<!--      <div class="mt-5">-->
+<!--        <p class="bg-error h-20"> {{ this.countryResource.error() }}</p>-->
+<!--      </div>-->
+<!--    } @else {-->
+<!--      <app-shared-table-->
+<!--        [headTable]="headTable"-->
+<!--        [bodyTable]="countryResource.value()!"-->
+<!--        *ngIf="countryResource.hasValue() && (countryResource.value()?.length  ?? 0) > 0; else noResultSearch">-->
+<!--      </app-shared-table>-->
+<!--      <ng-template #noResultSearch>-->
+<!--        @if( this.countryResource.isLoading() ){-->
+<!--          <p class="bg-base-200"> Buscando ... </p>-->
+<!--        }@else{-->
+<!--          <p class="bg-base-200"> No hay resultado.</p>-->
+<!--        }-->
+<!--      </ng-template>-->
+<!--    }-->
+<!--  </div>-->
+
   <div class="mt-5">
-    @if ( this.countryResource.error()){
-      <div class="mt-5">
-        <p class="bg-error h-20"> {{ this.countryResource.error() }}</p>
-      </div>
-    } @else {
-      <app-shared-table
-        [headTable]="headTable"
-        [bodyTable]="countryResource.value()!"
-        *ngIf="countryResource.hasValue() && (countryResource.value()?.length  ?? 0) > 0; else noResultSearch">
-      </app-shared-table>
-      <ng-template #noResultSearch>
-        @if( this.countryResource.isLoading() ){
-          <p class="bg-base-200"> Buscando ... </p>
-        }@else{
-          <p class="bg-base-200"> No hay resultado.</p>
-        }
-      </ng-template>
-    }
+    <app-shared-table
+      [headTable]="headTable"
+      [bodyTable]="countryResource.value() ?? []"
+      [isEmpty]="countryResource.value()?.length === 0"
+      [isLoading]="countryResource.isLoading()"
+      [messageError]="countryResource.error()">
+    </app-shared-table>
   </div>
 </section>
