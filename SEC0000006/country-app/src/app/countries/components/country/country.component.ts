@@ -3,12 +3,18 @@ import {ActivatedRoute, ParamMap} from '@angular/router';
 import {rxResource} from '@angular/core/rxjs-interop';
 import {of} from 'rxjs';
 import {CountryService} from '../../services/country.service';
+import {NotFoundComponent} from '../../../shared/components/not-found/not-found.component';
+import {JsonPipe} from '@angular/common';
 
 @Component({
   selector: 'app-country',
   standalone: true,
   templateUrl: './country.component.html',
   styleUrls: ['./country.component.css'],
+  imports: [
+    NotFoundComponent,
+    JsonPipe
+  ],
   // imports: [RouterModule]  // ✅ requerdio cuando  usas un componente standalone y accedes a servicios con Inject(), ya Angular no puede garantizar que el módulo (como RouterModule)
 })
 export class CountryComponent implements OnInit {
@@ -36,4 +42,8 @@ export class CountryComponent implements OnInit {
       return  this.countryService.searchCountryByAlphaCode( request.query );
     }
   });
+
+  public getErrorCountryResource() : string{
+    return <string> this.countryResource.error();
+  }
 }
