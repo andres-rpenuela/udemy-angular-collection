@@ -1,10 +1,18 @@
+<!--<input-->
+<!--  type="text"-->
+<!--  class="input input-bordered mr-2 w-56"-->
+<!--  [placeholder]="placeholderSearch()"-->
+<!--  autofocus-->
+<!--  #inputCapital-->
+<!--  (keyup)="onDeBounce(inputCapital.value)"-->
+<!--&gt;-->
 <input
   type="text"
   class="input input-bordered mr-2 w-56"
   [placeholder]="placeholderSearch()"
   autofocus
   #inputCapital
-  (keyup)="onDeBounce(inputCapital.value)"
+  (keyup)="valueSignal.set(inputCapital.value)"
 >
 <!--
     (keyup.enter)="onSearch(inputCapital.value)"
