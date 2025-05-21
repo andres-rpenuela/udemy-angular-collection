@@ -57,3 +57,114 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+----
+
+# Observables
+
+# Peticion Get
+
+Esto devuelve un observable:
+
+```typescript
+this.http.get<RestCountry[]>(`${ API_URL}/v3.1/alpha/${ lowerCaseQuery }`)
+  .pipe(
+    map(CountryMappers.restCountriesToCountries),
+    map(country => country.at(0)), // si no encuentra, devuelve undefine
+    delay(3000),
+    catchError( err => {
+      console.error('Error al buscar paises: ', err);
+      return throwError( () => new Error("No se puede obtener el pai con esa query"));
+    })
+  );
+```
+
+### Subcripción
+
+```typescript
+this.countryService.searchByCapital( this.capitalSng() )
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),// cancela automáticamente la suscripción al destruir el componente.
+        // catchError(err => {
+        //   console.error('Error al buscar países:', err);
+        //   this.hasError.set(`Error al buscar países: CODE:  ${err.error.code},MESSAGE: ${err.error.message}`);
+        //   this.bodyTable.set([]);
+        //   return of([]);
+        // }),
+        delay(100)
+      )
+      .subscribe( {
+        next: countries => {
+
+          if( countries.length > 0 && this.hasError() != null ){
+            this.hasError.set( null );
+          }
+
+          console.log(countries)
+          this.bodyTable.set( countries );
+          this.isLoading.set(false);
+        },
+        error: ( err ) => {
+          //console.error('Error al buscar países:', err);
+          this.hasError.set(`${err}`);
+          this.bodyTable.set([]);
+          this.isLoading.set(false);
+        }
+      } );
+```
+### Resoruce
+Para Angular 19+ Experimental
+```typescript
+public countryResource = resource({ // resource trabaja con promesas
+    request: () => ({  query: this.capitalSng() }),
+    loader: async( { request, previous, abortSignal} ) => {
+      if( !this.capitalSng()?.trim()) return []; // si no hay valor, se devuelve un valor vacio
+
+      //return this.countryService.searchByCapital(request.query) // esto devuelve un observable
+      // convertimos el observable en una promesa con `firstValueFrom`, que espera a que el observable emita un valor
+      // y esta se resuelve con el primer valor emitido con "await" o si ocurre un error
+      // alternativa al await, se puede suar then y cath de firstValueFrom( obsrrvable )
+      return await firstValueFrom( this.countryService.searchByCapital(request.query) );
+    }
+  })
+```
+Uso en html
+
+```angular181html
+<div class="mt-5">
+  <app-shared-table
+    [headTable]="headTable"
+    [bodyTable]="countryResource.value() ?? []"
+    [isEmpty]="countryResource.value()?.length === 0"
+    [isLoading]="countryResource.isLoading()"
+    [messageError]="countryResource.error()">
+  </app-shared-table>
+</div>
+```
+### rxResource
+Para Angular 19+ 
+
+```typescript
+public countryResource = rxResource({ // rxResource trabaja con observable
+  request: () => ({query: this.capitalSng() }),
+  loader: ( { request }) => {
+    if( !request.query?.trim()) return of([]); //return EMPTY;
+    return this.countryService.searchByCapital( request.query )
+  }
+});
+```
+
+Uso en html
+
+```angular181html
+<div class="mt-5">
+  <app-shared-table
+    [headTable]="headTable"
+    [bodyTable]="countryResource.value() ?? []"
+    [isEmpty]="countryResource.value()?.length === 0"
+    [isLoading]="countryResource.isLoading()"
+    [messageError]="countryResource.error()">
+  </app-shared-table>
+</div>
+```

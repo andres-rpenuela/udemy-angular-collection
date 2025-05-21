@@ -13,7 +13,8 @@ export class CountryMappers {
         flagUrl: source.flags.svg || source.flags.png,
         flag: source.flag,
         population: source.population,
-        region: source.region
+        region: source.region,
+        subRegion: source.subregion
       }
     }
     // static RestCountry[] => Country[]

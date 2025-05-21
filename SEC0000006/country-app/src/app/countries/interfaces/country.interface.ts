@@ -6,4 +6,5 @@ export interface Country {
   flag:       string;         // Emoji de la bandera (por ejemplo 🇪🇸)
   population: number;   // Población
   region:     string;       // Región geográfica
+  subRegion:  string;
 }
