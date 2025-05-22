@@ -14,7 +14,9 @@ export class CountryService {
   private http = inject(HttpClient);
 
   // cache en memoria
+  private cacheCapital = new Map<string, Country[]>();
   private cacheCountries = new Map<string, Country[]>();
+  private cacheCountryInfo = new Map<string, Country>();
 
   public searchByCapital( query: string): Observable<Country[]> {
     console.log(`Search by capital: ${query}`);
@@ -24,10 +26,10 @@ export class CountryService {
       return EMPTY; // Retorna un observable vacío si el query está vacío
     }
 
-    if( this.cacheCountries.has(lowerCaseQuery) ) {
+    if( this.cacheCapital.has(lowerCaseQuery) ) {
       console.log(("Cargando countries de la cache"));
       // con has, se sabe que no es nulo, por eso !
-      return of(this.cacheCountries.get(lowerCaseQuery) ! );
+      return of(this.cacheCapital.get(lowerCaseQuery) ! );
     }
 
     console.log(("Call to api countries"));
@@ -36,7 +38,7 @@ export class CountryService {
     return this.http.get<RestCountry[]>(`${ API_URL }/v3.1/capital/${ lowerCaseQuery }`)
       .pipe(
         map(CountryMappers.restCountriesToCountries),
-        tap(countries => this.cacheCountries.set(lowerCaseQuery,countries)),
+        tap(countries => this.cacheCapital.set(lowerCaseQuery,countries)),
         delay(3000),
         catchError(err => { // en Angular 16+, capturar error y personalizado, es opcional esta opcion
           console.error('Error al buscar países:', err);
@@ -54,9 +56,18 @@ export class CountryService {
       return EMPTY; // Retorna un observable vacío si el query está vacío
     }
 
+    if( this.cacheCountries.has(lowerCaseQuery) ) {
+      console.log(("Cargando countries de la cache"));
+      // con has, se sabe que no es nulo, por eso !
+      return of(this.cacheCountries.get(lowerCaseQuery) ! );
+    }
+
+    console.log(("Call to api countries"));
+
     return this.http.get<RestCountry[]>(`${ API_URL }/v3.1/name/${ lowerCaseQuery }`)
       .pipe(
         map(CountryMappers.restCountriesToCountries),
+        tap(countries => this.cacheCountries.set(lowerCaseQuery,countries)),
         catchError(err => { // en Angular 16+, capturar error y personalizado, es opcional esta opcion
           console.error('Error al buscar países:', err);
           return throwError( () => new Error("No se puede obtener el pais con esa query"));
@@ -73,10 +84,17 @@ export class CountryService {
       return EMPTY;
     }
 
+    if( this.cacheCountryInfo.has(lowerCaseQuery) ) {
+      console.log(("Cargando countries de la cache"));
+      // con has, se sabe que no es nulo, por eso !
+      return of( this.cacheCountryInfo.get(lowerCaseQuery) ! );
+    }
+
     return  this.http.get<RestCountry[]>(`${ API_URL}/v3.1/alpha/${ lowerCaseQuery }`)
       .pipe(
         map(CountryMappers.restCountriesToCountries),
         map(country => country.at(0)), // si no encuentra, devuelve undefine
+        tap(country => this.cacheCountryInfo.set(lowerCaseQuery,country! )),
         delay(3000),
         catchError( err => {
           console.error('Error al buscar paises: ', err);
