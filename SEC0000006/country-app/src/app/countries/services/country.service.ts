@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {catchError, delay, EMPTY, map, Observable, throwError} from 'rxjs';
+import {catchError, delay, EMPTY, map, Observable, of, tap, throwError} from 'rxjs';
 import type {RestCountry} from '../interfaces/rest-countries.interface';
 import type {Country} from '../interfaces/country.interface';
 import {CountryMappers} from '../mappers/country.mapper';
@@ -13,17 +13,30 @@ export class CountryService {
   // requiere proveer HttpClient en AppConfig en Angular 19+, al no usar en modulos
   private http = inject(HttpClient);
 
+  // cache en memoria
+  private cacheCountries = new Map<string, Country[]>();
+
   public searchByCapital( query: string): Observable<Country[]> {
     console.log(`Search by capital: ${query}`);
     const lowerCaseQuery = query.toLowerCase().trim();
+
     if (lowerCaseQuery.length === 0) {
       return EMPTY; // Retorna un observable vacío si el query está vacío
     }
+
+    if( this.cacheCountries.has(lowerCaseQuery) ) {
+      console.log(("Cargando countries de la cache"));
+      // con has, se sabe que no es nulo, por eso !
+      return of(this.cacheCountries.get(lowerCaseQuery) ! );
+    }
+
+    console.log(("Call to api countries"));
 
     //console.table( this.http.get(`${ API_URL }/v3.1/capital/${ lowerCaseQuery }`) );
     return this.http.get<RestCountry[]>(`${ API_URL }/v3.1/capital/${ lowerCaseQuery }`)
       .pipe(
         map(CountryMappers.restCountriesToCountries),
+        tap(countries => this.cacheCountries.set(lowerCaseQuery,countries)),
         delay(3000),
         catchError(err => { // en Angular 16+, capturar error y personalizado, es opcional esta opcion
           console.error('Error al buscar países:', err);
