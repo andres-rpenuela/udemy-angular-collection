@@ -18,6 +18,7 @@ export class CountryService {
   private cacheCapital = new Map<string, Country[]>();
   private cacheCountries = new Map<string, Country[]>();
   private cacheCountryInfo = new Map<string, Country>();
+  private cacheRegion = new Map<string, Country[]>();
 
   public searchByCapital( query: string): Observable<Country[]> {
     console.log(`Search by capital: ${query}`);
@@ -107,15 +108,20 @@ export class CountryService {
 
   public searchByRegion(query:Region) : Observable<Country[]>{ // https://restcountries.com/v3.1/region/europe
     console.log(`Search by region: ${query}`);
-
     const lowerCaseQuery = query.toLowerCase().trim();
-      return  this.http.get<RestCountry[]>(`${ API_URL }/v3.1/region/${ lowerCaseQuery }`)
-        .pipe(
-          map(CountryMappers.restCountriesToCountries),
-          catchError( err => {
-            console.error('Error al buscar paises: ', err);
-            return throwError( () => new Error("No se puede obtener el pai con esa query"));
-          })
-        );
+
+    if( this.cacheRegion.has(query )){
+      return of(this.cacheRegion.get(lowerCaseQuery) ! );
+    }
+
+    return  this.http.get<RestCountry[]>(`${ API_URL }/v3.1/region/${ lowerCaseQuery }`)
+      .pipe(
+        map(CountryMappers.restCountriesToCountries),
+        tap(countries => this.cacheRegion.set(lowerCaseQuery,countries)),
+        catchError( err => {
+          console.error('Error al buscar paises: ', err);
+          return throwError( () => new Error("No se puede obtener el pai con esa query"));
+        })
+      );
   }
 }
