@@ -1,13 +1,18 @@
 <!-- Country table -->
 <section class="mt-5 w-full">
-  <h1 class="text-2x1 font-bold text-center flex items-center justify-center bg-gray-300">Resultado de la busqueda por region</h1>
+  <div class="mt-5 grid grid-flow-col justify-items-center-safe">
+    <app-region-menu-top
+      (regionOut)="searchRegion($event)" ></app-region-menu-top>
+  </div>
+  <h1 class="mt-5 text-2x1 font-bold text-center flex items-center justify-center bg-gray-300">Resultado de la busqueda por region {{regionSng()}}</h1>
   <hr>
   <div class="mt-5">
     <app-shared-table
       [headTable]="headTable"
-      [bodyTable]="bodyTable()" *ngIf="bodyTable().length > 0; else noResultSearch"></app-shared-table>
-    <ng-template #noResultSearch>
-      <p class="bg-base-200"> No hay resultado.</p>
-    </ng-template>
+      [bodyTable]="regionResource.value() ?? []"
+      [isEmpty]="regionResource.value()?.length === 0"
+      [isLoading]="regionResource.isLoading()"
+      [messageError]="regionResource.error()">
+    </app-shared-table>
   </div>
 </section>

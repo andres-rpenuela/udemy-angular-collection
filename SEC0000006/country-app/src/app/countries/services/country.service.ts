@@ -4,6 +4,7 @@ import {catchError, delay, EMPTY, map, Observable, of, tap, throwError} from 'rx
 import type {RestCountry} from '../interfaces/rest-countries.interface';
 import type {Country} from '../interfaces/country.interface';
 import {CountryMappers} from '../mappers/country.mapper';
+import {Region} from '@interface/country/region.type';
 
 const API_URL = 'https://restcountries.com'
 @Injectable({
@@ -102,5 +103,19 @@ export class CountryService {
         })
       );
 
+  }
+
+  public searchByRegion(query:Region) : Observable<Country[]>{ // https://restcountries.com/v3.1/region/europe
+    console.log(`Search by region: ${query}`);
+
+    const lowerCaseQuery = query.toLowerCase().trim();
+      return  this.http.get<RestCountry[]>(`${ API_URL }/v3.1/region/${ lowerCaseQuery }`)
+        .pipe(
+          map(CountryMappers.restCountriesToCountries),
+          catchError( err => {
+            console.error('Error al buscar paises: ', err);
+            return throwError( () => new Error("No se puede obtener el pai con esa query"));
+          })
+        );
   }
 }

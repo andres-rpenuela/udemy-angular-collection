@@ -271,3 +271,37 @@ En la vista html:
 | **Acceso por clave/valor**   | `.get(key)`                  | `.has(value)`         |
 | **Orden**                    | Mantiene el orden            | Mantiene el orden     |
 | **Uso común**                | Asociaciones clave-valor     | Listas sin duplicados |a
+
+--
+
+# Tare de regiones
+
+Crear el servidio y mostrar regiones, siguiendo lo siguiente
+
+1. Crear el tipo de Region
+2. En la pagina de regiones mostrar 
+   1. Un boton para cada region
+   2. La tabla con el listado de los paises
+
+```typescript
+  export type Region =
+    | 'Africa'
+    | 'Americas'
+    | 'Asia'
+    | 'Europe'
+    | 'Oceania'
+    | 'Antarctic';
+  
+  
+  public regions: Region[] = [
+    'Africa',
+    'Americas',
+    'Asia',
+    'Europe',
+    'Oceania',
+    'Antarctic',
+  ];
+  
+  
+  const url = `${API_URL}/region/${region}`;
+```

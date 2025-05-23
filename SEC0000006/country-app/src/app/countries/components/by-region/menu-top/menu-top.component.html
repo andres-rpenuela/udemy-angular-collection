@@ -1,0 +1,16 @@
+<ul class="menu menu-vertical lg:menu-horizontal bg-base-200 rounded-box">
+  @for (region of regions; track $index) {
+    <li>
+      <a
+        (click)="onSelectRegion(region)"
+        [ngClass]="{
+          'text-primary': region === selectedRegion,
+          'hover:text-accent': region !== selectedRegion
+        }"
+        class="cursor-pointer"
+      >
+        {{ region }}
+      </a>
+    </li>
+  }
+</ul>
