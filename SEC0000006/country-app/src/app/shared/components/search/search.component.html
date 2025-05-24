@@ -12,6 +12,7 @@
   [placeholder]="placeholderSearch()"
   autofocus
   #inputCapital
+  [value]="valueSignal()"
   (keyup)="valueSignal.set(inputCapital.value)"
 >
 <!--

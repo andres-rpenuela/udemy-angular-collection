@@ -2,7 +2,7 @@ import {
   Component,
   effect,
   input,
-  InputSignal,
+  InputSignal, linkedSignal,
   OnDestroy,
   OnInit,
   output,
@@ -48,7 +48,9 @@ export class SearchComponent implements OnInit, OnDestroy{
     this.valueEmmit.emit(value);
   }
 
-  valueSignal = signal<string>('');
+  public valueInitial = input<string>();
+  // valueSignal = signal<string>('');
+  valueSignal = linkedSignal( () => this.valueInitial() ?? '' );
   debounceTime = input(300);
 
   // se lanza el efecto cada vez que se destruya el componente, crea y cada vez que el valueSignla cambie
@@ -57,9 +59,15 @@ export class SearchComponent implements OnInit, OnDestroy{
   debounceEffect = effect( (onCleanup)=>{
     // cada vez que cambia lanza el effecto
     const value = this.valueSignal(); // accede a la señal reactiva
+    console.log('search to: '+value);
+
+    if(value.trim().length == 0){
+      return;
+    }
 
     // espera X ms
     const timeout = setTimeout( () =>{
+      console.log('emitiendo')
       this.valueEmmit.emit(value);
     }, this.debounceTime());
 

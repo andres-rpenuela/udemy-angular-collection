@@ -305,3 +305,52 @@ Crear el servidio y mostrar regiones, siguiendo lo siguiente
   
   const url = `${API_URL}/region/${region}`;
 ```
+
+---
+
+# Rutas en Angular
+
+
+## Obtener informacion de la ruta activa
+
+```typescript
+// localchost:4200/by-capital?query=madrid
+import {inject} from "@angular/core";
+
+activatedRoute = inject(ActivedRoute);
+// Esto no es reactivo, y lo que hac es leer el parametro 'query', si no viene
+// se pone vacio
+queryParam = this.activatedRoute.snapshot.queryParamMap.get('query') ?? '';
+
+query = signal(this.queryParam);
+
+```
+
+# Inializar variables reactivas
+
+Para inicializar variables reactivas se puede usar 'linkedSingal()', crea una señal compuesta
+
+
+```angular181html
+<search
+    [initialValue]="valueToSearch"/>
+```
+
+```typescript
+// componet parent
+valueTosearch = 'madrid';
+
+// componet search
+
+// opciona a. puede que no se inialice bien y se lea valores erroneos
+valueToSearch = input<string>('');
+search = signal<string>(valueToSearch() )
+
+// opcion b. (recomendado
+// pemrite inicilaizar una señal a partir de un proceso o cumpatcion
+import {linkedSignal} from "@angular/core";
+
+valueToSearch = input<string>('');
+search = linkedSignal( () => valueToSearch() ?? '')
+
+```

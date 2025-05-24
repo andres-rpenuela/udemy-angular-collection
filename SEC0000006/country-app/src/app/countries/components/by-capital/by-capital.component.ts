@@ -1,11 +1,12 @@
-import {Component, DestroyRef, effect, inject, resource, signal, WritableSignal} from '@angular/core';
+import {Component, DestroyRef, effect, inject, linkedSignal, resource, signal, WritableSignal} from '@angular/core';
 import {SearchComponent} from '../../../shared/components/search/search.component';
 import {TableComponent} from '../table/table.component';
 import {JsonPipe, NgIf} from '@angular/common';
 import {CountryService} from '../../services/country.service';
 import {catchError, delay, EMPTY, firstValueFrom, of} from 'rxjs';
 import {rxResource, takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import type {Country} from '../../interfaces/country.interface'; // importando solo la información de tip
+import type {Country} from '../../interfaces/country.interface';
+import {ActivatedRoute} from '@angular/router'; // importando solo la información de tip
 
 @Component({
   selector: 'app-country-by-capital',
@@ -104,6 +105,9 @@ export class ByCapitalComponent {
   //   }
   // })
 
+  // leer queries opcioanles
+  activedRoute = inject(ActivatedRoute);
+  queryParam = linkedSignal( () => this.activedRoute.snapshot.queryParamMap.get('query') ?? '')
   // Simplicando con rxResources (Angular 19+, experimental) + observable
   // https://angular.dev/api/core/rxjs-interop/rxResource
   public countryResource = rxResource({ // rxResource trabaja con observable

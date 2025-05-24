@@ -2,7 +2,8 @@
 <section class="flex flex-row gap-2 mt-2">
   <app-shared-search
     (valueEmmit)="valueSearch($event)"
-    [placeholderSearch]="placeholderSearch"></app-shared-search>
+    [placeholderSearch]="placeholderSearch"
+    [valueInitial]="queryParam()"></app-shared-search>
 </section>
 
 <!-- Country table -->
