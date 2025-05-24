@@ -6,7 +6,7 @@ import {CountryService} from '../../services/country.service';
 import {catchError, delay, EMPTY, firstValueFrom, of} from 'rxjs';
 import {rxResource, takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import type {Country} from '../../interfaces/country.interface';
-import {ActivatedRoute} from '@angular/router'; // importando solo la información de tip
+import {ActivatedRoute, Router} from '@angular/router'; // importando solo la información de tip
 
 @Component({
   selector: 'app-country-by-capital',
@@ -108,12 +108,21 @@ export class ByCapitalComponent {
   // leer queries opcioanles
   activedRoute = inject(ActivatedRoute);
   queryParam = linkedSignal( () => this.activedRoute.snapshot.queryParamMap.get('query') ?? '')
+
+  // cambiar la query dinamicamente
+  router = inject(Router);
+
   // Simplicando con rxResources (Angular 19+, experimental) + observable
   // https://angular.dev/api/core/rxjs-interop/rxResource
   public countryResource = rxResource({ // rxResource trabaja con observable
     request: () => ({query: this.capitalSng() }),
     loader: ( { request }) => {
       if( !request.query?.trim()) return of([]); //return EMPTY;
+
+      this.router.navigate(['/country/by-capital'],{
+        queryParams: { 'query': request.query }
+      });
+
       return this.countryService.searchByCapital( request.query )
     }
   });

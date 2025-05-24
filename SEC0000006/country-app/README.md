@@ -326,8 +326,65 @@ query = signal(this.queryParam);
 
 ```
 
-# Inializar variables reactivas
+## Cmaibar queryParmas dinamicamente
 
+### Navegar con parámetros de ruta (route parameters)
+
+Supón que tienes una ruta definida así:
+
+```typescript
+{ path: 'user/:id', component: UserComponent }
+```
+Entonces navegas con:
+
+```typescript
+this.router.navigate(['user', 42]);
+```
+Esto te llevará a /user/42.
+
+### Navegar con parámetros de query (query parameters)
+
+this.router.navigate(['search'], {
+queryParams: { q: 'angular', page: 1 }
+});
+```typescript
+import {inject} from "@angular/core";
+import {Router} from "@angular/router";
+
+router = inject(Router);
+
+this.router.navigate(['search'], {
+  queryParams: { q: 'angular', page: 1 }
+});// query param optional
+```
+Esto navegará a /search?q=angular&page=1.
+
+###  Navegar relativo a la ruta actual
+
+```typescript
+this.router.navigate(['../details'], { relativeTo: this.route });
+```
+
+### Navegar con Fragmento (#anchor)
+
+```typescript
+this.router.navigate(['pagina'], {
+  fragment: 'seccion2'
+});
+
+this.router.navigate(['detalle', 42], {
+  queryParams: { mostrarInfo: true },
+  fragment: 'comentarios'
+});
+```
+Resultado: 
+* Resultado: localhost:4200/pagina#seccion2
+* localhost:4200/detalle/42?mostrarInfo=true#comentarios
+
+
+--- 
+# Inializar variables reactivas
+(Angular 19+)
 Para inicializar variables reactivas se puede usar 'linkedSingal()', crea una señal compuesta
 
 
@@ -354,3 +411,9 @@ valueToSearch = input<string>('');
 search = linkedSignal( () => valueToSearch() ?? '')
 
 ```
+
+linkedSignal() es particularmente útil en escenarios donde:
+
+* Necesitas que una señal derive su valor de otras señales, pero también deseas la flexibilidad de modificarla manualmente.
+* Quieres evitar la complejidad de gestionar efectos secundarios con effect() para sincronizar estados.
+* Requieres mantener la coherencia del estado en componentes complejos o formularios.
