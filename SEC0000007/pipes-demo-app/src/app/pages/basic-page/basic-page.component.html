@@ -3,7 +3,7 @@
   <h3 class="text-xl font-thin">Pipes incluidos en Angular</h3>
 </section>
 
-<div class="stats stats-vertical lg:stats-horizontal shadow">
+<div class="stats stats-vertical lg:stats-horizontal shadow w-full">
   <div class="stat">
     <div class="stat-title">Lowercase Pipe</div>
     <div class="stat-value">{{ nameUpper() | lowercase }}</div>
@@ -20,5 +20,49 @@
     <div class="stat-title">TitleCase Pipe</div>
     <div class="stat-value">{{ fullName() | titlecase }}</div>
     <div class="stat-desc">{{ fullName() }}</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="stats stats-vertical lg:stats-horizontal shadow w-full">
+  <div class="stat">
+    <div class="stat-title">Date Pipe</div>
+    <div class="stat-value">{{ currentDate() | date }}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-title">Date Pipe | Long | GMT-6</div>
+    <div class="stat-value">{{ currentDate() | date:  'long':'GMT-6'}}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-title">Date Pipe | Short | GMT-4</div>
+    <div class="stat-value">{{ currentDate() | date:  'short': 'GMT-4'}}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="stats stats-vertical lg:stats-horizontal shadow w-full">
+  <div class="stat">
+    <div class="stat-title">Date Custom</div>
+    <div class="stat-value">{{ currentDate() | date: 'dd/MM/yyyy' }}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-title">Time Custom</div>
+    <div class="stat-value">{{ currentDate() | date:  'HH:mm:ss'}}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-title">Day and Month</div>
+    <div class="stat-value">{{ currentDate() | date:  'EEEE d, MMMM'}}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
   </div>
 </div>
