@@ -9,6 +9,20 @@ import {rxResource} from '@angular/core/rxjs-interop';
 import {of} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 
+
+function validateQueryParam( queryParam: string ): Region{
+  const validRegions: Record<string, Region> ={
+    'Africa': 'Africa',
+    'Americas': 'Americas',
+    'Asia': 'Asia',
+    'Europe': 'Europe',
+    'Oceania': 'Oceania',
+    'Antarctic': 'Antarctic'
+  };
+  console.log('validando '+queryParam+', is: '+validRegions[queryParam.toLowerCase()] );
+
+  return validRegions[queryParam] ?? 'Asia';
+}
 @Component({
   selector: 'app-country-by-region',
   imports: [
@@ -36,7 +50,8 @@ export class ByRegionComponent {
   readonly queryParam: WritableSignal<Region | null> = linkedSignal(() => {
     // se valida antes de hacer cast, porque los query params son siempre strings (o null si no existen)
     const regionStr: string  = this.activeRouter.snapshot.queryParamMap.get('query') ?? '';
-    return this.isRegion(regionStr) ? (regionStr as Region) : null;
+    //return this.isRegion(regionStr) ? (regionStr as Region) : null; // opcion A
+    return validateQueryParam(regionStr); // opcion B
   });
 
   private readonly regions:Region[] = [
@@ -65,6 +80,7 @@ export class ByRegionComponent {
   });
 
 
+  // opcion de validar region str
   public isRegion(value: string | null): value is Region {
     console.log('validando:', value);
     return this.regions.includes(value as Region);
