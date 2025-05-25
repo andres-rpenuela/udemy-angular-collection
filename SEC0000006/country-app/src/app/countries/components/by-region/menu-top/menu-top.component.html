@@ -4,8 +4,8 @@
       <a
         (click)="onSelectRegion(region)"
         [ngClass]="{
-          'text-primary': region === selectedRegion,
-          'hover:text-accent': region !== selectedRegion
+          'text-primary': region === selectedRegion(),
+          'hover:text-accent': region !== selectedRegion()
         }"
         class="cursor-pointer"
       >

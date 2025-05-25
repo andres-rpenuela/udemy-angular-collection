@@ -6,6 +6,7 @@ import type {Country} from '../../interfaces/country.interface';
 import {CountryService} from '../../services/country.service';
 import {firstValueFrom, of} from 'rxjs';
 import {rxResource} from '@angular/core/rxjs-interop';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-country-by-country',
@@ -35,10 +36,20 @@ export class ByCountryComponent {// https://restcountries.com/v3.1/name/{name}
   //   }
   // });
 
+  // puede ser un wrapper o una señal (si se usa el caso 2, se recomienda linkedSignal() )
+  public queryParam : string  = inject(ActivatedRoute).snapshot.queryParamMap.get('query') ?? '';
+  public router = inject(Router);
+
   public countryResource = rxResource({
     request: () => ( { query : this.countrySignal() } ),
     loader: ({request}) => {
-      if( !this.countrySignal()?.trim()) return of([]); // si no hay valor, se devuelve un valor vacio
+      if( !this.countrySignal()?.trim() ){
+        // se elimina el paraemtro si lo ubeira
+        this.router.navigate(['/country/by-country']);
+        return of([]); // si no hay valor, se devuelve un valor vacio
+      }
+      // agregamos al paraemtro a la query, por codigo
+      this.router.navigate(['/country/by-country'],{queryParams:{'query': request.query}});
 
       return  this.countryService.searchHByCountry( request.query );
     }

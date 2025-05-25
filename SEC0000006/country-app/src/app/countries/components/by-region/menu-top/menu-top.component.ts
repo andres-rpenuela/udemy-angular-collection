@@ -1,4 +1,4 @@
-import {Component, output} from '@angular/core';
+import {Component, effect, input, InputSignal, linkedSignal, output, signal, WritableSignal} from '@angular/core';
 import {Region} from '@interface/country/region.type';
 import {NgClass} from '@angular/common';
 
@@ -13,6 +13,8 @@ import {NgClass} from '@angular/common';
 })
 export class MenuTopComponent {
 
+  valueInit : InputSignal<Region | null> = input<Region|null>(null);
+
   public regions:Region[] = [
     'Africa',
     'Americas',
@@ -23,14 +25,23 @@ export class MenuTopComponent {
   ];
 
   regionOut = output<Region>();
-  selectedRegion: Region | null = null;
+  //selectedRegion: Region | null = null;
+  selectedRegion = signal<Region | null>(null);
 
+  constructor() {
+    effect(() => {
+      if( this.valueInit() ) {
+        console.log("enviar region al parent")
+        this.onSelectRegion( this.valueInit() ! )
+      }
+    });
+  }
 
   onSelectRegion(region: Region) {
-
-    if(this.selectedRegion != region) {
+    console.log( region );
+    if(this.selectedRegion() != region) {
       console.log("enviar region al parent")
-      this.selectedRegion = region;
+      this.selectedRegion.set( region );
       this.regionOut.emit(region);
     }
   }
