@@ -1,0 +1,26 @@
+<nav class="p-4 w-full">
+  <!--   link de los iconos::     https://iconify.design/-->
+  <ul class="menu bg-base-200 sm:menu-horizontal rounded-box">
+    <li>
+      <a [routerLink]="'by-capital'"  [routerLinkActive]="['btn','btn-primary']" [routerLinkActiveOptions]="{exact:true}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512"><path fill="currentColor" d="m476.757 337.8l13.329-66.646L320 186.111v-72.222a105.15 105.15 0 0 0-37.937-81a40.705 40.705 0 0 0-52.126 0a105.15 105.15 0 0 0-37.937 81v72.222L21.914 271.154L35.243 337.8l157.189-20.5l7.736 81.224L128 429.45V496h256v-66.55l-72.168-30.929l7.736-81.224ZM352 450.551V464H160v-13.449l74.238-31.818L224 311.24v-30.332L60.757 302.2l-2.671-13.354L224 205.889v-92a73.24 73.24 0 0 1 26.423-56.413a8.71 8.71 0 0 1 11.154 0A73.24 73.24 0 0 1 288 113.889v92l165.914 82.957l-2.671 13.354L288 280.908v30.332l-10.238 107.493Z"/></svg>
+        Por Capital
+<!--        <span class="badge badge-xs">99+</span>-->
+      </a>
+    </li>
+    <li>
+      <a [routerLink]="'by-country'"  class='btn' [routerLinkActive]="['btn-primary']" [routerLinkActiveOptions]="{exact:true}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512"><path fill="currentColor" d="M432 64H16v320h416Zm-32 288H48V96h352Z"/><path fill="currentColor" d="M464 144v272H96v32h400V144z"/><path fill="currentColor" d="M224 302.46c39.7 0 72-35.137 72-78.326s-32.3-78.326-72-78.326s-72 35.136-72 78.326s32.3 78.326 72 78.326m0-124.652c22.056 0 40 20.782 40 46.326s-17.944 46.326-40 46.326s-40-20.782-40-46.326s17.944-46.326 40-46.326M80 136h32v176H80zm256 0h32v176h-32z"/></svg>
+        Por País
+<!--        <span class="badge badge-xs badge-warning">NEW</span>-->
+      </a>
+    </li>
+    <li>
+      <a [routerLink]="'by-region'"  [routerLinkActive]="['btn','btn-primary']" [routerLinkActiveOptions]="{exact:true}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12.75 3.03v.568c0 .334.148.65.405.864l1.068.89c.442.369.535 1.01.216 1.49l-.51.766a2.25 2.25 0 0 1-1.161.886l-.143.048a1.107 1.107 0 0 0-.57 1.664a1.108 1.108 0 0 1-.427 1.605L9 13.125l.423 1.059a.956.956 0 0 1-1.652.928l-.679-.906a1.125 1.125 0 0 0-1.906.172L4.5 15.75l-.612.153M12.75 3.031a9 9 0 0 0-8.862 12.872M12.75 3.031a9 9 0 0 1 6.69 14.036m0 0l-.177-.529A2.25 2.25 0 0 0 17.128 15H16.5l-.324-.324a1.453 1.453 0 0 0-2.328.377l-.036.073a1.6 1.6 0 0 1-.982.816l-.99.282c-.55.157-.894.702-.8 1.267l.073.438c.08.474.49.821.97.821c.846 0 1.598.542 1.865 1.345l.215.643m5.276-3.67a9 9 0 0 1-5.276 3.67m0 0a9 9 0 0 1-10.275-4.835M15.75 9c0 .896-.393 1.7-1.016 2.25"/></svg>
+        Por Región
+<!--        <span class="badge badge-xs badge-info"></span>-->
+      </a>
+    </li>
+  </ul>
+</nav>

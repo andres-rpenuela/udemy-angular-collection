@@ -1,0 +1,19 @@
+<!-- Country table -->
+<section class="mt-5 w-full">
+  <div class="mt-5 grid grid-flow-col justify-items-center-safe">
+    <app-region-menu-top
+      (regionOut)="searchRegion($event)"
+      [valueInit]="queryParam()"></app-region-menu-top>
+  </div>
+  <h1 class="mt-5 text-2x1 font-bold text-center flex items-center justify-center bg-gray-300">Resultado de la busqueda por region {{regionSng()}}</h1>
+  <hr>
+  <div class="mt-5">
+    <app-shared-table
+      [headTable]="headTable"
+      [bodyTable]="regionResource.value() ?? []"
+      [isEmpty]="regionResource.value()?.length === 0"
+      [isLoading]="regionResource.isLoading()"
+      [messageError]="regionResource.error()">
+    </app-shared-table>
+  </div>
+</section>

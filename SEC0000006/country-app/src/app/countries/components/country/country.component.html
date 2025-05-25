@@ -1,0 +1,20 @@
+@if( countryResource.error() ){
+  <app-shared-not-found
+    [messageError]="getErrorCountryResource()">
+  </app-shared-not-found>
+}
+<!-- -->
+@if( countryResource.isLoading() ){
+  <h1 class="test-3xl">Cargando...</h1>
+  <span class="loading loading-spinner loading-xs"></span>
+  <span class="loading loading-spinner loading-sm"></span>
+  <span class="loading loading-spinner loading-md"></span>
+  <span class="loading loading-spinner loading-lg"></span>
+  <span class="loading loading-spinner loading-xl"></span>
+}
+
+@if( countryResource.hasValue() && !countryResource.isLoading() ){
+  <h1>{{ countryCode }}</h1>
+  <hr>
+  <app-country-information [countryData]="countryResource.value()!"></app-country-information>
+}
