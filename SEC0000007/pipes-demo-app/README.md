@@ -136,7 +136,7 @@ npm install daisyui@latest --force
 
 ---
 
-# Cambiar de iomas
+# Cambiar de idomas
 
 En la clase de configuracion del proyecto, se debe cargar y registrar los idimas deseados, estos idiomas, pueden ser usdaos del ´@angular/common`
 
@@ -154,10 +154,98 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    // selecionar idoma por defecto, por fecto es el ingles
+    // selecionar idoma por defe
+    // cto, por fecto es el ingles
     {
       provide: LOCALE_ID,
       useValue: 'es'
+    }
+  ]
+};
+```
+
+# Cambiar idoma dinamicamente
+Se crea un tipo con los idiomas validos
+
+```typescript
+export type Locale = 'ES' | 'FR' | 'EN';
+
+export const LOCALE_ES: Locale = 'ES';
+export const LOCALE_FR: Locale = 'FR';
+export const LOCALE_EN: Locale = 'EN';
+
+export const LOCALES: Locale[] = ['ES', 'FR', 'EN'];
+
+export function getValidLocale(localeStr: string | null ): Locale | null {
+  if (LOCALES.includes(localeStr as Locale)) {
+    return localeStr as Locale;
+  }
+  return null;
+}
+```
+1º Crear el servicio, donde:
+1.1. Cuenta con una señal que obtiene el idoma actual de la aplicacion, por defecto se le da un valor
+1.1.a. Por defecto, al crear la señal se asinga un valor
+1.2.b. Al crear el servicio, se lee el localStore, si hay un valor si no, se asinga un valor por defecto a la señal
+1.2. Cuanta con un metodo get para para obtener el valor de la señal (Valor del idoma seleccionado)
+1.3. Cuenta con un metod updated para cambiar el idoma al indicado
+1.4. Para hacer que se actualice y angular detecte el cambio, se deberá añadir el idoma al "localStore" + refrescar el idoma
+
+```typescript
+import {Injectable, signal} from '@angular/core';
+import {getValidLocale, Locale, LOCALE_ES} from '../interfaces/locale.type';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LocaleService {
+
+  private readonly currentLocaleSng = signal<Locale>(LOCALE_ES);
+
+  constructor() {
+    // get locale
+    const localeMaybe: string | null = localStorage.getItem('locale');
+    const validLocale = getValidLocale(localeMaybe) ?? LOCALE_ES;
+    this.currentLocaleSng.set( validLocale );
+  }
+
+
+  public getLocale(): Locale {
+    return this.currentLocaleSng();
+  }
+
+  public changeLocale(locale: Locale): void {
+    // set locale + updated
+    localStorage.setItem('locale',locale);
+    this.currentLocaleSng.set(locale);
+
+    // reload
+    (window as Window).location.reload();
+  }
+}
+```
+2º Registar el idioma, donde se indica el dependneica y el metodo que devuelve el idoma seleccionado
+
+```typescript
+// registrar idiomas
+import {registerLocaleData} from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+import localeFr from '@angular/common/locales/fr';
+import {LocaleService} from './services/locale.service';
+
+registerLocaleData(localeEs, 'es' );
+registerLocaleData(localeFr, 'fr' );
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    // selecionar idoma por defecto, por fecto es el ingles
+    {
+      provide: LOCALE_ID,
+      //useValue: 'es'
+      deps: [LocaleService],
+      useFactory: (localService : LocaleService) => localService.getLocale()
     }
   ]
 };
