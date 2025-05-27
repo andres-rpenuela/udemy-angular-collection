@@ -250,3 +250,43 @@ export const appConfig: ApplicationConfig = {
   ]
 };
 ```
+---
+
+# Content Project
+
+Angular, permite proyectar el contenido que se introduce dentro de un componte hijo
+
+
+1. En el componente hijo usar `<ng-content>`:
+```angular181html
+<div class="card w-96 bg-base-100 card-xs shadow-sm">
+  <div class="card-body">
+    <h2 class="card-title">{{ title() }}</h2>
+    <ng-content></ng-content>
+  </div>
+</div>
+```
+
+2. En el componente padre se indica el contenido:
+```angular181html
+<!-- gap: es para separacion de los elementos internos -->
+<section class="grid grid-cols-1 md:grid-cols-2 lx:gird-cols-3 gap-4">
+  <app-card [title]="'prueba'">
+    <p>Contenido del padre</p>
+    <div class="justify-end card-actions">
+      <button class="btn btn-primary">Buy Now</button>
+    </div>
+  </app-card>
+</section>
+```
+
+Esto mostrará un card, con el contenido indicado en el padre.
+
+```angular181html
+Pipes No tan comunes
+Pipes incluidos en Angular
+prueba
+
+Contenido del padre
+                   [Buy Now]
+```
