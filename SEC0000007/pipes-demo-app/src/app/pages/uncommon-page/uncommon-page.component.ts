@@ -1,6 +1,7 @@
 import {Component, signal, WritableSignal} from '@angular/core';
 import {CardComponent} from '../../components/card/card.component';
 import {
+  AsyncPipe,
   I18nPluralPipe,
   I18nSelectPipe,
   JsonPipe,
@@ -34,7 +35,7 @@ interface ProfileI {
 @Component({
   selector: 'app-uncommon-page',
   imports: [
-    CardComponent, I18nSelectPipe, I18nPluralPipe, SlicePipe, JsonPipe, UpperCasePipe, KeyValuePipe, TitleCasePipe
+    CardComponent, I18nSelectPipe, I18nPluralPipe, SlicePipe, JsonPipe, UpperCasePipe, KeyValuePipe, TitleCasePipe, AsyncPipe
   ],
   templateUrl: './uncommon-page.component.html',
   styleUrl: './uncommon-page.component.css',
@@ -79,5 +80,34 @@ export default class UncommonPageComponent {
     age: 38,
     address: 'Ottawa, Canada'
   });
+
+
+  // Async Pipe con promeas
+  public someAsyncAction: Promise<string> = new Promise<string>(
+    (resolve, reject) =>
+    {
+      // Simula una operación asíncrona (por ejemplo, un setTimeout)
+      setTimeout(() => {
+        const success = true;
+
+        if (success) {
+          resolve('Operación exitosa');
+          console.log('Promesa terminada')
+        } else {
+          reject('Hubo un error');
+        }
+      }, 2000);
+    });
+
+  public someAsyncActionError: Promise<string> = new Promise<string>(
+    (resolve, reject) =>
+    {
+      // Simula una operación asíncrona (por ejemplo, un setTimeout)
+      setTimeout(() => {
+          reject('Operación errónea');
+          console.log('Promesa terminada')
+      }, 2000);
+    });
+
 
 }

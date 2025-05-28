@@ -60,4 +60,23 @@
 <!--      }-->
     </ul>
   </app-card>
+
+  <app-card [title]="'AsyncPipe'">
+    <pre>Uso convencional </pre>
+    <p> {{ someAsyncAction | async }}</p>
+    <hr>
+    <pre>Uso con control if</pre>
+    @if( someAsyncAction | async; as value   ){
+      <p class="text-primary"> {{value}}</p>
+    }
+    <hr>
+    <pre>Mostrar error</pre>
+    @if( someAsyncActionError | async; as value   ){
+      <p class="text-primary"> {{value}}</p>
+    } @else {
+      <p class="text-warning"> Espere... (Ver consola, tratar el error manual en el component no en la vista)</p>
+    }
+    <hr>
+    <i>Nota: esto pipe esta más pesnado para resultados exitosos, y por cada async es una subcripcion</i>
+  </app-card>
 </section>
