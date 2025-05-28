@@ -44,5 +44,20 @@
     <p class="text-primary"> {{ clients().join(",") | json | uppercase }}</p>
   </app-card>
 
-
+  <app-card [title]="'KeyValuePipe'">
+    <!-- comibncion de pipes -->
+    <span>{{'Extre en un objeto [{ key: nombre_propiedad, value: valor_propiedad }]'}}</span>
+        <pre class="text-primary"> {{ profile() | keyvalue | json }}</pre>
+    <!-- el orden de los pipes afecta, el siguiente es un error o comportamiento no deseado -->
+    <!--    <pre class="text-primary"> {{ profile()  | json | keyvalue }}</pre>-->
+    <ul>
+        <!-- aveces @for, de  Angular no detecta que | keyvalue es iterable -->
+<!--      @for( item of profile() | keyvalue ; track $index){-->
+        <li *ngFor="let item of profile() | keyvalue; index as i">
+          <strong class="text-primary"> {{ item.key | titlecase }}:</strong>
+          <span> {{ item.value }}</span>
+        </li>
+<!--      }-->
+    </ul>
+  </app-card>
 </section>

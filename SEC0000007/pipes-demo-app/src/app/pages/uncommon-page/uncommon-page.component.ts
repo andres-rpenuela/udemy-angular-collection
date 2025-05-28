@@ -1,6 +1,14 @@
 import {Component, signal, WritableSignal} from '@angular/core';
 import {CardComponent} from '../../components/card/card.component';
-import {I18nPluralPipe, I18nSelectPipe, JsonPipe, SlicePipe, UpperCasePipe} from '@angular/common';
+import {
+  I18nPluralPipe,
+  I18nSelectPipe,
+  JsonPipe,
+  KeyValuePipe,
+  SlicePipe,
+  TitleCasePipe,
+  UpperCasePipe
+} from '@angular/common';
 
 const client1 = {
   name: 'Andres',
@@ -16,10 +24,17 @@ const client2 = {
   address: 'Toronto, Canadá'
 }
 
+interface ProfileI {
+  name: string;
+  age: number;
+  address: string;
+}
+
+
 @Component({
   selector: 'app-uncommon-page',
   imports: [
-    CardComponent, I18nSelectPipe, I18nPluralPipe, SlicePipe, JsonPipe, UpperCasePipe
+    CardComponent, I18nSelectPipe, I18nPluralPipe, SlicePipe, JsonPipe, UpperCasePipe, KeyValuePipe, TitleCasePipe
   ],
   templateUrl: './uncommon-page.component.html',
   styleUrl: './uncommon-page.component.css',
@@ -57,4 +72,12 @@ export default class UncommonPageComponent {
     // elimina el último
     this.clients.update( prev => prev.slice(1) );
   }
+
+  // Key Value Pipe
+  readonly profile : WritableSignal<ProfileI> = signal({
+    name: 'Fernando',
+    age: 38,
+    address: 'Ottawa, Canada'
+  });
+
 }
