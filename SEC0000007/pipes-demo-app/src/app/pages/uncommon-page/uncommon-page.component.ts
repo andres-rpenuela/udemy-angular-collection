@@ -10,6 +10,7 @@ import {
   TitleCasePipe,
   UpperCasePipe
 } from '@angular/common';
+import {interval, map, tap} from 'rxjs';
 
 const client1 = {
   name: 'Andres',
@@ -128,4 +129,11 @@ export default class UncommonPageComponent {
       console.error('Error:', error);
     }
   }
+
+  // Async Pipe con observable
+  public myObservalbe = interval(2000).pipe(
+    map(value => value +1 ), // para que no empeice por cero, pues @if( 0 ) se considera false
+    tap(value => console.log(value))
+  )
+
 }

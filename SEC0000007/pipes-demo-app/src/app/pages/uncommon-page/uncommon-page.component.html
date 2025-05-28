@@ -77,10 +77,23 @@
       <p class="text-warning"> Espere... (Ver consola, tratar el error manual en el component no en la vista)</p>
     }
     <hr>
-    <i>Nota: esto pipe esta más pesnado para resultados exitosos, y por cada async es una subcripcion</i>
+    <i>Nota: esto pipe esta más pesnado para resultados exitosos, y por cada async es una "subcripcion" <br>En una promesa no se subcribe, fianliza cuando termina.</i>
     <code> Ejemplo (abrir la consola)<br>
       <button (click)="callPromise()" class="btn btn-primary">Usa Promesa option 1 (ok)</button>
       <button (click)="callPromise2()" class="btn btn-secondary">Usa Promesa option 2 (catch)</button>
     </code>
+  </app-card>
+
+  <app-card [title]="'AsyncPipe Observable'">
+    <pre>Uso convencional (async desuscribe al cambiar el componente) </pre>
+    <p> {{ myObservalbe | async }}</p>
+    <hr>
+    <pre>Uso con control if</pre>
+    @if( myObservalbe | async; as value   ){
+      <p class="text-primary"> {{value}}</p>
+    } @else {
+      <p class="text-warning"> Espere... (Ver consola, tratar el error manual en el component no en la vista)</p>
+    }
+    <hr>
   </app-card>
 </section>
