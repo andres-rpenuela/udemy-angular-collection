@@ -5,10 +5,10 @@
 
 <!-- gap: es para separacion de los elementos internos -->
 <section class="grid grid-cols-1 md:grid-cols-2 lx:gird-cols-3 gap-4">
-  <app-card [title]="'prueba'">
-    <p>Contenido del padre</p>
+  <app-card [title]="'i18nSelectPipe'">
+    <p>Saludos a {{client().name}}, es un placer {{ client().gender | i18nSelect:invitationMap }} a nuestro evento</p>
     <div class="justify-end card-actions">
-      <button class="btn btn-primary">Buy Now</button>
+      <button class="btn btn-primary" (click)="changeClient()">Cambiar cliente</button>
     </div>
   </app-card>
 </section>

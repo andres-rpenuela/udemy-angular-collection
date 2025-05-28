@@ -290,3 +290,47 @@ prueba
 Contenido del padre
                    [Buy Now]
 ```
+
+---
+
+# I18nSelectPipe
+
+Permite insertar un valor dada una condición
+
+
+```typescript
+const client1 = {
+  name: 'Andres',
+  gender: 'male',
+  age: 39,
+  address: 'Ottawa, Canadá'
+}
+
+const client2 = {
+  name: 'Melissa',
+  gender: 'female',
+  age: 33,
+  address: 'Toronto, Canadá'
+}
+
+//....
+
+// objecto que contiente los valores a introducir dada una condición { key : value }
+// ejemplo de uso I18nSelectPipe
+invitationMap = {
+  male: 'invitarlo',
+  female: 'invitarla'
+}
+```
+
+```angular181html
+<!-- uso de invitationMap, que carga el valor que cumpla la condicion  
+{{ KEY | i18nSelect:OBJECTO_KEY_VALORES }}
+-->
+<app-card [title]="'i18nSelectPipe'">
+  <p>Saludos a {{client().name}}, es un placer {{ client().gender | i18nSelect:invitationMap }} a nuestro evento</p>
+  <div class="justify-end card-actions">
+    <button class="btn btn-primary" (click)="changeClient()">Cambiar cliente</button>
+  </div>
+</app-card>
+```
