@@ -18,4 +18,25 @@
       <button [disabled]="clients().length == 0" class="btn btn-primary" (click)="deleteClient()">Borrar cliente</button>
     </div>
   </app-card>
+
+  <app-card [title]="'SlicePiep'">
+    <b>Original</b>
+    <p class="text-primary">{{ clients().join(",") }}</p>
+    <hr>
+    <b>Slice:[0-2)</b>
+    <p class="text-primary">{{ clients() | slice:0:2 }}</p>
+    <hr>
+    <b>Slice:[1-2)</b>
+    <p class="text-primary">{{ clients() | slice:1:2 }}</p>
+    <hr>
+    <b>Slice:[3-4)</b>
+    <p class="text-primary">{{ clients() | slice:3:4 }}</p>
+    <hr>
+    <b>Slice:[0-(-3)) = [0 - (length-3) ) = {{ '[0 -('+ clients().length +'-3) )'}} = {{ '[0 -('+ (clients().length -3) + ') )'}}</b>
+    <p class="text-primary">{{ clients() | slice:0:-3 }}</p>
+    <hr>
+    <i>Si da undefine, no lo representa</i>
+  </app-card>
+
+
 </section>
