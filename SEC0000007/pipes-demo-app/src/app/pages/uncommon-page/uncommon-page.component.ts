@@ -1,6 +1,6 @@
-import {Component, signal} from '@angular/core';
+import {Component, signal, WritableSignal} from '@angular/core';
 import {CardComponent} from '../../components/card/card.component';
-import {I18nSelectPipe} from '@angular/common';
+import {I18nPluralPipe, I18nSelectPipe} from '@angular/common';
 
 const client1 = {
   name: 'Andres',
@@ -19,7 +19,7 @@ const client2 = {
 @Component({
   selector: 'app-uncommon-page',
   imports: [
-    CardComponent, I18nSelectPipe
+    CardComponent, I18nSelectPipe, I18nPluralPipe
   ],
   templateUrl: './uncommon-page.component.html',
   styleUrl: './uncommon-page.component.css',
@@ -28,12 +28,21 @@ const client2 = {
 export default class UncommonPageComponent {
 
   readonly client = signal(client1);
+  readonly clients: WritableSignal<string[]> = signal(['Andres','Melissa','Ramón','Florencia','Mila']);
 
   // ejemplo de uso I18nSelectPipe
   invitationMap = {
     male: 'invitarlo',
     female: 'invitarla'
   }
+
+  // ejemplo de uso I18nPluralPipe
+  personMap = signal({
+    "=0": 'no hay personas',
+    "=1": 'tenemos una persona',
+    "=2": 'tenemos 2 personas',
+    other: 'tenemos # personas'
+  });
 
   changeClient(){
     if( this.client() == client1 ){
@@ -42,5 +51,10 @@ export default class UncommonPageComponent {
     }
 
     this.client.set(client1);
+  }
+
+  deleteClient(){
+    // elimina el último
+    this.clients.update( prev => prev.slice(1) );
   }
 }

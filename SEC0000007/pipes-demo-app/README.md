@@ -317,6 +317,7 @@ const client2 = {
 
 // objecto que contiente los valores a introducir dada una condición { key : value }
 // ejemplo de uso I18nSelectPipe
+// Nota: ESTO PUEDE SER UNA SEÑAL
 invitationMap = {
   male: 'invitarlo',
   female: 'invitarla'

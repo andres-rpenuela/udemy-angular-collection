@@ -11,4 +11,11 @@
       <button class="btn btn-primary" (click)="changeClient()">Cambiar cliente</button>
     </div>
   </app-card>
+
+  <app-card [title]="'i18nPluralPipe'">
+    <p>Hay  {{ clients().length | i18nPlural:personMap()}} esperando</p>
+    <div class="justify-end card-actions">
+      <button [disabled]="clients().length == 0" class="btn btn-primary" (click)="deleteClient()">Borrar cliente</button>
+    </div>
+  </app-card>
 </section>
