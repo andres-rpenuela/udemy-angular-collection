@@ -38,5 +38,11 @@
     <i>Si da undefine, no lo representa</i>
   </app-card>
 
+  <app-card [title]="'JsonPipe'">
+    <pre class="text-primary"> {{ clients() | json }}</pre>
+    <pre class="text-primary"> {{ client() | json}}</pre>
+    <p class="text-primary"> {{ clients().join(",") | json | uppercase }}</p>
+  </app-card>
+
 
 </section>
