@@ -104,10 +104,28 @@ export default class UncommonPageComponent {
     {
       // Simula una operación asíncrona (por ejemplo, un setTimeout)
       setTimeout(() => {
-          reject('Operación errónea');
-          console.log('Promesa terminada')
+        reject('Operación errónea');
+        console.log('Promesa terminada')
       }, 2000);
     });
 
+  public callPromise(){
+    // opcion 1
+    this.someAsyncAction.then(result => {
+      console.log('Resultado:', result);
+    })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
 
+  public async callPromise2(){
+    // opcion 2
+    try {
+      const result = await this.someAsyncActionError;
+      console.log('Resultado:', result);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 }

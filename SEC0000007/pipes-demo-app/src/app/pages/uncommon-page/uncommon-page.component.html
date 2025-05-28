@@ -47,17 +47,17 @@
   <app-card [title]="'KeyValuePipe'">
     <!-- comibncion de pipes -->
     <span>{{'Extre en un objeto [{ key: nombre_propiedad, value: valor_propiedad }]'}}</span>
-        <pre class="text-primary"> {{ profile() | keyvalue | json }}</pre>
+    <pre class="text-primary"> {{ profile() | keyvalue | json }}</pre>
     <!-- el orden de los pipes afecta, el siguiente es un error o comportamiento no deseado -->
     <!--    <pre class="text-primary"> {{ profile()  | json | keyvalue }}</pre>-->
     <ul>
-        <!-- aveces @for, de  Angular no detecta que | keyvalue es iterable -->
-<!--      @for( item of profile() | keyvalue ; track $index){-->
-        <li *ngFor="let item of profile() | keyvalue; index as i">
-          <strong class="text-primary"> {{ item.key | titlecase }}:</strong>
-          <span> {{ item.value }}</span>
-        </li>
-<!--      }-->
+      <!-- aveces @for, de  Angular no detecta que | keyvalue es iterable -->
+      <!--      @for( item of profile() | keyvalue ; track $index){-->
+      <li *ngFor="let item of profile() | keyvalue; index as i">
+        <strong class="text-primary"> {{ item.key | titlecase }}:</strong>
+        <span> {{ item.value }}</span>
+      </li>
+      <!--      }-->
     </ul>
   </app-card>
 
@@ -78,5 +78,9 @@
     }
     <hr>
     <i>Nota: esto pipe esta más pesnado para resultados exitosos, y por cada async es una subcripcion</i>
+    <code> Ejemplo (abrir la consola)<br>
+      <button (click)="callPromise()" class="btn btn-primary">Usa Promesa option 1 (ok)</button>
+      <button (click)="callPromise2()" class="btn btn-secondary">Usa Promesa option 2 (catch)</button>
+    </code>
   </app-card>
 </section>
