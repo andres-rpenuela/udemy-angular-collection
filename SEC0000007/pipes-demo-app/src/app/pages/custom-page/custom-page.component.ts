@@ -9,6 +9,7 @@ import {HeroTextColorPipe} from '../../pipes/hero-text-color.pipe';
 import {HereCreatorPipe} from '../../pipes/here-creator.pipe';
 import {HeroSortByPipe} from '../../pipes/hero-sort-by.pipe';
 import {HeroOrderDataBy} from '../../interfaces/hero-order.data';
+import {HeroFilterPipe} from './hero-filter.pipe';
 
 @Component({
   selector: 'app-custom-page',
@@ -20,7 +21,8 @@ import {HeroOrderDataBy} from '../../interfaces/hero-order.data';
     TitleCasePipe,
     HeroTextColorPipe,
     HereCreatorPipe,
-    HeroSortByPipe
+    HeroSortByPipe,
+    HeroFilterPipe
   ],
   templateUrl: './custom-page.component.html',
   styleUrl: './custom-page.component.css',
@@ -38,6 +40,8 @@ export default class CustomPageComponent {
   // opcion B: usando keyof Interface (obtiente un array con los key)
   sortBy : WritableSignal<keyof Hero| null > = signal(null);
 
+  //
+  searchQuery = signal('')
   public toggle(){
     this.upperCase.update(value => !value);
   }
