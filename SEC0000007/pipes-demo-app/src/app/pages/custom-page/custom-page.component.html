@@ -1,0 +1,95 @@
+<section class="mk-5">
+  <h1 class="text-2xl font-bold">Pipes Personalizados</h1>
+  <h3 class="text-xl font-thin">Pipes no incluidos en Angular</h3>
+</section>
+
+<section class="grid grid-cols-1 md:grid-cols-2 lx:gird-cols-3 gap-4">
+
+  <div class="stats shadow">
+    <div class="stat">
+      <div class="stat-title">ToggleCase Pipe</div>
+      <!--      <div class="stat-value">{{ name() | toggleCase : false }}</div>-->
+      <!--      <div class="stat-value">{{ name() | toggleCase }}</div>-->
+      <div class="stat-value">{{ name() | toggleCase : upperCase() }}</div>
+      <div class="stat-desc">{{  name() }}</div>
+      <button (click)="toggle()" class="btn btn-primary">Toggle</button>
+    </div>
+  </div>
+</section>
+
+<div class="divider my-2"></div>
+
+<section class="my-2">
+  <h1 class="text-2xl font-bold">Pipes personalizados en accion</h1>
+  <h6 class="text-2xl font-bold">Filtrando por {{  searchQuery() ?? 'defecto' }}, ordenando por: {{sortBy() ?? 'defecto'}}</h6>
+  <div class="flex gap-2 justify-end w-ful mt-2">
+    <input type="text" placeholder="Buscar heroe" class="input input-bordered w-full max-w-xs"
+           (input)="searchQuery.set(search.value)"
+           #search>
+
+    <div class="flex gap-2 justify-end w-full">
+      <!--    <button class="btn btn-primary" (click)="sortBy.set(HeroOrderDataBy.name)">Por nombre</button>-->
+      <!--    <button class="btn btn-accent"  (click)="sortBy.set(HeroOrderDataBy.canFly)">Por volar</button>-->
+      <!--    <button class="btn btn-secondary" (click)="sortBy.set(HeroOrderDataBy.color)">Por color</button>-->
+      <!--    <button class="btn btn-info" (click)="sortBy.set(HeroOrderDataBy.creator)">Por creador</button>-->
+      <button class="btn btn-primary" (click)="sortBy.set('name')">Por nombre</button>
+      <button class="btn btn-accent"  (click)="sortBy.set('canFly')">Por volar</button>
+      <button class="btn btn-secondary" (click)="sortBy.set('color')">Por color</button>
+      <button class="btn btn-info" (click)="sortBy.set('creator')">Por creador</button>
+    </div>
+  </div>
+
+</section>
+
+<section class="overflow-x-auto w-full">
+  <table class="table table-xs w-full">
+    <!-- head -->
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Nombre</th>
+      <th>Puede volar</th>
+      <th>Color</th>
+      <th>Creador</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- row 1 -->
+      @for ( hero of ( getHeros() | heroFilter : searchQuery() | heroSortBy : sortBy() ); track hero.id; let i = $index){
+        <tr>
+          <th>{{ i +1 }}</th>
+          <td>{{ hero.name }}</td>
+          <td>
+            <span class="text-xs w-44"
+                  [class.text-success]="hero.canFly"
+                  [class.text-accent]="!hero.canFly">
+                {{ hero.canFly | canFly }}
+            </span>
+          </td>
+          <td>
+            <!--            <span class="text-s w-44"-->
+            <!--                  [style.color]=" hero.color | heroColor ">-->
+            <!--               {{ hero.color | heroColor | titlecase }}-->
+            <!--            </span>-->
+            <!--            <br>-->
+            <!--            <span class="text-s w-44"-->
+            <!--                  [style.background-color]="ColorMap[ hero.color ]">-->
+            <!--               {{ hero.color | heroColor | titlecase }}-->
+            <!--            </span>-->
+            <span class="text-s w-44"
+              [style.background-color]="hero.color | heroTextColor">
+              {{ hero.color | heroColor | titlecase }}
+            </span>
+          </td>
+          <td>
+            <!-- SE PUEDE USAR POR VALOR DEL ENUM O POR INDICE, SABIENDO QUE EMPIZA EN 0 -->
+            <span [class.text-primary]="hero.creator == Creator.DC"
+                  [class.text-accent]="hero.creator == 1">
+                          {{ hero.creator  | hereCreator }}
+            </span>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

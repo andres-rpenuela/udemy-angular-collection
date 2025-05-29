@@ -1,0 +1,99 @@
+<section class="mk-5">
+  <h1 class="text-2xl font-bold">Pipes No tan comunes</h1>
+  <h3 class="text-xl font-thin">Pipes incluidos en Angular</h3>
+</section>
+
+<!-- gap: es para separacion de los elementos internos -->
+<section class="grid grid-cols-1 md:grid-cols-2 lx:gird-cols-3 gap-4">
+  <app-card [title]="'i18nSelectPipe'">
+    <p>Saludos a {{client().name}}, es un placer {{ client().gender | i18nSelect:invitationMap }} a nuestro evento</p>
+    <div class="justify-end card-actions">
+      <button class="btn btn-primary" (click)="changeClient()">Cambiar cliente</button>
+    </div>
+  </app-card>
+
+  <app-card [title]="'i18nPluralPipe'">
+    <p>Hay  {{ clients().length | i18nPlural:personMap()}} esperando</p>
+    <div class="justify-end card-actions">
+      <button [disabled]="clients().length == 0" class="btn btn-primary" (click)="deleteClient()">Borrar cliente</button>
+    </div>
+  </app-card>
+
+  <app-card [title]="'SlicePiep'">
+    <b>Original</b>
+    <p class="text-primary">{{ clients().join(",") }}</p>
+    <hr>
+    <b>Slice:[0-2)</b>
+    <p class="text-primary">{{ clients() | slice:0:2 }}</p>
+    <hr>
+    <b>Slice:[1-2)</b>
+    <p class="text-primary">{{ clients() | slice:1:2 }}</p>
+    <hr>
+    <b>Slice:[3-4)</b>
+    <p class="text-primary">{{ clients() | slice:3:4 }}</p>
+    <hr>
+    <b>Slice:[0-(-3)) = [0 - (length-3) ) = {{ '[0 -('+ clients().length +'-3) )'}} = {{ '[0 -('+ (clients().length -3) + ') )'}}</b>
+    <p class="text-primary">{{ clients() | slice:0:-3 }}</p>
+    <hr>
+    <i>Si da undefine, no lo representa</i>
+  </app-card>
+
+  <app-card [title]="'JsonPipe'">
+    <pre class="text-primary"> {{ clients() | json }}</pre>
+    <pre class="text-primary"> {{ client() | json}}</pre>
+    <p class="text-primary"> {{ clients().join(",") | json | uppercase }}</p>
+  </app-card>
+
+  <app-card [title]="'KeyValuePipe'">
+    <!-- comibncion de pipes -->
+    <span>{{'Extre en un objeto [{ key: nombre_propiedad, value: valor_propiedad }]'}}</span>
+    <pre class="text-primary"> {{ profile() | keyvalue | json }}</pre>
+    <!-- el orden de los pipes afecta, el siguiente es un error o comportamiento no deseado -->
+    <!--    <pre class="text-primary"> {{ profile()  | json | keyvalue }}</pre>-->
+    <ul>
+      <!-- aveces @for, de  Angular no detecta que | keyvalue es iterable -->
+      <!--      @for( item of profile() | keyvalue ; track $index){-->
+      <li *ngFor="let item of profile() | keyvalue; index as i">
+        <strong class="text-primary"> {{ item.key | titlecase }}:</strong>
+        <span> {{ item.value }}</span>
+      </li>
+      <!--      }-->
+    </ul>
+  </app-card>
+
+  <app-card [title]="'AsyncPipe'">
+    <pre>Uso convencional </pre>
+    <p> {{ someAsyncAction | async }}</p>
+    <hr>
+    <pre>Uso con control if</pre>
+    @if( someAsyncAction | async; as value   ){
+      <p class="text-primary"> {{value}}</p>
+    }
+    <hr>
+    <pre>Mostrar error</pre>
+    @if( someAsyncActionError | async; as value   ){
+      <p class="text-primary"> {{value}}</p>
+    } @else {
+      <p class="text-warning"> Espere... (Ver consola, tratar el error manual en el component no en la vista)</p>
+    }
+    <hr>
+    <i>Nota: esto pipe esta más pesnado para resultados exitosos, y por cada async es una "subcripcion" <br>En una promesa no se subcribe, fianliza cuando termina.</i>
+    <code> Ejemplo (abrir la consola)<br>
+      <button (click)="callPromise()" class="btn btn-primary">Usa Promesa option 1 (ok)</button>
+      <button (click)="callPromise2()" class="btn btn-secondary">Usa Promesa option 2 (catch)</button>
+    </code>
+  </app-card>
+
+  <app-card [title]="'AsyncPipe Observable'">
+    <pre>Uso convencional (async desuscribe al cambiar el componente) </pre>
+    <p> {{ myObservalbe | async }}</p>
+    <hr>
+    <pre>Uso con control if</pre>
+    @if( myObservalbe | async; as value   ){
+      <p class="text-primary"> {{value}}</p>
+    } @else {
+      <p class="text-warning"> Espere... (Ver consola, tratar el error manual en el component no en la vista)</p>
+    }
+    <hr>
+  </app-card>
+</section>

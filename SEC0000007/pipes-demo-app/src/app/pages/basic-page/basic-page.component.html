@@ -1,0 +1,81 @@
+<section class="mk-5">
+  <h1 class="text-2xl font-bold">Pipes Básicos</h1>
+  <h3 class="text-xl font-thin">Pipes incluidos en Angular</h3>
+</section>
+
+<div class="stats stats-vertical lg:stats-horizontal shadow w-full">
+  <div class="stat">
+    <div class="stat-title">Lowercase Pipe</div>
+    <div class="stat-value">{{ nameUpper() | lowercase }}</div>
+    <div class="stat-desc">{{ nameUpper() }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-title">UpperCase Pipe</div>
+    <div class="stat-value">{{ nameLower() | uppercase }}</div>
+    <div class="stat-desc">{{  nameLower() }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-title">TitleCase Pipe</div>
+    <div class="stat-value">{{ fullName() | titlecase }}</div>
+    <div class="stat-desc">{{ fullName() }}</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="stats stats-vertical lg:stats-horizontal shadow w-full">
+  <div class="stat">
+    <div class="stat-title">Date Pipe</div>
+    <div class="stat-value">{{ currentDate() | date }}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-title">Date Pipe | Long | GMT-6</div>
+    <div class="stat-value">{{ currentDate() | date:  'long':'GMT-6'}}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-title">Date Pipe | Short | GMT-4</div>
+    <div class="stat-value">{{ currentDate() | date:  'short': 'GMT-4'}}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="stats stats-vertical lg:stats-horizontal shadow w-full">
+  <div class="stat">
+    <div class="stat-title">Date Custom</div>
+    <div class="stat-value">{{ currentDate() | date: 'dd/MM/yyyy' }}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-title">Time Custom</div>
+    <div class="stat-value">{{ currentDate() | date:  'HH:mm:ss'}}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-title">Day and Month</div>
+    <div class="stat-value">{{ currentDate() | date:  'EEEE d, MMMM'}}</div>
+    <div class="stat-desc">{{ currentDate() }}</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="flex flex-col gap-2">
+  <h1 class="text-2xl font-bold">Locale Actual:
+    <span class="badge badge-primary">ES</span>
+  </h1>
+  <div class="flex flex-row gap-2">
+    <button class="btn btn-neutral" (click)="localeService.changeLocale(LOCALE_FR)">Changer en français</button>
+    <button class="btn btn-primary" (click)="localeService.changeLocale(LOCALE_EN)">Change to English</button>
+    <button class="btn btn-secondary" (click)="localeService.changeLocale(LOCALE_ES)">Camibar a españols</button>
+  </div>
+</div>
