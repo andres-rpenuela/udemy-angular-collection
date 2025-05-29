@@ -49,20 +49,24 @@
           <td>{{ hero.name }}</td>
           <td>
             <span class="text-xs w-44"
-              [class.text-success]="hero.canFly"
-              [class.text-accent]="!hero.canFly">
+                  [class.text-success]="hero.canFly"
+                  [class.text-accent]="!hero.canFly">
                 {{ hero.canFly | canFly }}
             </span>
           </td>
           <td>
-<!--            <span class="text-s w-44"-->
-<!--                  [style.color]=" hero.color | heroColor ">-->
-<!--               {{ hero.color | heroColor | titlecase }}-->
-<!--            </span>-->
-<!--            <br>-->
+            <!--            <span class="text-s w-44"-->
+            <!--                  [style.color]=" hero.color | heroColor ">-->
+            <!--               {{ hero.color | heroColor | titlecase }}-->
+            <!--            </span>-->
+            <!--            <br>-->
+            <!--            <span class="text-s w-44"-->
+            <!--                  [style.background-color]="ColorMap[ hero.color ]">-->
+            <!--               {{ hero.color | heroColor | titlecase }}-->
+            <!--            </span>-->
             <span class="text-s w-44"
-                  [style.background-color]="ColorMap[ hero.color ]">
-               {{ hero.color | heroColor | titlecase }}
+              [style.background-color]="hero.color | heroTextColor">
+              {{ hero.color | heroColor | titlecase }}
             </span>
           </td>
           <td>{{ hero.creator }}</td>

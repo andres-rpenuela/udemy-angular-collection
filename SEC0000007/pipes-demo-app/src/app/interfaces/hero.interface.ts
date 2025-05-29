@@ -22,5 +22,5 @@ export const ColorMap = {
   [Color.red]: '#E57373',
   [Color.black]: '#424242',
   [Color.blue]: '#64B5F6',
-  [Color.green]: '#81C784',
+  [Color.green]: '#81C784'
 };
