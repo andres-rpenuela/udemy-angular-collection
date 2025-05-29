@@ -21,11 +21,16 @@
 
 <section class="my-2">
   <h1 class="text-2xl font-bold">Pipes personalizados en accion</h1>
+  <h6 class="text-2xl font-bold">Filtrando por XXXXX, ordenando por: {{sortBy() ?? 'defecto'}}</h6>
   <div class="flex gap-2 justify-end w-full">
-    <button class="btn btn-primary">Por nombre</button>
-    <button class="btn btn-accent">Por volar</button>
-    <button class="btn btn-secondary">Por color</button>
-    <button class="btn btn-info">Por creador</button>
+<!--    <button class="btn btn-primary" (click)="sortBy.set(HeroOrderDataBy.name)">Por nombre</button>-->
+<!--    <button class="btn btn-accent"  (click)="sortBy.set(HeroOrderDataBy.canFly)">Por volar</button>-->
+<!--    <button class="btn btn-secondary" (click)="sortBy.set(HeroOrderDataBy.color)">Por color</button>-->
+<!--    <button class="btn btn-info" (click)="sortBy.set(HeroOrderDataBy.creator)">Por creador</button>-->
+    <button class="btn btn-primary" (click)="sortBy.set('name')">Por nombre</button>
+    <button class="btn btn-accent"  (click)="sortBy.set('canFly')">Por volar</button>
+    <button class="btn btn-secondary" (click)="sortBy.set('color')">Por color</button>
+    <button class="btn btn-info" (click)="sortBy.set('creator')">Por creador</button>
   </div>
 </section>
 
@@ -43,7 +48,7 @@
     </thead>
     <tbody>
     <!-- row 1 -->
-      @for ( hero of getHeros(); track hero.id; let i = $index){
+      @for ( hero of ( getHeros() | heroSortBy : sortBy() ); track hero.id; let i = $index){
         <tr>
           <th>{{ i +1 }}</th>
           <td>{{ hero.name }}</td>

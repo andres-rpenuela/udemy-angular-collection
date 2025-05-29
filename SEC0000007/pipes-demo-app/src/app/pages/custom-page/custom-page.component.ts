@@ -7,6 +7,8 @@ import {HeroColorPipe} from '../../pipes/hero-color.pipe';
 import {NgClass, TitleCasePipe} from '@angular/common';
 import {HeroTextColorPipe} from '../../pipes/hero-text-color.pipe';
 import {HereCreatorPipe} from '../../pipes/here-creator.pipe';
+import {HeroSortByPipe} from '../../pipes/hero-sort-by.pipe';
+import {HeroOrderDataBy} from '../../interfaces/hero-order.data';
 
 @Component({
   selector: 'app-custom-page',
@@ -17,7 +19,8 @@ import {HereCreatorPipe} from '../../pipes/here-creator.pipe';
     NgClass,
     TitleCasePipe,
     HeroTextColorPipe,
-    HereCreatorPipe
+    HereCreatorPipe,
+    HeroSortByPipe
   ],
   templateUrl: './custom-page.component.html',
   styleUrl: './custom-page.component.css',
@@ -30,6 +33,11 @@ export default class CustomPageComponent {
 
   heros:WritableSignal<Hero[]> = signal<Hero[]>(heroes);
 
+  // ocpion A: usando un enumerador
+  //sortBy : WritableSignal<HeroOrderDataBy | null > = signal(null);
+  // opcion B: usando keyof Interface (obtiente un array con los key)
+  sortBy : WritableSignal<keyof Hero| null > = signal(null);
+
   public toggle(){
     this.upperCase.update(value => !value);
   }
@@ -40,4 +48,5 @@ export default class CustomPageComponent {
 
   protected readonly ColorMap = ColorMap;
   protected readonly Creator = Creator;
+  protected readonly HeroOrderDataBy = HeroOrderDataBy;
 }
