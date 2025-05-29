@@ -2,11 +2,13 @@ import {Component, signal, WritableSignal} from '@angular/core';
 import {ToggleCasePipe} from '../../pipes/toggle-case.pipe.ts';
 import {heroes} from '../../data/hero.data';
 import {Hero} from '../../interfaces/hero.interface';
+import {CanFlyPipe} from '../../pipes/can-fly.pipe';
 
 @Component({
   selector: 'app-custom-page',
   imports: [
-    ToggleCasePipe
+    ToggleCasePipe,
+    CanFlyPipe
   ],
   templateUrl: './custom-page.component.html',
   styleUrl: './custom-page.component.css',
