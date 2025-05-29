@@ -1,11 +1,12 @@
 import {Component, signal, WritableSignal} from '@angular/core';
 import {ToggleCasePipe} from '../../pipes/toggle-case.pipe.ts';
 import {heroes} from '../../data/hero.data';
-import {ColorMap, Hero} from '../../interfaces/hero.interface';
+import {ColorMap, Creator, Hero} from '../../interfaces/hero.interface';
 import {CanFlyPipe} from '../../pipes/can-fly.pipe';
 import {HeroColorPipe} from '../../pipes/hero-color.pipe';
 import {NgClass, TitleCasePipe} from '@angular/common';
 import {HeroTextColorPipe} from '../../pipes/hero-text-color.pipe';
+import {HereCreatorPipe} from '../../pipes/here-creator.pipe';
 
 @Component({
   selector: 'app-custom-page',
@@ -15,7 +16,8 @@ import {HeroTextColorPipe} from '../../pipes/hero-text-color.pipe';
     HeroColorPipe,
     NgClass,
     TitleCasePipe,
-    HeroTextColorPipe
+    HeroTextColorPipe,
+    HereCreatorPipe
   ],
   templateUrl: './custom-page.component.html',
   styleUrl: './custom-page.component.css',
@@ -37,4 +39,5 @@ export default class CustomPageComponent {
   }
 
   protected readonly ColorMap = ColorMap;
+  protected readonly Creator = Creator;
 }

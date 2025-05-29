@@ -69,7 +69,13 @@
               {{ hero.color | heroColor | titlecase }}
             </span>
           </td>
-          <td>{{ hero.creator }}</td>
+          <td>
+            <!-- SE PUEDE USAR POR VALOR DEL ENUM O POR INDICE, SABIENDO QUE EMPIZA EN 0 -->
+            <span [class.text-primary]="hero.creator == Creator.DC"
+                  [class.text-accent]="hero.creator == 1">
+                          {{ hero.creator  | hereCreator }}
+            </span>
+          </td>
         </tr>
       }
     </tbody>
