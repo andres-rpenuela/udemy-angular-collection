@@ -59,3 +59,112 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
 --
+
+
+## Rutas angualar 19+
+
+```typescript
+// auth.routes.ts
+export const authRoutes : Routes = [
+  {
+    path: '',
+    children: [
+      {
+        path: 'sign-up',
+        component: RegisterPageComponent
+      },
+      {
+        path: '**',
+        redirectTo: 'sign-up'
+      }
+    ]
+  }
+];
+
+export default authRoutes;
+```
+
+```typescript
+// country.routes.ts
+export const countryRoutes : Routes = [
+  {
+    path: '',
+    component: CountryPageComponent
+  }
+]
+```
+
+```typescript
+// reactyve.routes.ts
+export const reactiveRoutes : Routes = [
+  {
+    path: '',
+    children: [ // load lazy
+      { // component as default
+        path: 'basic',
+        title: 'Básicos',
+        loadComponent: () => import('./page/base-page/base-page.component')
+      },
+      { // component as NON default
+        path: 'dinamyc',
+        title: 'Dinámicos',
+        loadComponent: () => import('./page/dinamyc-page/dinamyc-page.component').then(m => m.DinamycPageComponent)
+      },
+      { // component as default
+        path: 'swith',
+        title: 'Swithes',
+        loadComponent: () => import('./page/switches-page/switches-page.component')
+      },
+      { // si no es ninguna de la anterior, redirecciona
+        path: '**',
+        redirectTo: 'basic'
+      }
+    ]
+  }
+]
+```
+
+
+```typescript
+// app.routes.ts
+
+export const routes: Routes = [
+  {
+    path: '',
+    children: [
+      { // load lazy of routes, about default routes
+        path: 'auth',
+        loadChildren: () => import('./auth/auth.router')
+      },
+      { // load lazy of routes, about not default rotues
+        path: 'reactive',
+        loadChildren: () => import('./reactive/reactive.router').then( (module) => module.reactiveRoutes)
+      },
+      { // load lazy of routes, about not default rotues
+        path: 'country',
+        loadChildren: () => import('./country/country.router').then( (module) => module.countryRoutes)
+      },
+
+    ]
+  },
+  {
+    path:'**',
+    redirectTo: 'basic'
+  }
+];
+```
+
+```typescript
+// app.config.ts
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
+    provideRouter(routes)
+  ]
+};
+```
