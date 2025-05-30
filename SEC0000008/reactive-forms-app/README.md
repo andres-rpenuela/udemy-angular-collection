@@ -128,6 +128,8 @@ export const reactiveRoutes : Routes = [
 ```typescript
 // app.routes.ts
 
+import { Routes } from '@angular/router';
+
 export const routes: Routes = [
   {
     path: '',
@@ -144,12 +146,15 @@ export const routes: Routes = [
         path: 'country',
         loadChildren: () => import('./country/country.router').then( (module) => module.countryRoutes)
       },
-
+      {
+        path:'**',
+        redirectTo: 'reactive'
+      }
     ]
   },
   {
     path:'**',
-    redirectTo: 'basic'
+    redirectTo: 'reactive/basic'
   }
 ];
 ```

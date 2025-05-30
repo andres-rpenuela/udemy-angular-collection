@@ -16,11 +16,14 @@ export const routes: Routes = [
         path: 'country',
         loadChildren: () => import('./country/country.router').then( (module) => module.countryRoutes)
       },
-
+      {
+        path:'**',
+        redirectTo: 'reactive'
+      }
     ]
   },
   {
     path:'**',
-    redirectTo: 'basic'
+    redirectTo: 'reactive/basic'
   }
 ];
