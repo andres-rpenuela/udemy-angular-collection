@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {MenuItem} from '../../interfaces/menu-item.interface';
-import {reactiveItems} from '../../data/routes.data';
+import {authItems, reactiveItems} from '../../data/routes.data';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 
 
@@ -23,4 +23,18 @@ export class SideMenuComponent {
         route:`reactive/${item.path}`
       })
     );
+
+  countryMenuItems: MenuItem[] = [
+    {
+      title: 'Country',
+      route: `./country`
+    }
+    ];
+
+  authMenuItem: MenuItem[] = authItems
+    .filter( item => !item.path?.includes('**'))
+    .map( item =>({
+      title: `${item.title}`,
+      route: `auth/${item.path}`
+    }))
 }

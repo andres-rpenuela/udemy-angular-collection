@@ -221,6 +221,13 @@ export class SideMenuComponent {
         route:`reactive/${item.path}`
       })
     );
+
+  countryMenuItems: MenuItem[] = [
+    {
+      title: 'Country',
+      route: `./country`
+    }
+  ];
 }
 ```
 
@@ -232,6 +239,17 @@ export class SideMenuComponent {
 <h3 class="mt-3">Reactive Forms</h3>
 <ul class="list-group">
   @for( item of reactiveMenuItems; track item.title){
+    <li class="list-group-item"
+        [routerLink]="item.route"
+        routerLinkActive="active">
+      {{ item.title }}
+    </li>
+  }
+</ul>
+
+<h3 class="mt-3">Country</h3>
+<ul class="list-group">
+  @for( item of countryMenuItems; track item.title){
     <li class="list-group-item"
         [routerLink]="item.route"
         routerLinkActive="active">

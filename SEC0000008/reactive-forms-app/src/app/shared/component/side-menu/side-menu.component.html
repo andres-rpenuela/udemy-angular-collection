@@ -12,3 +12,24 @@
   }
 </ul>
 
+<h3 class="mt-3">Country</h3>
+<ul class="list-group">
+  @for( item of countryMenuItems; track item.title){
+    <li class="list-group-item"
+        [routerLink]="item.route"
+        routerLinkActive="active">
+      {{ item.title }}
+    </li>
+  }
+</ul>
+
+<h3 class="mt-3">Auth</h3>
+<ul class="list-group">
+  @for( item of authMenuItem; track item.title){
+    <li class="list-group-item"
+        [routerLink]="item.route"
+        routerLinkActive="active">
+      {{ item.title }}
+    </li>
+  }
+</ul>

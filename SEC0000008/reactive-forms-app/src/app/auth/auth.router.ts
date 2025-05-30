@@ -7,6 +7,7 @@ export const authRoutes : Routes = [
     children: [
       {
         path: 'sign-up',
+        title: 'Sign Up',
         component: RegisterPageComponent
       },
       {
