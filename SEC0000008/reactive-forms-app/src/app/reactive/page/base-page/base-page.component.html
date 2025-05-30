@@ -91,6 +91,13 @@
     <span>Value</span>
     <pre>{{ myForm.value | json }}</pre>
 
+    <!-- errores de los validadores del form -->
+    <span>Errores (sera nulo)</span>
+    <pre>{{ myForm.errors | json }}</pre>
+
+    <span>Error Name</span>
+    <pre>{{ myForm.controls.name.errors| json }}</pre>
+
     <!-- campo del form -->
     <span>Precio</span>
     <pre>{{ myForm.controls['price'].value| json }}</pre>

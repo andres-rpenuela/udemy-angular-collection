@@ -565,3 +565,25 @@ myForm = this.formBuilder.group({
   inStorage: [0]
 });
 ```
+## Validadores
+
+Angular por defecto provee validadores sincronos, que se pueden usar como un array
+
+```typescript
+myForm = this.formBuilder.group({
+  //name: [''],
+  //name: ['', /** validaodres sincornos **/, /** validaodres asincronos **/],
+  name: ['', [Validators.required, Validators.minLength(3)] ],
+  price: [0, [Validators.required, Validators.min(10) ] ],
+  inStorage: [0, [ Validators.required,Validators.min(0) ] ]
+});
+```
+Mostrar los errores:
+```angular181html
+<!-- errores de los validadores del form -->
+<span>Errores (sera nulo)</span>
+<pre>{{ myForm.errors | json }}</pre>
+
+<span>Error Name</span>
+<pre>{{ myForm.controls.name.errors| json }}</pre>
+```

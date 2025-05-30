@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {JsonPipe} from '@angular/common';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-base-page',
@@ -26,8 +26,9 @@ export default class BasePageComponent {
 
   myForm = this.formBuilder.group({
     //name: [''],
-    name: ['', /** validaodres sincornos **/, /** validaodres asincronos **/],
-    price: [0],
-    inStorage: [0]
+    //name: ['', /** validaodres sincornos **/, /** validaodres asincronos **/],
+    name: ['', [Validators.required, Validators.minLength(3)] ],
+    price: [0, [Validators.required, Validators.min(10) ] ],
+    inStorage: [0, [ Validators.required,Validators.min(0) ] ]
   });
 }
