@@ -173,3 +173,70 @@ export const appConfig: ApplicationConfig = {
   ]
 };
 ```
+
+---
+
+# Generar link de las rutas
+
+```typescript
+// menu-intem.interface.ts
+export interface MenuItem {
+  title: string;
+  route: string;
+}
+```
+
+```typescript
+// routes.data.ts
+import {reactiveRoutes} from '../../reactive/reactive.router';
+import {Routes} from '@angular/router';
+
+export const reactiveItems : Routes = reactiveRoutes[0].children ?? [];
+```
+
+```typescript
+// side-menu.component.ts
+import {Component} from '@angular/core';
+import {MenuItem} from '../../interfaces/menu-item.interface';
+import {reactiveItems} from '../../data/routes.data';
+import {RouterLink, RouterLinkActive} from '@angular/router';
+
+
+@Component({
+  selector: 'app-side-menu',
+  imports: [
+    RouterLink,
+    RouterLinkActive
+  ],
+  templateUrl: './side-menu.component.html',
+  styleUrl: './side-menu.component.css',
+  standalone: true
+})
+export class SideMenuComponent {
+  // se genera el menu de items de reactive
+  reactiveMenuItems: MenuItem[] = reactiveItems
+    .filter( item => !item.path?.includes('**'))
+    .map(item => ({
+        title:`${item.title}`,
+        route:`reactive/${item.path}`
+      })
+    );
+}
+```
+
+```angular181html
+<!-- side-menu.component.html -->
+<h2>Páginas</h2>
+<hr>
+
+<h3 class="mt-3">Reactive Forms</h3>
+<ul class="list-group">
+  @for( item of reactiveMenuItems; track item.title){
+    <li class="list-group-item"
+        [routerLink]="item.route"
+        routerLinkActive="active">
+      {{ item.title }}
+    </li>
+  }
+</ul>
+```

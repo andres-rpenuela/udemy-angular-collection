@@ -3,6 +3,7 @@ import {Routes} from '@angular/router';
 export const reactiveRoutes : Routes = [
   {
     path: '',
+    title: 'Reactive Forms',
     children: [ // load lazy
       { // component as default
         path: 'basic',

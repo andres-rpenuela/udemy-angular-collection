@@ -1,1 +1,14 @@
-<p>side-menu works!</p>
+<h2>Páginas</h2>
+<hr>
+
+<h3 class="mt-3">Reactive Forms</h3>
+<ul class="list-group">
+  @for( item of reactiveMenuItems; track item.title){
+    <li class="list-group-item"
+        [routerLink]="item.route"
+        routerLinkActive="active">
+      {{ item.title }}
+    </li>
+  }
+</ul>
+
