@@ -549,3 +549,19 @@ Propieades del formulario reactivo basico útiles:
 <pre>{{ myForm.controls.name.value | json }}</pre>
 
 ```
+
+-- 
+# Form Build 
+Simplifica la construccion de objetos FormGroup y FormControl.
+
+*  Form Reactivo basico 
+```typescript
+// formBuilder (Servicio)
+private formBuilder = inject(FormBuilder);
+
+myForm = this.formBuilder.group({
+  name: ['', /** validaodres sincornos **/, /** validaodres asincronos **/],
+  price: [0],
+  inStorage: [0]
+});
+```
