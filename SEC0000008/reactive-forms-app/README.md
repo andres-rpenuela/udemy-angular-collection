@@ -587,3 +587,113 @@ Mostrar los errores:
 <span>Error Name</span>
 <pre>{{ myForm.controls.name.errors| json }}</pre>
 ```
+
+Mostrar un mensaje de error:
+
+```angular181html
+<!-- Campo de producto -->
+<div class="mb-3 row">
+  <label class="col-sm-3 col-form-label">Producto</label>
+  <div class="col-sm-9">
+
+    <input type="text"
+           class="form-control"
+           placeholder="Nombre del producto"
+           [formControl]="myForm.controls.name">
+
+    @if(myForm.touched){
+      @if( myForm.controls.name.errors?.['required']){
+        <span class="form-text text-danger">
+                        <!-- Debe de ser de 3 letras -->
+                        Este campo debe ser requerido
+                    </span>
+      }
+      @if( myForm.controls.name.errors?.['minlenght']){
+        <span class="form-text text-danger">
+                        <!-- Debe de ser de 3 letras -->
+                        Este campo debe ser mayor que {{ myForm.controls.name.errors?.['minlenght'].min  }} caracteres
+                    </span>
+      }
+    }
+  </div>
+</div>
+```
+Simplificando, a costa de añadir logica en el controlador
+
+1. Declarar myForm como FormGroup
+
+```typescript
+ myForm :FormGroup = this.formBuilder.group({
+  //name: [''],
+  //name: ['', /** validaodres sincornos **/, /** validaodres asincronos **/],
+  name: ['', [Validators.required, Validators.minLength(3)] ],
+  price: [0, [Validators.required, Validators.min(10) ] ],
+  inStorage: [0, [ Validators.required,Validators.min(0) ] ]
+});
+```
+> **Nota**: Esto obliga pasar de
+> > this.myForm.controls.name a his.myForm.controls[ 'name' ]
+>
+> Ademas no se peude usar:
+> * [formControl]="myForm.controls.name", y
+> * {{ myForm.controls.name.value }}
+> Si no:
+> * formControlName="name", y
+> * {{ myForm.controls['name'].value }}
+
+2. Crear un metodo que dado el nombre del campo valide si tiene erroes
+
+```typescript
+public isValidField( fieldName: string):boolean | null {
+    // requerido usar tipado al declarar myForm :FormGorupç
+    return !! this.myForm.controls[ fieldName ].errors;
+  }
+```
+
+3. Crear un metodo que dado el nombre del camo obtenga un mensaje de error
+
+```typescript
+public getFieldError( fieldName: string ): string | null {
+    const control = this.myForm.get(fieldName);
+
+    // si no existe, es null
+    if (!control || !control.errors ) return null;
+
+    const errors = control.errors;
+
+    for( const keyError of Object.keys( errors ) ) {
+      switch(keyError){
+        case 'requeried':
+          return 'Este campo es requerido';
+        case 'minlength':
+          return `Minimo de ${ errors[ 'minlength' ].requiredLength } caracteres`;
+        case 'min':
+          return `Minimo de ${ errors[keyError].min} caracteres`;
+      }
+    }
+
+    return null;
+  }
+```
+
+5. Mostraro en la vista
+
+```angular181html
+<div class="mb-3 row">
+  <label class="col-sm-3 col-form-label">Producto</label>
+  <div class="col-sm-9">
+    
+    <!-- declarando myForm como myForm:FormGroup = ... -->
+    <input type="text"
+           class="form-control"
+           placeholder="Nombre del producto"
+           formControlName="name">
+    @if( isValidField('name')){
+      <span class="form-text text-danger">
+                <!-- Debe de ser de 3 letras -->
+        {{ getFieldError('name') }}
+            </span>
+    }
+  </div>
+</div>
+```
