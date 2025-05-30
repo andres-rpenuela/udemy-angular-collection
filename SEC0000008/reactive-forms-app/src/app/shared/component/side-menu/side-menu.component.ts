@@ -1,7 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MenuItem} from '../../interfaces/menu-item.interface';
 import {authItems, reactiveItems} from '../../data/routes.data';
 import {RouterLink, RouterLinkActive} from '@angular/router';
+import {LocaleService} from '../../services/locale.service';
+import {Locale, LOCALE_EN, LOCALE_ES} from '../../types/locale.type';
 
 
 @Component({
@@ -16,7 +18,7 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
 })
 export class SideMenuComponent {
   // se genera el menu de items de reactive
-  reactiveMenuItems: MenuItem[] = reactiveItems
+  protected  reactiveMenuItems: MenuItem[] = reactiveItems
     .filter( item => !item.path?.includes('**'))
     .map(item => ({
         title:`${item.title}`,
@@ -24,17 +26,26 @@ export class SideMenuComponent {
       })
     );
 
-  countryMenuItems: MenuItem[] = [
+  protected countryMenuItems: MenuItem[] = [
     {
       title: 'Country',
       route: `./country`
     }
     ];
 
-  authMenuItem: MenuItem[] = authItems
+  protected authMenuItem: MenuItem[] = authItems
     .filter( item => !item.path?.includes('**'))
     .map( item =>({
       title: `${item.title}`,
       route: `auth/${item.path}`
     }))
+
+  protected readonly LOCALE_ES = LOCALE_ES;
+  protected readonly LOCALE_EN = LOCALE_EN;
+
+  private localeService = inject(LocaleService);
+
+  switchLang(locale:Locale){
+    this.localeService.changeLocale(locale);
+  }
 }

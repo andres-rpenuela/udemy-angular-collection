@@ -258,3 +258,184 @@ export class SideMenuComponent {
   }
 </ul>
 ```
+
+--
+
+# Traducir mensajes con Translate (Pipe transalte) y Http-Loader  + Cambio de idoma de la Aplicacion 
+
+Objetivo:
+```angular181html
+<!-- traduccir mensajes -->
+{{ 'WELCOME_MESSAGE' | translate }}
+```
+
+>**Nota**;
+> 1. Para ver los efectos del cambio de idoma de la aplicacion es requerido hacer recarga de la pagina 
+> 2. Para ver los efectos de "translate", no hace falta aplicar recarga de la pagina, es una peticio http+loader
+> 3. No confundir con I18nSelectPipe e i18nPluralPipe.
+
+Instalar:
+```shell
+npm install @ngx-translate/core @ngx-translate/http-loader
+```
+
+Archivos de traducción
+```json
+// public/i18n/en.json
+{
+  "WELCOME_MESSAGE": "Welcome",
+  "THANK_YOU": "Thank you for using our app."
+}
+```
+
+```json
+// public/i18n/es.json
+{
+  "WELCOME_MESSAGE": "Bienvenido",
+  "THANK_YOU": "Gracias por usar nuestra aplicación."
+}
+```
+Carga de la configuracion
+```typescript
+import { routes } from './app.routes';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {HttpClient, provideHttpClient} from '@angular/common/http';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+
+// registrar idiomas
+import {registerLocaleData} from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+import {LocaleService} from './shared/services/locale.service';
+
+registerLocaleData(localeEs, 'es' );
+registerLocaleData(localeFr, 'fr' );
+registerLocaleData(localeEn, 'en' );
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
+    provideRouter(routes),
+    // traducto con pipe
+    provideHttpClient(),
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useFactory: (http: HttpClient) => new TranslateHttpLoader(http, 'i18n/', '.json'),
+          deps: [HttpClient]
+        }
+      })
+    ),
+    // selecionar idoma por defecto, por fecto es el ingles
+    {
+      provide: LOCALE_ID,
+      //useValue: 'es'
+      deps: [LocaleService],
+      useFactory: (localService : LocaleService) => localService.getLocale()
+    }
+  ]
+};
+```
+
+Se defien un tipado de idiomas
+
+```typescript
+export type Locale = 'ES' | 'FR' | 'EN';
+
+export const LOCALE_ES: Locale = 'ES';
+export const LOCALE_FR: Locale = 'FR';
+export const LOCALE_EN: Locale = 'EN';
+
+export const LOCALES: Locale[] = ['ES', 'FR', 'EN'];
+
+export function getValidLocale(localeStr: string | null ): Locale | null {
+  if (LOCALES.includes(localeStr as Locale)) {
+    return localeStr as Locale;
+  }
+  return null;
+}
+```
+
+
+Servicio para cambiar el idoma (cambio de iodma de la aplicaicon + uso del serivcio translate instalado)
+
+```typescript
+import {effect, Injectable, signal} from '@angular/core';
+import {getValidLocale, Locale, LOCALE_EN, LOCALE_ES} from '../types/locale.type';
+import {TranslateService} from '@ngx-translate/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LocaleService {
+
+  private readonly currentLocaleSng = signal<Locale>(LOCALE_ES);
+
+  constructor(private translate: TranslateService) {
+    // get locale
+    const localeMaybe: string | null = localStorage.getItem('locale');
+    const validLocale = getValidLocale(localeMaybe) ?? LOCALE_ES;
+    this.currentLocaleSng.set( validLocale );
+
+    // uso del tranlate instalado
+    this.translate.addLangs([LOCALE_EN.toString().toLowerCase(), LOCALE_ES.toString().toLowerCase()]);
+    this.translate.setDefaultLang(validLocale.toString().toLowerCase() );
+
+    effect(() => { // cada vez que cambie el idioma cambia
+      this.translate.use(this.currentLocaleSng().toString().toLowerCase());
+    });
+
+  }
+
+  public getLocale(): Locale {
+    return this.currentLocaleSng();
+  }
+
+  public changeLocale(locale: Locale): void {
+    // set locale + updated
+    localStorage.setItem('locale',locale);
+    this.currentLocaleSng.set(locale); // invoca al effecto
+
+    // reload (para que carge el nuevo idomoa, opcional)
+    (window as Window).location.reload();
+  }
+}
+```
+
+En el app.component.html, se usa el pipe 'translate'
+```angular181html
+<div class="row mt-5">
+  <hr>
+  <h1>{{ 'WELCOME_MESSAGE' | translate }}</h1>
+  <p>{{ 'THANK_YOU' | translate }}</p>
+  <p>{{ 90999999.29 | number }}</p>
+  <hr>
+  <div class="col">
+    <router-outlet></router-outlet>
+  </div>
+
+  <div class="col-12 col-sm-4">
+    <app-side-menu></app-side-menu>
+
+  </div>
+</div>
+```
+
+En el side-menu, se agregan los botntes para cambiar los idiomas
+
+```angular181html
+<hr>
+
+<button (click)="switchLang(LOCALE_EN)">English</button>
+<button (click)="switchLang(LOCALE_ES)">Español</button>
+```
+
+```typescript
+private localeService = inject(LocaleService);
+
+switchLang(locale:Locale){
+  this.localeService.changeLocale(locale);
+}
+```
