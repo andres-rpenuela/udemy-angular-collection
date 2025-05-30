@@ -439,3 +439,113 @@ switchLang(locale:Locale){
   this.localeService.changeLocale(locale);
 }
 ```
+
+---
+
+# Formulario reactivo básico
+
+En normal, sin usar formulario reactivo, se puede usar ChildView o referencia aun elemento html
+
+```angular181html
+<!-- ejemplo de acceder al valor en Angular de un input, sin formulario reactivo -->
+<input type="text"
+       class="form-control"
+       placeholder="Nombre del producto"
+       #inputName>
+
+<p>Valor introducido: {{inputName.value()}}</p>
+```
+Crear un formulario en el controlador
+
+```typescript
+@Component({
+  selector: 'app-base-page',
+  imports: [
+    JsonPipe,
+    ReactiveFormsModule
+  ],
+  templateUrl: './base-page.component.html',
+  styleUrl: './base-page.component.css',
+  standalone: true
+})
+export default class BasePageComponent {
+
+  // formulario basico
+  myForm = new FormGroup({
+    name: new FormControl<string>(''),
+    price: new FormControl<number>(0),
+    inStorage: new FormGroup<boolean>(false)
+  });
+}
+```
+
+Enlazar los valores
+* [formGroup]
+* [formControl] o formControlName
+
+```angular181html
+ <form autocomplete="off" [formGroup]="myForm">
+
+  <!-- Campo de producto -->
+  <div class="mb-3 row">
+    <label class="col-sm-3 col-form-label">Producto</label>
+    <div class="col-sm-9">
+
+      <input type="text"
+             class="form-control"
+             placeholder="Nombre del producto"
+             [formControl]="myForm.controls.name">
+    </div>
+  </div>
+
+  <!-- Campo de producto -->
+  <div class="mb-3 row">
+    <label class="col-sm-3 col-form-label">Precio</label>
+    <div class="col-sm-9">
+      <input type="number"
+             class="form-control"
+             placeholder="Precio del producto"
+             formControlName="price">
+    </div>
+  </div>
+
+  <!-- Campo de existencias -->
+  <div class="mb-3 row">
+    <label class="col-sm-3 col-form-label">Existencias</label>
+    <div class="col-sm-9">
+      <input type="number"
+             class="form-control"
+             placeholder="Existencias del producto"
+             formControlName="inStorage">
+    </div>
+  </div>
+<!-- ... -->
+```
+
+Propieades del formulario reactivo basico útiles:
+
+```angular181html
+<!-- true:: si el formulario es valido -->
+<span>Valid</span>
+<pre>{{ myForm.valid | json }}</pre>
+
+<!-- true:: indica si se ha tocado el formulario desde el momento  que se sirvio al usuario-->
+<span>Pristine</span>
+<pre>{{ myForm.pristine | json }}</pre>
+
+<!-- true:: indica que el usuario no a tocado el formulario-->
+<span>Touched</span>
+<pre>{{ myForm.touched | json }}</pre>
+
+<!-- valores de todos los campos del formuario -->
+<span>Value</span>
+<pre>{{ myForm.value | json }}</pre>
+
+<!-- campos del form -->
+<span>Precio</span>
+<pre>{{ myForm.controls['price'].value| json }}</pre>
+
+<span>Producto</span>
+<pre>{{ myForm.controls.name.value | json }}</pre>
+
+```
