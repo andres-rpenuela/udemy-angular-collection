@@ -729,3 +729,94 @@ public getFieldError( fieldName: string ): string | null {
     }));
   }
 ```
+
+---
+# Tradudcir en el cliente:
+
+(Configuracion en el paso anterior)
+En el fichero json, añadir
+
+```typescript
+// public/i18n/es.json
+{
+  "WELCOME_MESSAGE": "Bienvenido",
+  "THANK_YOU": "Gracias por usar nuestra aplicación.",
+  "form": {
+  "errors": {
+    "required": "Este campo es obligatorio",
+      "minlength": "Mínimo de {{ requiredLength }} caracteres",
+      "maxlength": "Máximo de {{ requiredLength }} caracteres",
+      "min": "Valor mínimo permitido: {{ min }}",
+      "max": "Valor máximo permitido: {{ max }}",
+      "email": "Correo electrónico no válido"
+    }
+  }
+}
+```
+
+En la vista
+
+```angular181html
+@if( FormUtils.isNonValidField(myForm,'name')){
+  <span class="form-text text-danger">
+                <!-- Debe de ser de 3 letras -->
+    <!--              {{ getFieldError('name') }}-->
+    {{ FormUtils.getFieldError(myForm,'name')![0] | translate: FormUtils.getFieldError(myForm,'name')![1] }}
+            </span>
+}
+</div>
+```
+
+En la lógica
+```typescript
+public static isValidField(form: FormGroup, fieldName: string): boolean {
+  console.log('Validando el campo: ',fieldName)
+  const control = form.get(fieldName);
+
+  return !!control && control.touched && control.valid;
+}
+
+public static isNonValidField(form: FormGroup, fieldName: string){
+  console.log('Validando el campo: ',fieldName)
+  const control = form.get(fieldName);
+  
+  return !!control && control.touched && control.invalid;
+}
+
+public static getFieldError(form: FormGroup, fieldName: string): [string, any?] | null  {
+  console.log('Obteniendo el error del campo: ',fieldName)
+  const control =  form.get(fieldName);
+
+  if( !control || !control.errors ){
+    return null;
+  }
+
+  const errors = control.errors;
+
+  for( const keyError of Object.keys( errors ) ) {
+    switch(keyError){
+      case 'required':
+        return ['form.errors.required'];
+
+      case 'minlength':
+        return ['form.errors.minlength', { requiredLength: errors['minlength'].requiredLength }];
+
+      case 'maxlength':
+        return ['form.errors.maxlength', { requiredLength: errors['maxlength'].requiredLength }];
+
+      case 'min':
+        return ['form.errors.min', { min: errors['min'].min }];
+
+      case 'max':
+        return ['form.errors.max', { max: errors['max'].max }];
+
+      case 'email':
+        return ['form.errors.email'];
+    }
+  }
+
+  return null;
+
+}
+}
+```

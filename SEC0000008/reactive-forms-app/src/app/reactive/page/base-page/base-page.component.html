@@ -12,10 +12,10 @@
         <div class="col-sm-9">
 
           <!-- si myForm no se declara como myForm: FormGroup, si no que se pone como myForm: any o myForm simpelmente -->
-<!--          <input type="text"-->
-<!--                 class="form-control"-->
-<!--                 placeholder="Nombre del producto"-->
-<!--                 [formControl]="myForm.controls.name">-->
+          <!--          <input type="text"-->
+          <!--                 class="form-control"-->
+          <!--                 placeholder="Nombre del producto"-->
+          <!--                 [formControl]="myForm.controls.name">-->
 
           <!--          @if(myForm.touched){-->
           <!--            @if( myForm.controls.name.errors?.['required']){-->
@@ -33,14 +33,21 @@
           <!--          }-->
 
           <!-- declarando myForm como myForm:FormGroup = ... -->
-                    <input type="text"
-                           class="form-control"
-                           placeholder="Nombre del producto"
-                           formControlName="name">
-          @if( isValidField('name')){
+          <input type="text"
+                 class="form-control"
+                 placeholder="Nombre del producto"
+                 formControlName="name">
+          <!--          @if( isValidField('name')){-->
+          <!--            <span class="form-text text-danger">-->
+          <!--                &lt;!&ndash; Debe de ser de 3 letras &ndash;&gt;-->
+          <!--              {{ getFieldError('name') }}-->
+          <!--            </span>-->
+          <!--          }-->
+          @if( FormUtils.isNonValidField(myForm,'name')){
             <span class="form-text text-danger">
                 <!-- Debe de ser de 3 letras -->
-              {{ getFieldError('name') }}
+              <!--              {{ getFieldError('name') }}-->
+              {{ FormUtils.getFieldError(myForm,'name')![0] | translate: FormUtils.getFieldError(myForm,'name')![1] }}
             </span>
           }
         </div>
@@ -54,10 +61,16 @@
                  class="form-control"
                  placeholder="Precio del producto"
                  formControlName="price">
-          @if( myForm.touched && isValidField('price')){
+          <!--          @if( myForm.touched && isValidField('price')){-->
+          <!--            <span class="form-text text-danger">-->
+          <!--                &lt;!&ndash; Debe de ser de 3 letras &ndash;&gt;-->
+          <!--              {{ getFieldError('price') }}-->
+          <!--            </span>-->
+          <!--          }-->
+          @if( FormUtils.isNonValidField(myForm,'price')){
             <span class="form-text text-danger">
                 <!-- Debe de ser de 3 letras -->
-              {{ getFieldError('price') }}
+              {{ FormUtils.getFieldError(myForm,'price')![0] | translate: FormUtils.getFieldError(myForm,'price')![1] }}
             </span>
           }
         </div>
@@ -72,10 +85,17 @@
                  placeholder="Existencias del producto"
                  formControlName="inStorage">
 
-          @if(  isValidField('inStorage')){
+          <!--          @if(  isValidField('inStorage')){-->
+          <!--            <span class="form-text text-danger">-->
+          <!--                &lt;!&ndash; Debe de ser de 3 letras &ndash;&gt;-->
+          <!--              {{ getFieldError('inStorage') }}-->
+          <!--            </span>-->
+          <!--          }-->
+          @if( FormUtils.isNonValidField(myForm,'inStorage')){
             <span class="form-text text-danger">
                 <!-- Debe de ser de 3 letras -->
-              {{ getFieldError('inStorage') }}
+              <!--              {{ getFieldError('inStorage') }}-->
+              {{ FormUtils.getFieldError(myForm,'inStorage')![0] | translate: FormUtils.getFieldError(myForm,'inStorage')![1] }}
             </span>
           }
         </div>
@@ -125,7 +145,7 @@
     <pre>{{ myForm.errors | json }}</pre>
 
     <span>Error Name</span>
-<!--    <pre>{{ myForm.controls.name.errors| json }}</pre>-->
+    <!--    <pre>{{ myForm.controls.name.errors| json }}</pre>-->
     <pre>{{ myForm.controls['name'].errors| json }}</pre>
     <pre>{{ myForm.controls['price'].errors| json }}</pre>
     <pre>{{ myForm.controls['inStorage'].errors| json }}</pre>
@@ -134,7 +154,7 @@
     <pre>{{ myForm.controls['price'].value| json }}</pre>
 
     <span>Producto</span>
-<!--    <pre>{{ myForm.controls.name.value | json }}</pre>-->
+    <!--    <pre>{{ myForm.controls.name.value | json }}</pre>-->
     <pre>{{ myForm.controls['name'].value | json }}</pre>
   </div>
 </div>
