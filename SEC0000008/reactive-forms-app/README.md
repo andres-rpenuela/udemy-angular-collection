@@ -820,3 +820,82 @@ public static getFieldError(form: FormGroup, fieldName: string): [string, any?] 
 }
 }
 ```
+
+--
+
+# Formularios dinámicos co narregos
+
+Crear el formulario reactivo con FormBuilder:
+
+```typescript
+private formBuilder = inject(FormBuilder);
+
+public myForm :FormGroup = this.formBuilder.group({
+  name: ['', [Validators.required, Validators.minLength(3)] ],
+  // arreglo, a cada elemento se le puede asociar un validar, y luego al conjunto
+  favoritesGames: this.formBuilder.array([
+    ['Metal Gear',Validators.required],
+    ['Death Stranding',Validators.required]
+  ],[Validators.required, Validators.minLength(3)] )
+});
+```
+
+Cargar en la vista:
+
+```angular181html
+<form autocomplete="off" [formGroup]="myForm">
+
+  <!-- Nombre -->
+  <div class="mb-3 row">
+    <label class="col-sm-3 col-form-label">Nombre</label>
+    <div class="col-sm-9">
+      
+      <input class="form-control"
+             placeholder="Nombre de la persona"
+             formControlName="name">
+      
+    </div>
+  </div>
+</form>
+```
+
+Para obtener los elementos del arrray del form, se recomienda crear un metodo, que devuelva un FormArray o Null, y con un for en la vista cargarlos
+
+```typescript
+public getFavoritesGames() : FormArray | null {
+  return this.myForm.get('favoritesGames') as FormArray;
+}
+```
+
+Para vingular el form array:
+1. En el div que contiente los elmentos del formuario, se vincula con 'formArrayName'
+2. Se crea un for, donde se obtiene el indice de cada elemento (paso de iteracion)
+3. En cada control, se asocia con la posicion del array que se muestra '[fromControlName]='i'
+```angular181html
+<!-- Lista de Juegos Favoritos -->
+<div class="mb-3 row">
+  <label class="col-sm-3 col-form-label">Favoritos</label>
+  <div class="col-sm-9">
+
+    <!-- se vincula con el formulario el div -->
+    <div class="mb-1" formArrayName="favoritesGames">
+      @for( favoriteGame of getFavoritesGames()?.controls; track $index; let i = $index){
+        <div class="input-group">
+          <!-- se vinula el indice del array con el control -->
+          <input class="form-control" [formControlName]="i" >
+
+          <button class="btn btn-outline-danger"
+                  type="button">
+            Eliminar
+          </button>
+        </div>
+        <span class="form-text text-danger">
+                   Este campo es requerido
+                </span>
+
+      }
+    </div>
+    
+  </div>
+</div>
+```
