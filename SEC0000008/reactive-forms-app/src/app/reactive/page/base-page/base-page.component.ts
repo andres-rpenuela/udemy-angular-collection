@@ -38,7 +38,7 @@ export default class BasePageComponent {
     // ademas no se peude usar [formControl]="myForm.controls.name" ni {{myForm.controls.name.value}}
     // si no formControlName="name" y {{myForm.controls['name'].value}}
     // y se puede usar lo siguiente:
-    return !! this.myForm.controls[ fieldName ].errors;
+    return ( this.myForm.controls[ fieldName ].errors && this.myForm.controls[ fieldName ].touched );
   }
 
   public getFieldError( fieldName: string ): string | null {
@@ -51,7 +51,7 @@ export default class BasePageComponent {
 
     for( const keyError of Object.keys( errors ) ) {
       switch(keyError){
-        case 'requeried':
+        case 'required':
           return 'Este campo es requerido';
         case 'minlength':
           return `Minimo de ${ errors[ 'minlength' ].requiredLength } caracteres`;
@@ -61,5 +61,27 @@ export default class BasePageComponent {
     }
 
     return null;
+  }
+
+  public onSave(){
+
+    // si se guarda, y los campos son invalidas
+    if( this.myForm.invalid){
+      // toca tods los campos para cargar sus errores
+      this.myForm.markAllAsTouched();
+      // no se envía
+      return
+    }
+
+    // simula que se envia los datos
+    console.table(this.myForm.value);
+
+    // resete el formulario
+    // console.log(this.myForm.reset());
+    console.log(this.myForm.reset({
+      // valoresp or defecto (opcional)
+      price: 100,
+      inStorage: 50
+    }));
   }
 }

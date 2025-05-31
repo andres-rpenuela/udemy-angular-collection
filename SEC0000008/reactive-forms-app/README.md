@@ -645,8 +645,8 @@ Simplificando, a costa de añadir logica en el controlador
 
 ```typescript
 public isValidField( fieldName: string):boolean | null {
-    // requerido usar tipado al declarar myForm :FormGorupç
-    return !! this.myForm.controls[ fieldName ].errors;
+    // requerido usar tipado al declarar myForm :FormGorup
+  return ( this.myForm.controls[ fieldName ].errors && this.myForm.controls[ fieldName ].touched );
   }
 ```
 
@@ -696,4 +696,36 @@ public getFieldError( fieldName: string ): string | null {
     }
   </div>
 </div>
+```
+
+6. Enviar data, con "(ngSubmit)" porque propaga los cambios
+
+```angular181html
+<form autocomplete="off" [formGroup]="myForm" (ngSubmit)="onSave()">
+<!-- ... -->
+</form>
+```
+  6.1. El método 'onSave()', valida el formulario, si no lo es marca todos los campos y si lo es, envía y resete el form
+```typescript
+  ublic onSave(){
+
+    // si se guarda, y los campos son invalidas
+    if( this.myForm.invalid){
+      // toca tods los campos para cargar sus errores
+      this.myForm.markAllAsTouched();
+      // no se envía
+      return
+    }
+
+    // simula que se envia los datos
+    console.table(this.myForm.value);
+
+    // resete el formulario
+    // console.log(this.myForm.reset());
+    console.log(this.myForm.reset({
+      // valoresp or defecto (opcional)
+      price: 100,
+      inStorage: 50
+    }));
+  }
 ```
