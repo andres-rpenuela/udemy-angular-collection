@@ -1,4 +1,4 @@
-import {FormGroup} from '@angular/forms';
+import {FormArray, FormGroup} from '@angular/forms';
 
 export class FormUtils {
 
@@ -26,6 +26,14 @@ export class FormUtils {
     const control = form.get(fieldName);
 
     return !!control && control.touched && control.invalid;
+  }
+
+  public static isValidFieldArray(form: FormArray, index: number){
+    return !form.controls[index].errors && form.controls[index].touched;
+  }
+
+  public static isNonValidFieldArray(form: FormArray, index: number){
+    return form.controls[index].errors && form.controls[index].touched;
   }
 
   public static getFieldError(form: FormGroup, fieldName: string): [string, any?] | null  {
@@ -77,5 +85,38 @@ export class FormUtils {
 
     return null;
 
+  }
+
+
+  public static getFieldErrorArray( form: FormArray, index: number ): [string, any?] | null {
+    const control =  form.controls[index];
+
+    if( !control || !control.errors ){ return null;}
+
+    const errors = control.errors;
+
+    for( const keyError of Object.keys( errors ) ) {
+      switch(keyError){
+        case 'required':
+          return ['form.errors.required'];
+
+        case 'minlength':
+          return ['form.errors.minlength', { requiredLength: errors['minlength'].requiredLength }];
+
+        case 'maxlength':
+          return ['form.errors.maxlength', { requiredLength: errors['maxlength'].requiredLength }];
+
+        case 'min':
+          return ['form.errors.min', { min: errors['min'].min }];
+
+        case 'max':
+          return ['form.errors.max', { max: errors['max'].max }];
+
+        case 'email':
+          return ['form.errors.email'];
+      }
+    }
+
+    return null;
   }
 }

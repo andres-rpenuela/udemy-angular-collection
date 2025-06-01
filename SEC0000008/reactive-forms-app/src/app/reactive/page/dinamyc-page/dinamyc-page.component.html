@@ -10,9 +10,13 @@
       <input class="form-control"
              placeholder="Nombre de la persona"
              formControlName="name">
-      <span class="form-text text-danger">
-                   error message
-            </span>
+
+      @if(FormUtils.isNonValidField(myForm,'name')){
+        <span class="form-text text-danger">
+          {{ FormUtils.getFieldError(myForm,'name')![0] | translate: FormUtils.getFieldError(myForm,'name')![1] }}
+        </span>
+      }
+
     </div>
   </div>
 
@@ -52,10 +56,11 @@
               Eliminar
             </button>
           </div>
-          <span class="form-text text-danger">
-                   Este campo es requerido
-                </span>
-
+          @if(FormUtils.isNonValidFieldArray(getFavoritesGames()!,i)){
+            <span class="form-text text-danger">
+              {{ FormUtils.getFieldErrorArray(getFavoritesGames()!,i)![0] | translate: FormUtils.getFieldErrorArray(getFavoritesGames()!,i)![1] }}
+            </span>
+          }
         }
 
       </div>

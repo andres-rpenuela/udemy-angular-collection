@@ -1,12 +1,15 @@
 import {Component, inject} from '@angular/core';
 import {JsonPipe} from '@angular/common';
 import {Form, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormUtils} from '../../../utils/form-utils';
+import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dinamyc-page',
   imports: [
     JsonPipe,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslatePipe
   ],
   templateUrl: './dinamyc-page.component.html',
   styleUrl: './dinamyc-page.component.css',
@@ -28,4 +31,6 @@ export class DinamycPageComponent {
   public getFavoritesGames() : FormArray | null {
     return this.myForm.get('favoritesGames') as FormArray;
   }
+
+  protected readonly FormUtils = FormUtils;
 }

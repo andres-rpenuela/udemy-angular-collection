@@ -867,7 +867,7 @@ public getFavoritesGames() : FormArray | null {
 }
 ```
 
-Para vingular el form array:
+Para vincular el form array:
 1. En el div que contiente los elmentos del formuario, se vincula con 'formArrayName'
 2. Se crea un for, donde se obtiene el indice de cada elemento (paso de iteracion)
 3. En cada control, se asocia con la posicion del array que se muestra '[fromControlName]='i'
@@ -897,5 +897,74 @@ Para vingular el form array:
     </div>
     
   </div>
+</div>
+```
+Y cargar los mensajes de errors:
+
+```typescript
+// form.utils.ts
+public static isValidFieldArray(form: FormArray, index: number){
+  return !form.controls[index].errors && form.controls[index].touched;
+}
+
+public static isNonValidFieldArray(form: FormArray, index: number){
+  return form.controls[index].errors && form.controls[index].touched;
+}
+
+public static getFieldErrorArray( form: FormArray, index: number ): [string, any?] | null {
+  const control =  form.controls[index];
+
+  if( !control || !control.errors ){ return null;}
+
+  const errors = control.errors;
+
+  for( const keyError of Object.keys( errors ) ) {
+    switch(keyError){
+      case 'required':
+        return ['form.errors.required'];
+
+      case 'minlength':
+        return ['form.errors.minlength', { requiredLength: errors['minlength'].requiredLength }];
+
+      case 'maxlength':
+        return ['form.errors.maxlength', { requiredLength: errors['maxlength'].requiredLength }];
+
+      case 'min':
+        return ['form.errors.min', { min: errors['min'].min }];
+
+      case 'max':
+        return ['form.errors.max', { max: errors['max'].max }];
+
+      case 'email':
+        return ['form.errors.email'];
+    }
+  }
+
+  return null;
+}
+```
+
+En la vista
+
+```angular181html
+ <!-- se vincula con el formulario el div -->
+<div class="mb-1" formArrayName="favoritesGames">
+  @for( favoriteGame of getFavoritesGames()?.controls; track $index; let i = $index){
+    <div class="input-group">
+      <!-- se vinula el indice del array con el control -->
+      <input class="form-control" [formControlName]="i" >
+
+      <button class="btn btn-outline-danger"
+              type="button">
+        Eliminar
+      </button>
+    </div>
+    @if(FormUtils.isNonValidFieldArray(getFavoritesGames()!,i)){
+      <span class="form-text text-danger">
+              {{ FormUtils.getFieldErrorArray(getFavoritesGames()!,i)![0] | translate: FormUtils.getFieldErrorArray(getFavoritesGames()!,i)![1] }}
+            </span>
+    }
+  }
+
 </div>
 ```
