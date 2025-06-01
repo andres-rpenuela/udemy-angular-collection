@@ -985,3 +985,55 @@ Mientras, quer para mostrar el mensaje del control que es un array:
   }
 </div>
 ```
+
+## Añadir elementos al formArray dinamicamente
+
+Se crea un control aislado en el comtrolador
+
+```typescript
+// control aislado
+public newFavorite = new FormControl('', Validators.required);
+//public newFavorite = this.formBuilder.control([]);
+```
+
+Se asocaido este controaldro como propiedad de un elemento de control, y cuando se pulsa enter se agrege su valor
+
+```angular181html
+<!-- Agregar Favorito -->
+<div class="mb-3 row">
+  <label class="col-sm-3 col-form-label">Agregar</label>
+  <div class="col-sm-9">
+
+    <div class="input-group">
+      <input class="form-control"
+             placeholder="Agregar favorito"
+             [formControl]="newFavorite"
+             (keydown.enter)="onAddToFavorites()">
+
+
+      <button class="btn btn-outline-primary"
+              type="button">
+        Agregar favorito
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+Y el meotodo para añadir el control
+
+```typescript
+// refactor
+get favoritesGames() : FormArray | null {
+  return this.myForm.get('favoritesGames') as FormArray;
+}
+
+public onAddToFavorites(){
+  if( this.newFavoriteGame.invalid) return;
+
+  const newGame = this.newFavoriteGame.value;
+
+  // OPCION A. añadir el control
+  this.favoritesGames?.push(this.formBuilder.control( newGame, Validators.required) )
+}
+```

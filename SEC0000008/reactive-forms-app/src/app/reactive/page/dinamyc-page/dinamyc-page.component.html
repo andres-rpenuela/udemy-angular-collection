@@ -27,11 +27,14 @@
 
       <div class="input-group">
         <input class="form-control"
-               placeholder="Agregar favorito">
+               placeholder="Agregar favorito"
+              [formControl]="newFavorite"
+              (keydown.enter)="onAddToFavorites()">
 
 
         <button class="btn btn-outline-primary"
-                type="button">
+                type="button"
+                (click)="onAddToFavorites()">
           Agregar favorito
         </button>
       </div>
@@ -46,7 +49,7 @@
 
       <!-- se vincula con el formulario el div -->
       <div class="mb-1" formArrayName="favoritesGames">
-        @for( favoriteGame of getFavoritesGames()?.controls; track $index; let i = $index){
+        @for( favoriteGame of favoritesGames?.controls; track $index; let i = $index){
           <div class="input-group">
             <!-- se vinula el indice del array con el control -->
             <input class="form-control" [formControlName]="i" >
@@ -56,9 +59,9 @@
               Eliminar
             </button>
           </div>
-          @if(FormUtils.isNonValidFieldArray(getFavoritesGames()!,i)){
+          @if(FormUtils.isNonValidFieldArray(favoritesGames!,i)){
             <span class="form-text text-danger">
-              {{ FormUtils.getFieldErrorArray(getFavoritesGames()!,i)![0] | translate: FormUtils.getFieldErrorArray(getFavoritesGames()!,i)![1] }}
+              {{ FormUtils.getFieldErrorArray(favoritesGames!,i)![0] | translate: FormUtils.getFieldErrorArray(favoritesGames!,i)![1] }}
             </span>
           }
         }

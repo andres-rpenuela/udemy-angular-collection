@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {JsonPipe} from '@angular/common';
-import {Form, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Form, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {FormUtils} from '../../../utils/form-utils';
 import {TranslatePipe} from '@ngx-translate/core';
 
@@ -28,9 +28,25 @@ export class DinamycPageComponent {
     ],[Validators.required, Validators.minLength(3)] )
   });
 
-  public getFavoritesGames() : FormArray | null {
+  // control aislado
+  public newFavorite = new FormControl('', Validators.required);
+  //public newFavorite = this.formBuilder.control([]);
+
+  // refactor (crea un propiedad automacticamente 'private _favoirteGmaes"
+  get favoritesGames() : FormArray | null {
     return this.myForm.get('favoritesGames') as FormArray;
   }
 
   protected readonly FormUtils = FormUtils;
+
+  public onAddToFavorites(){
+    if( this.newFavorite.invalid) return;
+
+    const newGame = this.newFavorite.value;
+
+    // OPCION A. añadir el control
+    this.favoritesGames?.push(this.formBuilder.control( newGame, Validators.required) )
+
+    this.newFavorite.reset('');
+  }
 }
