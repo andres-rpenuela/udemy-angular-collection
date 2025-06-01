@@ -1008,8 +1008,8 @@ Se asocaido este controaldro como propiedad de un elemento de control, y cuando 
       <input class="form-control"
              placeholder="Agregar favorito"
              [formControl]="newFavorite"
-             (keydown.enter)="onAddToFavorites()">
-
+             (keydown.enter)="onAddToFavorites()"
+             (keydown.enter)="$event.preventDefault()">
 
       <button class="btn btn-outline-primary"
               type="button">
@@ -1019,6 +1019,10 @@ Se asocaido este controaldro como propiedad de un elemento de control, y cuando 
   </div>
 </div>
 ```
+
+> Nota: Para prevenir la propagacion de ventos al pulstar "enter"
+> y se envíe el formulairio: `keydown.enter)="$event.preventDefault()"`
+
 
 Y el meotodo para añadir el control
 
