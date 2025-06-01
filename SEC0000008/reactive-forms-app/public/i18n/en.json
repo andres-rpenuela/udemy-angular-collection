@@ -1,0 +1,14 @@
+{
+  "WELCOME_MESSAGE": "Welcome",
+  "THANK_YOU": "Thank you for using our app.",
+  "form": {
+    "errors": {
+      "required": "This field is required",
+      "minlength": "Minimum of {{ requiredLength }} characters or elements",
+      "maxlength": "Maximum of {{ requiredLength }} characters or elements",
+      "min": "Minimum allowed value: {{ min }}",
+      "max": "Maximum allowed value: {{ max }}",
+      "email": "Invalid email address"
+    }
+  }
+}
