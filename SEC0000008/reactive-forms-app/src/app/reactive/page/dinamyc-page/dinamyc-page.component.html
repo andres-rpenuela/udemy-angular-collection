@@ -55,7 +55,8 @@
             <input class="form-control" [formControlName]="i" >
 
             <button class="btn btn-outline-danger"
-                    type="button">
+                    type="button"
+                    (click)="onDeleteFavorite(i)">
               Eliminar
             </button>
           </div>
@@ -101,6 +102,14 @@
 <span>Value</span>
 <pre>{{ myForm.value | json }}</pre>
 <br>
+
+<span>Touched</span>
+<pre>{{ myForm.touched | json }}</pre>
+<br>
+
+<span>Pristine</span>
+<pre>{{ myForm.pristine | json }}</pre>
+
 
 <span>Agregar Juego</span>
 <!--<pre>{{ myForm.controls['favoritesGames'].value | json }}</pre>-->

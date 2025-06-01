@@ -49,4 +49,9 @@ export class DinamycPageComponent {
 
     this.newFavorite.reset('');
   }
+
+  public onDeleteFavorite(index :number){
+    this.favoritesGames?.removeAt(index);
+    this.favoritesGames?.markAllAsTouched();
+  }
 }

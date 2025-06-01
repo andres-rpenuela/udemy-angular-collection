@@ -1037,3 +1037,48 @@ public onAddToFavorites(){
   this.favoritesGames?.push(this.formBuilder.control( newGame, Validators.required) )
 }
 ```
+Eliminar un elmento del form de arrya
+
+```typescript
+public onDeleteFavorite(index :number){
+  this.favoritesGames?.removeAt(index);
+  this.favoritesGames?.markAllAsTouched();
+}
+```
+
+```angular181html
+<!-- Lista de Juegos Favoritos -->
+<div class="mb-3 row">
+  <label class="col-sm-3 col-form-label">Favoritos</label>
+  <div class="col-sm-9">
+
+    <!-- se vincula con el formulario el div -->
+    <div class="mb-1" formArrayName="favoritesGames">
+      @for( favoriteGame of favoritesGames?.controls; track $index; let i = $index){
+        <div class="input-group">
+          <!-- se vinula el indice del array con el control -->
+          <input class="form-control" [formControlName]="i" >
+
+          <button class="btn btn-outline-danger"
+                  type="button"
+                  (click)="onDeleteFavorite(i)">
+            Eliminar
+          </button>
+        </div>
+        @if(FormUtils.isNonValidFieldArray(favoritesGames!,i)){
+          <span class="form-text text-danger">
+              {{ FormUtils.getFieldErrorArray(favoritesGames!,i)![0] | translate: FormUtils.getFieldErrorArray(favoritesGames!,i)![1] }}
+            </span>
+        }
+      }
+
+    </div>
+    @if(FormUtils.isNonValidField(myForm,'favoritesGames')){
+      <span class="form-text text-danger">
+              {{ FormUtils.getFieldError(myForm,'favoritesGames')![0] | translate: FormUtils.getFieldError(myForm,'favoritesGames')![1] }}
+            </span>
+    }
+
+  </div>
+</div>
+```
