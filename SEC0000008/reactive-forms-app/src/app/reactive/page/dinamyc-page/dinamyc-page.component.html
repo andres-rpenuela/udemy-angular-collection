@@ -1,7 +1,7 @@
 <h2>Reactivos: <small> Dinámicos </small></h2>
 <hr>
 
-<form autocomplete="off" [formGroup]="myForm">
+<form autocomplete="off" [formGroup]="myForm" (ngSubmit)="onSubmit()">
 
   <!-- Nombre -->
   <div class="mb-3 row">
@@ -112,5 +112,5 @@
 
 
 <span>Agregar Juego</span>
-<!--<pre>{{ myForm.controls['favoritesGames'].value | json }}</pre>-->
-<!--<pre>{{ myForm.valid | json }}</pre>-->
+<pre>{{ myForm.controls['favoritesGames'].errors | json }}</pre>
+<pre>{{ myForm.value | json }}</pre>

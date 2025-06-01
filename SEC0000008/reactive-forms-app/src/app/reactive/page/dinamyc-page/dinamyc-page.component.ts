@@ -54,4 +54,11 @@ export class DinamycPageComponent {
     this.favoritesGames?.removeAt(index);
     this.favoritesGames?.markAllAsTouched();
   }
+
+  public onSubmit(){
+    this.myForm.markAllAsTouched();
+    if(this.myForm.invalid) return;
+
+    console.log(this.myForm.value);
+  }
 }
