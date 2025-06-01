@@ -4,8 +4,8 @@
   "form": {
     "errors": {
       "required": "Este campo es obligatorio",
-      "minlength": "Mínimo de {{ requiredLength }} caracteres",
-      "maxlength": "Máximo de {{ requiredLength }} caracteres",
+      "minlength": "Mínimo de {{ requiredLength }} caracteres o elementos",
+      "maxlength": "Máximo de {{ requiredLength }} caracteres o elementos",
       "min": "Valor mínimo permitido: {{ min }}",
       "max": "Valor máximo permitido: {{ max }}",
       "email": "Correo electrónico no válido"

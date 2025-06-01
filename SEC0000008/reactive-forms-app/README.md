@@ -968,3 +968,20 @@ En la vista
 
 </div>
 ```
+
+Mientras, quer para mostrar el mensaje del control que es un array:
+
+```angular181html
+<div class="col-sm-9">
+
+  <!-- se vincula con el formulario el div -->
+  <div class="mb-1" formArrayName="favoritesGames">
+    <!-- .... -->
+  </div>
+  @if(FormUtils.isNonValidField(myForm,'favoritesGames')){
+    <span class="form-text text-danger">
+      {{ FormUtils.getFieldError(myForm,'favoritesGames')![0] | translate: FormUtils.getFieldError(myForm,'favoritesGames')![1] }}
+    </span>
+  }
+</div>
+```

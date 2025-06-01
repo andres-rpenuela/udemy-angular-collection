@@ -1,4 +1,4 @@
-import {FormArray, FormGroup} from '@angular/forms';
+import {FormArray, FormGroup, ValidationErrors} from '@angular/forms';
 
 export class FormUtils {
 
@@ -48,27 +48,6 @@ export class FormUtils {
 
     const errors = control.errors;
 
-    for( const keyError of Object.keys( errors ) ) {
-      switch(keyError){
-        case 'required':
-          return ['form.errors.required'];
-
-        case 'minlength':
-          return ['form.errors.minlength', { requiredLength: errors['minlength'].requiredLength }];
-
-        case 'maxlength':
-          return ['form.errors.maxlength', { requiredLength: errors['maxlength'].requiredLength }];
-
-        case 'min':
-          return ['form.errors.min', { min: errors['min'].min }];
-
-        case 'max':
-          return ['form.errors.max', { max: errors['max'].max }];
-
-        case 'email':
-          return ['form.errors.email'];
-      }
-    }
     // for( const keyError of Object.keys( errors ) ) {
     //   switch(keyError){
     //     case 'required':
@@ -83,8 +62,7 @@ export class FormUtils {
     //   }
     // }
 
-    return null;
-
+    return FormUtils.getTextError( errors );
   }
 
 
@@ -95,6 +73,11 @@ export class FormUtils {
 
     const errors = control.errors;
 
+    return FormUtils.getTextError( errors );
+
+  }
+
+  private static getTextError(errors: ValidationErrors) : [string, any?] | null {
     for( const keyError of Object.keys( errors ) ) {
       switch(keyError){
         case 'required':
@@ -116,7 +99,6 @@ export class FormUtils {
           return ['form.errors.email'];
       }
     }
-
     return null;
   }
 }
