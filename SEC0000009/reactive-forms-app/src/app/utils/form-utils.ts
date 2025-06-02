@@ -24,7 +24,7 @@ export class FormUtils {
   public static isNonValidField(form: FormGroup, fieldName: string){
     console.log('Validando el campo: ',fieldName)
     const control = form.get(fieldName);
-
+    debugger;
     return !!control && control.touched && control.invalid;
   }
 
