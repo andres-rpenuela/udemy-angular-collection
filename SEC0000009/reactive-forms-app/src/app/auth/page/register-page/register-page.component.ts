@@ -1,10 +1,15 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {JsonPipe} from '@angular/common';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormUtils} from '../../../utils/form-utils';
+import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register-page',
   imports: [
-    JsonPipe
+    JsonPipe,
+    ReactiveFormsModule,
+    TranslatePipe
   ],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css',
@@ -19,4 +24,28 @@ export class RegisterPageComponent {
    * password -> obligatorio y min 6 caracteres
    * password2 -> obligatorio (confirmPassword, sería un mejor nombre)
    */
+
+  private formBuilder = inject(FormBuilder);
+
+
+  public myForm :FormGroup = this.formBuilder.group({
+    name: ['', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
+    username: ['', [Validators.required,Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    password2: ['', [Validators.required, Validators.minLength(6)]],
+  });
+
+  public onSubmit(){
+    console.log(this.myForm);
+
+    if(this.myForm.invalid){
+      this.myForm.markAllAsTouched();
+      return;
+    }
+
+    throw new Error('Method not implemented.');
+  }
+
+  protected readonly FormUtils = FormUtils;
 }
