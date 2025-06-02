@@ -8,7 +8,8 @@
       "maxlength": "Máximo de {{ requiredLength }} caracteres o elementos",
       "min": "Valor mínimo permitido: {{ min }}",
       "max": "Valor máximo permitido: {{ max }}",
-      "email": "Correo electrónico no válido"
+      "email": "Correo electrónico no válido",
+      "pattern": "Inválido, no coincide con le patrón {{ expression }}"
     }
   }
 }

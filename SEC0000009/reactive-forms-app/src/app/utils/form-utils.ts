@@ -2,6 +2,11 @@ import {FormArray, FormGroup, ValidationErrors} from '@angular/forms';
 
 export class FormUtils {
 
+  // Expresiones reguales
+  static namePattern = '([a-zA-Z]+) ([a-zA-Z]+)';
+  static emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
+  static notOnlySpacesPattern = '^[a-zA-Z0-9]+$';
+
   /**
    * Verifica si un campo de formulario es válido.
    *
@@ -24,7 +29,7 @@ export class FormUtils {
   public static isNonValidField(form: FormGroup, fieldName: string){
     console.log('Validando el campo: ',fieldName)
     const control = form.get(fieldName);
-    debugger;
+
     return !!control && control.touched && control.invalid;
   }
 
@@ -97,6 +102,15 @@ export class FormUtils {
 
         case 'email':
           return ['form.errors.email'];
+
+        case 'pattern':
+          if( errors['pattern']?.requiredPattern === FormUtils.emailPattern){
+            return ['form.errors.email'];
+          }else{
+            return ['form.errors.pattern', { expression: errors['pattern'].requiredPattern }];
+          }
+        default:
+          return [`Error validacion no controaldo ${keyError}`];
       }
     }
     return null;

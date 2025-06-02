@@ -8,7 +8,8 @@
       "maxlength": "Maximum of {{ requiredLength }} characters or elements",
       "min": "Minimum allowed value: {{ min }}",
       "max": "Maximum allowed value: {{ max }}",
-      "email": "Invalid email address"
+      "email": "Invalid email address",
+      "pattern": "Invalid, not mach pattern {{ expression }}"
     }
   }
 }

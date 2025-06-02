@@ -35,7 +35,7 @@
 
           @if( FormUtils.isNonValidField(myForm,'email')){
             <span class="form-text text-danger">
-            {{ FormUtils.getFieldError(myForm,'email')![0] | translate: FormUtils.getFieldError(myForm,'email')![1] }}
+            {{ FormUtils.getFieldError(myForm,'email')![0] | translate }}
 <!--              mensaje de error del email-->
             </span>
           }
