@@ -1166,3 +1166,54 @@ En la vista con:
 ```
 
 Se podrá ver los erroes del objeto `validtors`
+
+
+--
+
+# Validador asincrono
+
+Se crea una funcion "async" que espera a que se reseulva una probmesa, observable y valide el valor del control
+```typescript
+// validacion asincrona (igual que sincorna pero con la palabra reservada async)
+public static async   checkingServerResponse(control: FormControl): Promise<ValidationErrors | null>{
+  console.log('validando contra servidor')
+  await FormUtils.sleep(); // espera lo que tarda en resolverse la promesa....
+
+  // valor del formulario
+  const value = control.value;
+
+  if(value == 'hola@mundo.com'){
+  return {
+    emailTaken: true
+  }
+}
+
+return null;
+}
+
+// funcion asyn
+private static sleep(): Promise<boolean> {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(true), 2500);
+  });
+}
+```
+
+Añadir el validador:
+
+```typescript
+public myForm :FormGroup = this.formBuilder.group({
+    name: ['', [Validators.required,Validators.pattern( FormUtils.namePattern )]],
+    email: ['', [Validators.required, Validators.pattern( FormUtils.emailPattern )],[FormUtils.checkingServerResponse]],
+    username: ['', [Validators.required,Validators.minLength(6),Validators.pattern( FormUtils.notOnlySpacesPattern )]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    password2: ['', [Validators.required, Validators.minLength(6)]],
+  },
+  // validadres sincronos: Opción A, no valida, porque es un array de validaodres no un bojeto de array de validdores
+  //[ this.equalStringFields('password','password2') ]
+  // validadres sincronos: Opción B, valida, porque el segundo argumento se pasa correctamente como objeto que reconoce angular
+  {
+    validators: [ FormUtils.equalStringFields('password','password2')],
+  }
+);
+```

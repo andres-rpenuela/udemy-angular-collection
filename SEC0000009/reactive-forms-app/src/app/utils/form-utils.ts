@@ -1,4 +1,4 @@
-import {AbstractControl, FormArray, FormGroup, ValidationErrors} from '@angular/forms';
+import {AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors} from '@angular/forms';
 
 export class FormUtils {
 
@@ -109,13 +109,16 @@ export class FormUtils {
           }else{
             return ['form.errors.pattern', { expression: errors['pattern'].requiredPattern }];
           }
+        case 'emailTaken':
+          return ['El correo electroncico esta siendo usado por otro usuario']
         default:
-          return [`Error validacion no controaldo ${keyError}`];
+          return [`Error validacion no controlado ${keyError}`];
       }
     }
     return null;
   }
 
+  // validacion sincrona
   public static equalStringFields(fieldOne :string, fieldTwo :string){
     return ( formGroup : AbstractControl ) => {
       const source = formGroup.get(fieldOne)?.value;
@@ -134,5 +137,29 @@ export class FormUtils {
       };
 
     }
+  }
+
+  // validacion asincrona (igual que sincorna pero con la palabra reservada async)
+  public static async   checkingServerResponse(control: FormControl): Promise<ValidationErrors | null>{
+    console.log('validando contra servidor')
+    await FormUtils.sleep(); // espera lo que tarda en resolverse la promesa....
+
+    // valor del formulario
+    const value = control.value;
+
+    if(value == 'hola@mundo.com'){
+      return {
+        emailTaken: true
+      }
+    }
+
+    return null;
+  }
+
+  // funcion asyn
+  private static sleep(): Promise<boolean> {
+    return new Promise(resolve => {
+      setTimeout(() => resolve(true), 2500);
+    });
   }
 }
