@@ -1086,3 +1086,80 @@ public onDeleteFavorite(index :number){
   </div>
 </div>
 ```
+
+## Añadir un validador personalizado
+
+Se crea un método que devuelva una funcion
+
+```typescript
+public equalStringFields(fieldOne :string, fieldTwo :string){
+  return ( formGroup : AbstractControl ) => {
+    const source = formGroup.get(fieldOne)?.value;
+    const target = formGroup.get(fieldTwo)?.value;
+
+    if( source == target){
+      return null;
+    }
+
+    return {
+      equalStringFields : {
+        fieldsEquals: false,
+        targetField : fieldTwo,
+        sourceField : fieldOne,
+      }
+    };
+
+  }
+}
+```
+
+En el formulario se añade el validador
+```typescript
+public myForm :FormGroup = this.formBuilder.group({
+    name: ['', [Validators.required,Validators.pattern( FormUtils.namePattern )]],
+    email: ['', [Validators.required, Validators.pattern( FormUtils.emailPattern )]],
+    username: ['', [Validators.required,Validators.minLength(6),Validators.pattern( FormUtils.notOnlySpacesPattern )]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    password2: ['', [Validators.required, Validators.minLength(6)]],
+  },
+  // validadres sincronos: Opción A, no valida, porque es un array de validaodres no un bojeto de array de validdores
+  //[ this.equalStringFields('password','password2') ]
+  // validadres sincronos: Opción B, valida, porque el segundo argumento se pasa correctamente como objeto que reconoce angular
+  {
+    validators: [this.equalStringFields('password','password2')],
+  }
+);
+```
+
+> Nota: Sintaxis válida de FormBuilder.group():
+> ```typescript
+> group(
+>   controlsConfig: { [key: string]: any },
+>   options?: AbstractControlOptions
+> ): FormGroup;
+> ```
+> Donde options debe ser un objeto con una de estas claves:
+> * validators?: ValidatorFn | ValidatorFn[]
+> * asyncValidators?: AsyncValidatorFn | AsyncValidatorFn[]
+> * updateOn?: 'change' | 'blur' | 'submit'
+> 
+> Por esta razón, la sintaxis válida es:
+> ```typescript
+> public myForm: FormGroup = this.fb.group(
+>   {
+>     // campos...
+>   },
+>   {
+>     validators: [this.equalStringFields('password', 'password2')]
+>   }
+> );
+>```
+
+En la vista con:
+
+```angular181html
+<h2>Form errors</h2>
+<pre>{{ myForm.errors | json }}</pre>
+```
+
+Se podrá ver los erroes del objeto `validtors`
