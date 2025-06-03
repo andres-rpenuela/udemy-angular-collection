@@ -111,6 +111,9 @@ export class FormUtils {
           }
         case 'emailTaken':
           return ['El correo electroncico esta siendo usado por otro usuario']
+
+        case 'noUserStrider':
+          return [`El username ${errors['user']} esta siendo ocupado`]
         default:
           return [`Error validacion no controlado ${keyError}`];
       }
@@ -161,5 +164,18 @@ export class FormUtils {
     return new Promise(resolve => {
       setTimeout(() => resolve(true), 2500);
     });
+  }
+
+  // ejercicio: Validar sincrona que el usarname no sea Strider
+  public static noUserStrider(control:FormControl) : ValidationErrors | null{
+
+    if( control.value == 'Strider'){
+      return {
+        noUserStrider: true,
+        user: control.value
+      }
+    }
+
+    return null;
   }
 }
