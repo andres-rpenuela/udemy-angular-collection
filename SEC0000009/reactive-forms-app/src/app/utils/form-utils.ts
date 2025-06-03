@@ -1,4 +1,4 @@
-import {FormArray, FormGroup, ValidationErrors} from '@angular/forms';
+import {AbstractControl, FormArray, FormGroup, ValidationErrors} from '@angular/forms';
 
 export class FormUtils {
 
@@ -114,5 +114,25 @@ export class FormUtils {
       }
     }
     return null;
+  }
+
+  public static equalStringFields(fieldOne :string, fieldTwo :string){
+    return ( formGroup : AbstractControl ) => {
+      const source = formGroup.get(fieldOne)?.value;
+      const target = formGroup.get(fieldTwo)?.value;
+
+      if( source == target){
+        return null;
+      }
+
+      return {
+        equalStringFields : {
+          fieldsEquals: false,
+          targetField : fieldTwo,
+          sourceField : fieldOne,
+        }
+      };
+
+    }
   }
 }
