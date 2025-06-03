@@ -1160,6 +1160,9 @@ En la vista con:
 ```angular181html
 <h2>Form errors</h2>
 <pre>{{ myForm.errors | json }}</pre>
+
+
+<!-- 
 ```
 
 Se podrá ver los erroes del objeto `validtors`

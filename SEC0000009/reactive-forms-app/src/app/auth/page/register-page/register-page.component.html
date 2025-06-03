@@ -36,7 +36,7 @@
           @if( FormUtils.isNonValidField(myForm,'email')){
             <span class="form-text text-danger">
             {{ FormUtils.getFieldError(myForm,'email')![0] | translate }}
-<!--              mensaje de error del email-->
+              <!--              mensaje de error del email-->
             </span>
           }
         </div>
@@ -54,7 +54,7 @@
           @if( FormUtils.isNonValidField(myForm,'username')){
             <span class="form-text text-danger">
             {{ FormUtils.getFieldError(myForm,'username')![0] | translate: FormUtils.getFieldError(myForm,'username')![1] }}
-<!--                El username no puede ser Strider-->
+              <!--                El username no puede ser Strider-->
             </span>
           }
         </div>
@@ -72,7 +72,7 @@
           @if( FormUtils.isNonValidField(myForm,'password')){
             <span class="form-text text-danger">
             {{ FormUtils.getFieldError(myForm,'password')![0] | translate: FormUtils.getFieldError(myForm,'password')![1] }}
-<!--                 La contraseña debe de ser mayor de 6 caracteres.-->
+              <!--                 La contraseña debe de ser mayor de 6 caracteres.-->
             </span>
           }
         </div>
@@ -90,7 +90,7 @@
           @if( FormUtils.isNonValidField(myForm,'password2')){
             <span class="form-text text-danger">
             {{ FormUtils.getFieldError(myForm,'password2')![0] | translate: FormUtils.getFieldError(myForm,'password2')![1] }}
-<!--                 Las contraseñas deben de ser iguales.-->
+              <!--                 Las contraseñas deben de ser iguales.-->
             </span>
           }
         </div>
@@ -98,7 +98,17 @@
 
 
       <div class="row">
+
         <div class="col">
+
+          @if( myForm.errors && myForm.touched){
+            @if( myForm.errors['equalStringFields']){
+              <span class="text-danger">
+                Las contrasseñas no coincide
+              </span>
+            }
+          }
+
           <button class="btn btn-primary float-end"
                   type="submit">
             Crear
