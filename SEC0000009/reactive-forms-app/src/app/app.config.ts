@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {HttpClient, provideHttpClient} from '@angular/common/http';
+import {HttpClient, provideHttpClient, withFetch} from '@angular/common/http';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 // registrar idiomas
@@ -21,8 +21,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
     provideRouter(routes),
-    // traducto con pipe
-    provideHttpClient(),
+    // traductor con pipe // witchFetch(), para usar el fecth nativo del navegador
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {
