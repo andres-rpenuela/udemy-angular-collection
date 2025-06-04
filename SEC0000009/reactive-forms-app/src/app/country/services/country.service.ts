@@ -17,7 +17,7 @@ export class CountryService {
 
   constructor() { }
 
-  private _regions = [
+  private _regions: REGION[] = [
     'Africa',
     'Americas',
     'Asia',
@@ -25,7 +25,7 @@ export class CountryService {
     'Oceania'
   ];
 
-  get regions(){
+  get regions() :REGION[]{
     // copia de region
     return [...this._regions];
   }

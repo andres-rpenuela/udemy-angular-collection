@@ -22,6 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
     provideRouter(routes),
     // traductor con pipe // witchFetch(), para usar el fecth nativo del navegador
+    provideHttpClient(withFetch()),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {
