@@ -1273,3 +1273,63 @@ onFormChanged = effect( ( onCleanup ) =>{
 
 
 ```
+
+--
+
+## Concatenar dos observables
+
+```typescript
+// efecto
+onFormChanged = effect( ( onCleanup ) =>{
+  const regionSubscription = this.onRegionChanged();
+
+  // Se llama cuando el efecto es destruido
+  onCleanup( ()=>{
+    regionSubscription.unsubscribe()
+    console.log('Limpiando');
+  });
+})
+
+```
+
+Logica para obtener los countries
+```typescript
+ private onRegionChanged() : Subscription {
+
+  return this.myForm.get('region')!.valueChanges
+    .pipe(
+      tap( (region ) => console.log(region) ),
+      tap( () => this.myForm.get('country')!.setValue('') ) ,// limpiar el valor
+      tap( () => this.myForm.get('border')!.setValue('') ), // limpiar el valor
+      tap( () => {
+        this.countriesByRegion.set([]);
+        this.borders.set([]);
+      }),
+      // concatena otro observable
+      switchMap( region => this.countryService.getCountry(region!))
+    )
+    .subscribe( (countries: Country[]) => {
+      console.log(countries);
+      this.countriesByRegion.set(countries);
+    })
+}
+```
+
+--
+
+# Añadir control de error en peticion get
+
+```typescript
+return this.http.get<Country[]>(url).pipe(
+  catchError(error => {
+    if (error.status === 404) {
+      console.warn('No se encontraron resultados (404)');
+    } else {
+      console.error('Error inesperado:', error);
+    }
+
+    // Devolver un array vacío u otro valor por defecto para evitar que falle el flujo
+    return of([]);
+  })
+);
+```

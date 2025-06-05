@@ -27,11 +27,11 @@
       <select formControlName="country" class="form-control">
         <option value="">-- Seleccione País --</option>
 
-        <!--@for(region of regions();track $index){
+        @for(country of countriesByRegion();track $index){
          <option [value]="country.cca3">
-          {{ country.name }}
-        </option>
-        }-->
+           {{ country.name.official }}
+         </option>
+        }
       </select>
     </div>
   </div>

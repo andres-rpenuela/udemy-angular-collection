@@ -13,7 +13,7 @@ export class CountryService {
 
   private http = inject(HttpClient);
 
-  private static readonly baseUrl = "https://restcountries.com/v3.1/";
+  private static readonly baseUrl = "https://restcountries.com/v3.1";
 
   constructor() { }
 
@@ -37,7 +37,18 @@ export class CountryService {
 
     const url = `${CountryService.baseUrl}/region/${region}?fields=cca3,name,borders`;
 
-    return this.http.get<Country[]>(url);
+    return this.http.get<Country[]>(url).pipe(
+      catchError(error => {
+        if (error.status === 404) {
+          console.warn('No se encontraron resultados (404)');
+        } else {
+          console.error('Error inesperado:', error);
+        }
+
+        // Devolver un array vacío u otro valor por defecto para evitar que falle el flujo
+        return of([]);
+      })
+    );
   }
 
   getCountryAlphaCode(alphaCode: string): Observable<Country | null> {
