@@ -1333,3 +1333,33 @@ return this.http.get<Country[]>(url).pipe(
   })
 );
 ```
+
+--
+
+# Unificar varios varios observables 
+
+```typescript
+getCountryNamesByCodesArrays(countryCodes:string[]) : Observable<Country[] > {
+  if( !countryCodes || countryCodes.length === 0 ) return of([]);
+
+  const url = `${CountryService.baseUrl}/alpha/${countryCodes}?fields=cca3,name,borders`;
+  const countriesRequest : Observable<Country>[] = [];
+  
+  countryCodes.forEach(code => {
+    // petiicon http
+    const request : Observable<Country | null>  = this.getCountryAlphaCode(code);
+  
+    // metedes todas aquellas que cuadno se resuevlan no sea null
+    const filteredRequest = request.pipe(
+      filter((country): country is Country => country !== null) // Narrowing de tipo
+    );
+  
+    // registrar peticion
+    countriesRequest.push(filteredRequest);
+  });
+  
+  // permite que se le pase un array de observables, y que este deuvelva el resultado de todas
+  // las peticiones cuando sean resueltas
+  return combineLatest(countriesRequest);
+}
+```

@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {catchError, Observable, of} from 'rxjs';
+import {catchError, combineLatest, filter, Observable, of} from 'rxjs';
 import {Country} from '../interfaces/country';
 
 // tipo de valores permitidos
@@ -62,8 +62,28 @@ export class CountryService {
     );
   }
 
-  getCountryBorderByCode(borders:string[]){
-   // TODO por hacer
+  getCountryNamesByCodesArrays(countryCodes:string[]) : Observable<Country[] > {
+    if( !countryCodes || countryCodes.length === 0 ) return of([]);
+
+    const url = `${CountryService.baseUrl}/alpha/${countryCodes}?fields=cca3,name,borders`;
+    const countriesRequest : Observable<Country>[] = [];
+
+    countryCodes.forEach(code => {
+      // petiicon http
+      const request : Observable<Country | null>  = this.getCountryAlphaCode(code);
+
+      // metedes todas aquellas que cuadno se resuevlan no sea null
+      const filteredRequest = request.pipe(
+        filter((country): country is Country => country !== null) // Narrowing de tipo
+      );
+
+      // registrar peticion
+      countriesRequest.push(filteredRequest);
+    });
+
+    // permite que se le pase un array de observables, y que este deuvelva el resultado de todas
+    // las peticiones cuando sean resueltas
+    return combineLatest(countriesRequest);
   }
 }
 

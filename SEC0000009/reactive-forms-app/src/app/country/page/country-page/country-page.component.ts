@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {JsonPipe} from '@angular/common';
 import {CountryService, REGION} from '../../services/country.service';
 import {Country} from '../../interfaces/country';
-import {Subject, Subscription, switchMap, takeUntil, tap} from 'rxjs';
+import {filter, map, Subject, Subscription, switchMap, takeUntil, tap} from 'rxjs';
 
 @Component({
   selector: 'app-country-page',
@@ -108,4 +108,38 @@ export class CountryPageComponent implements OnDestroy{
     });
 
   }
+
+  // rellenar el tercer selector
+  onCountryChangedEffect = effect( (onCleanup) =>{
+      const countrySubscription = this.onCountryChanged();
+
+    ()=>{
+      //formRegionChanged.unsubscribe();
+      countrySubscription.unsubscribe()
+      console.log('Limpiando');
+    }
+  });
+
+  private onCountryChanged() : Subscription{
+    return this.myForm.get('country')!.valueChanges
+      .pipe(
+        tap( (countryCode ) => console.log(countryCode) ),
+        tap( () => this.myForm.get('border')!.setValue('') ), // limpiar el valor
+        tap( () => {
+          this.borders.set([]);
+        }),
+        filter(countryCode => countryCode ),
+        switchMap( countryCode => this.countryService.getCountryAlphaCode(countryCode!)),
+        filter(country => !!country && Array.isArray(country.borders) && country.borders.length > 0),
+        tap( country =>         console.log('Country Borders: '+country?.borders ) ),
+        map(country => country!.borders ),
+        switchMap( borders => this.countryService.getCountryNamesByCodesArrays(borders) )
+      )
+      .subscribe( countries => {
+        console.log('Countris of borders: '+countries );
+        this.borders.set(countries);
+
+      });
+  }
+
 }
