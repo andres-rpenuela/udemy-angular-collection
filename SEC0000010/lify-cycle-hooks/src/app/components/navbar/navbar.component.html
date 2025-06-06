@@ -1,0 +1,12 @@
+<div class="center-container">
+  @for(route of routes(); track route.title) {
+
+    <a class="button-link"
+       [routerLink]="route.path"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }">
+      {{route.title}}
+    </a>
+  }
+
+</div>
