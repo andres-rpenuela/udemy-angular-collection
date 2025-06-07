@@ -309,13 +309,10 @@ ngOnDestroy() {
 * Usa `ngOnChanges` si dependes de `@Input()`.
 * No abuses de `ngDoCheck`, puede afectar rendimiento.
 
-¿Quieres que te genere una plantilla base con todos estos hooks listos para usar?
-
-# Constructor
-Se ejecuta al crear la instancia del componente/directiva. Ideal para inyectar dependencias.
 
 
-Ejecuion:
+
+Ejemplo Ejecuion:
 
 * HomePageComponent initialized and created constructor() home-page.component.ts:12:12
 * HomePageComponent ngOnInit() called home-page.component.ts:18:12
@@ -324,3 +321,119 @@ Ejecuion:
 * ngAfterContentChecked called home-page.component.ts:37:12
 * ngAfterViewInit called home-page.component.ts:42:12
 * ngAfterViewChecked called home-page.component.ts:47:12
+
+
+## ¿Diferencia de implementar interfaces?
+
+Ninguna, simplemente es una forma de documentar que el componente/directiva implementa esos hooks.
+
+La implementación, no es obligatoria, Angular detectará automáticamente los métodos con los nombres correspondientes y los ejecutará en el momento adecuado.
+## Ejemplo de implementación de hooks
+
+```ts
+import { Component, OnInit, OnDestroy, AfterViewInit, AfterContentInit, AfterContentChecked, AfterViewChecked, DoCheck, Input } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { UserService } from './user.service';
+@Component({
+  selector: 'app-home-page',
+  templateUrl: './home-page.component.html',
+  styleUrls: ['./home-page.component.css']
+})
+export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit, AfterContentInit, AfterContentChecked, DoCheck {
+  @Input() title: string = '';
+  users: any[] = [];
+  subscription!: Subscription;
+
+  constructor(private userService: UserService) {
+    console.log('HomePageComponent initialized and created constructor()');
+  }
+
+  ngOnInit() {
+    console.log('HomePageComponent ngOnInit() called');
+    this.subscription = this.userService.getUsers().subscribe(users => this.users = users);
+  }
+
+  ngOnDestroy() {
+    console.log('HomePageComponent ngOnDestroy() called');
+    this.subscription.unsubscribe();
+  }
+
+  ngAfterViewInit() {
+    console.log('ngAfterViewInit called');
+  }
+
+  //...
+}
+```
+
+
+## 🧠 ¿Qué es `effect()`?
+
+Es una función reactiva de Angular Signals que permite ejecutar lógica **cuando una señal (signal) usada dentro cambia**, o cuando el componente se inicializa. Es muy similar a un `watchEffect()` en Vue o a un `useEffect()` en React.
+
+---
+
+### 📌 Explicación paso a paso
+
+```ts
+basicEffect = effect((onCleanup) => {
+  log('basicEffect', 'Runs when the component is initialized or when any of its dependencies change.');
+
+  onCleanup(() => {
+    log('basicEffect cleanup', 'Runs when the component is destroyed or when the effect is re-run.');
+  });
+});
+```
+
+| Parte                    | Descripción                                                                                                                                                                                         |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `effect(...)`            | Se ejecuta cuando el componente inicia y **cada vez que cambian señales leídas dentro** de este efecto.                                                                                             |
+| `log('basicEffect',...)` | Se imprime cuando el efecto corre, por ejemplo al montarse el componente o cuando cambia una señal usada dentro.                                                                                    |
+| `onCleanup(...)`         | Se ejecuta justo **antes de volver a ejecutar el efecto** (por cambio de señal) o **cuando el componente se destruye**. Es ideal para limpiar recursos (como `unsubscribe`, `clearInterval`, etc.). |
+
+---
+
+### 📍 En qué zonas del ciclo de vida Angular trabaja
+
+| Fase Angular               | ¿Aplica `effect()`?             | Comentario                                             |
+| -------------------------- | ------------------------------- | ------------------------------------------------------ |
+| **Creación (Constructor)** | ❌ No                            | El efecto aún no corre.                                |
+| **ngOnInit**               | ✅ Sí                            | Aquí se ejecuta por primera vez.                       |
+| **ngOnChanges**            | ❌ No directamente               | Pero sí si cambia una señal reactiva.                  |
+| **ngDoCheck**              | ❌                               | No aplica, signals evita este paso.                    |
+| **ngAfterViewInit**        | ✅ (ya ejecutado si hay signals) | Posiblemente ya ha corrido.                            |
+| **ngOnDestroy**            | ✅ (dentro de `onCleanup`)       | Se usa para limpiar efectos al destruir el componente. |
+
+---
+
+### 🧪 Ejemplo de uso práctico
+
+```ts
+@Component({ ... })
+export class MyComponent {
+  count = signal(0);
+
+  basicEffect = effect((onCleanup) => {
+    console.log('El contador es:', this.count());
+
+    onCleanup(() => {
+      console.log('Se destruyó el efecto del contador');
+    });
+  });
+
+  incrementar() {
+    this.count.update(n => n + 1);
+  }
+}
+```
+
+📌 Cada vez que llames a `incrementar()`, el efecto se vuelve a ejecutar y el mensaje se imprime de nuevo.
+
+---
+
+### ✅ Cuándo usar `effect()` y `onCleanup()`
+
+* Para **reaccionar automáticamente** a cambios de datos (signals).
+* Para **limpiar** subscripciones, timeouts o listeners.
+* Ideal en **Angular zoneless** apps (pero también útil en apps normales).
+

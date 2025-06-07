@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {afterEveryRender, afterNextRender, Component, effect} from '@angular/core';
 
 const log = ( ...messages:string[] ) => {
   console.log(`${ messages[0]}: %c${ messages.slice(1).join(' ')}`, 'color: green; font-weight: bold;');
@@ -17,6 +17,13 @@ export class HomePageComponent {
     log('constructor', 'Runs when Angular instantiates the component.');
   }
 
+  basicEffect = effect(( onCleanup) => {
+    log('basicEffect', 'Runs when the component is initialized or when any of its dependencies change.');
+
+      onCleanup(() => {
+        log('basicEffect cleanup', 'Runs when the component is destroyed or when the effect is re-run.');
+      });
+  });
 
   // ngOnInit	Runs once after Angular has initialized all the component's inputs.
   ngOnInit(){
@@ -53,4 +60,18 @@ export class HomePageComponent {
     log('ngAfterViewChecked', 'Runs every time the component\'s view has been checked for changes.');
   }
 
+  // ngOnDestroy	Runs once when the component is about to be destroyed.
+  ngOnDestroy(){
+    log('ngOnDestroy', 'Runs once when the component is about to be destroyed.');
+  }
+
+  // afterNextRender	Runs after the next render cycle, useful for DOM manipulations., Angular core
+  afterNextRenderEffect = afterNextRender(() => {
+    log('afterNextRender', 'Runs once the next time that all components have been rendered to the DOM.');
+  })
+
+  // afterEveryRender	Runs every time all components have been rendered to the DOM, useful for DOM manipulations., Angular core
+  afterEveryRenderEffect = afterEveryRender(  () => {
+    log('afterEveryRender', 'Runs every time all components have been rendered to the DOM.');
+  })
 }
