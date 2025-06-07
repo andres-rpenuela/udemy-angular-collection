@@ -437,3 +437,127 @@ export class MyComponent {
 * Para **limpiar** subscripciones, timeouts o listeners.
 * Ideal en **Angular zoneless** apps (pero también útil en apps normales).
 
+
+# Zoneless vs Zone.js
+
+### 🧠 ¿Qué es `zone.js`?
+
+`zone.js` es una biblioteca usada por Angular para **interceptar y rastrear las operaciones asincrónicas** (como `setTimeout`, `Promise`, eventos del DOM, etc.) y saber **cuándo debe verificar cambios** en la UI.
+
+> Angular lo usa para automatizar el proceso de **detectar cambios** en los datos y actualizar la vista, sin que tú tengas que llamarlo manualmente.
+
+---
+
+### 📦 ¿Cómo funciona `zone.js`?
+
+1. Parchea funciones nativas como `setTimeout`, `fetch`, `addEventListener`, etc.
+2. Cuando una de esas funciones se ejecuta, `zone.js` le dice a Angular:
+
+   > “¡Oye! Algo asincrónico ocurrió, deberías revisar si cambió algo.”
+3. Angular entonces ejecuta **Change Detection** (`ChangeDetectorRef.detectChanges()` internamente).
+
+---
+
+### 🧭 ¿Qué es una aplicación *zoneless*?
+
+Una aplicación *zoneless* **no usa `zone.js`**.
+
+#### ¿Por qué prescindir de `zone.js`?
+
+* Mejora **el rendimiento** en apps grandes.
+* Permite un **control más fino** de cuándo se verifica el DOM.
+* Reduce los falsos positivos en el cambio de estado.
+* Permite una arquitectura más **reactiva y predecible**, usando **Signals**, `effect()`, `computed()`, etc.
+
+---
+
+### 🧮 Comparativa
+
+| Característica                | Con `zone.js`          | Zoneless (sin `zone.js`)      |
+| ----------------------------- | ---------------------- | ----------------------------- |
+| Change detection automático   | ✅ Sí, automático       | ❌ No, tú lo controlas         |
+| Rendimiento                   | Medio (más sobrecarga) | Más eficiente                 |
+| Necesita Signals              | ❌ Opcional             | ✅ Recomendado                 |
+| Patrón tradicional de Angular | ✅                      | ❌ Requiere nueva arquitectura |
+| Código predictivo y reactivo  | ❌ Menos                | ✅ Más claro y controlado      |
+
+---
+
+### 🚦 ¿Cómo Angular detecta si estás usando `zone.js`?
+
+Depende del archivo `main.ts`. Si usas:
+
+```ts
+import 'zone.js'; // 👈 Esto activa zone.js
+```
+o
+
+```ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZoneChangeDetection({ eventCoalescing: true }), // Optional: Use this if you want to enable zone change detection
+    provideRouter(routes),
+  ]
+};
+
+```
+Y en `angular.json` tienes:
+
+```json
+//...
+  "polyfills": [
+  "zone.js"
+  ],
+//..
+```
+Entonces estás usando la detección tradicional.
+
+Pero si usas:
+
+```ts
+// Sin zone.js (zoneless)
+bootstrapApplication(AppComponent, {
+  providers: [],
+  zone: 'noop' // 👈 zoneless
+});
+```
+o
+```ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    //provideZoneChangeDetection({ eventCoalescing: true }), // Optional: Use this if you want to enable zone change detection
+    provideRouter(routes),
+    provideZonelessChangeDetection() // Optional: Use this if you want to enable zoneless change detection
+  ]
+};
+```
+Entonces estás trabajando *zoneless* y necesitas manejar el estado reactivo tú mismo con Signals o `ChangeDetectorRef`.
+> no puedde `provideZoneChangeDetection` y `provideZonelessChangeDetection` al mismo tiempo, ya que son mutuamente excluyentes.
+
+
+Si ahora tenemos el siugiente codigo:
+
+```ts
+constructor() {
+    log('constructor', 'Runs when Angular instantiates the component.');
+
+    // si esta en la zoneless mode activo, entonces se ejcuta, pero la propiedad no se actuailza
+    setTimeout( () => {
+      // note: This simulates an asynchronous operation, like fetching data from a server.
+      this.traditionalProperty = 'The traditional property has been initialized.';
+      log('constructor setTimeout', 'Runs after 2 second to simulate an asynchronous operation.');
+    },2000)
+  }
+```
+> Si se activa `provideZoneChangeDetection` y se desactiva `provideZonelessChangeDetection`, entonces el `setTimeout` se ejecuta y la propiedad `traditionalProperty` se actualiza correctamente, porque `zone.js` detecta el cambio y actualiza la vista.
+---
+
+### ✅ ¿Cuándo deberías usar zoneless?
+
+Usa **zoneless** si:
+
+* Quieres máximo rendimiento (ej: apps grandes, móviles, Angular SSR).
+* Estás dispuesto a usar Signals (`signal()`, `computed()`, `effect()`).
+* Deseas tener control total del flujo reactivo de datos.

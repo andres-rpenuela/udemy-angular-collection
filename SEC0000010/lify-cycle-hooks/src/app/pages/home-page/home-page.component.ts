@@ -1,4 +1,4 @@
-import {afterEveryRender, afterNextRender, Component, effect} from '@angular/core';
+import {afterEveryRender, afterNextRender, Component, effect, signal} from '@angular/core';
 
 const log = ( ...messages:string[] ) => {
   console.log(`${ messages[0]}: %c${ messages.slice(1).join(' ')}`, 'color: green; font-weight: bold;');
@@ -12,9 +12,28 @@ const log = ( ...messages:string[] ) => {
 })
 export class HomePageComponent {
 
+  public traditionalProperty = 'This is a traditional property.';
+  public signalProperty = signal('This is a signal property.');
 
   constructor() {
     log('constructor', 'Runs when Angular instantiates the component.');
+
+    // si esta en la zoneless mode activo, entonces se ejcuta, pero la propiedad no se actuailza
+    // se se activa el zone.js o zona de cambio, entonces se ejecuta y la propiedad se actualiza
+    // la señal cambiara en ambos casos, pero la propiedad tradicional se actualizará en función de la zona activa en angular
+    setTimeout( () => {
+      // note: This simulates an asynchronous operation, like fetching data from a server.
+      this.traditionalProperty = 'The traditional property has been initialized.';
+      log('constructor setTimeout', 'Runs after 2 second to simulate an asynchronous operation.');
+    },2000)
+  }
+
+  changeTraditionalProperty() {
+    this.traditionalProperty = 'The traditional property has been changed.';
+  }
+
+  changeSignalProperty() {
+    this.signalProperty.set('The signal property has been changed.');
   }
 
   basicEffect = effect(( onCleanup) => {
