@@ -134,3 +134,193 @@ Ejemplo con propiedades:
 ```bash
 npx --yes --package @angular/cli@latest ng new lify-cycle-hooks-app --standalone --routing --style=css --strict --skip-tests --defaults
 ```
+
+
+--
+
+# LifeCycle Hooks
+
+Cundo un componente/directiva es creado, Angular ejecuta una serie de métodos en un orden específico. Estos métodos son conocidos como "LifeCycle Hooks" y permiten a los desarrolladores engancharse en diferentes etapas del ciclo de vida del componente/directiva.
+
+Si cuenta con algún metodo cuyo nombre coinida con los hooks, Angular lo ejecutará automáticamente en el momento adecuado, sin necesidad de invocarlo manualmente e implementando la interfaz correspondiente.
+
+Hooks disponibles: [Link](https://angular.dev/guide/components/lifecycle)
+
+Aquí tienes una **redacción clara y profesional** sobre los *ciclos de vida en Angular*, con **ejemplos prácticos**, su **uso recomendado**, y **en qué parte del framework se ejecutan**:
+
+---
+
+## 🌀 Ciclo de Vida en Angular
+
+Angular proporciona una serie de *hooks* (métodos) que permiten a los componentes y directivas reaccionar en diferentes momentos de su existencia: desde su creación, detección de cambios, renderizado y destrucción.
+
+---
+
+### 🔹 **Creation Phase**
+
+#### `constructor()`
+
+* **Cuándo se ejecuta:** Inmediatamente al crear la instancia del componente o directiva.
+* **Para qué se usa:** Inyección de dependencias. No se recomienda inicializar lógica pesada aquí (como llamadas HTTP).
+* **Zona:** Fase previa al ciclo de detección de cambios.
+
+**Ejemplo:**
+
+```ts
+constructor(private userService: UserService) {}
+```
+
+---
+
+### 🔹 **Change Detection Phase**
+
+#### `ngOnInit()`
+
+* **Cuándo:** Después de que Angular ha inicializado todas las propiedades de entrada.
+* **Para qué:** Inicializar datos, ejecutar llamadas a servicios o configurar lógica basada en inputs.
+* **Zona:** Tradicional (NgZone) o zoneless.
+
+```ts
+ngOnInit() {
+  this.userService.getUsers().subscribe(users => this.users = users);
+}
+```
+
+---
+
+#### `ngOnChanges(changes: SimpleChanges)`
+
+* **Cuándo:** Cuando cambian propiedades `@Input()`.
+* **Para qué:** Reaccionar a cambios específicos de inputs.
+* **Zona:** Funciona tanto en zoneless como en zona tradicional.
+
+```ts
+@Input() title: string;
+
+ngOnChanges(changes: SimpleChanges) {
+  if (changes['title']) {
+    console.log('Nuevo título:', changes['title'].currentValue);
+  }
+}
+```
+
+---
+
+#### `ngDoCheck()`
+
+* **Cuándo:** Cada vez que Angular ejecuta la detección de cambios.
+* **Para qué:** Personalizar la detección de cambios (más detallado que `ngOnChanges`).
+* **Zona:** Compatible con zoneless.
+
+```ts
+ngDoCheck() {
+  console.log('Verificando manualmente el componente');
+}
+```
+
+---
+
+### 🔹 **Content Projection**
+
+#### `ngAfterContentInit()`
+
+* **Cuándo:** Una vez que Angular ha proyectado contenido externo en el componente (ng-content).
+* **Zona:** Después de la primera verificación de contenido.
+
+```ts
+ngAfterContentInit() {
+  console.log('Contenido proyectado inicializado');
+}
+```
+
+#### `ngAfterContentChecked()`
+
+* **Cuándo:** Después de cada verificación del contenido proyectado.
+* **Zona:** Detección continua.
+
+---
+
+### 🔹 **View Initialization**
+
+#### `ngAfterViewInit()`
+
+* **Cuándo:** Una vez que la vista del componente (y sus hijos) ha sido inicializada.
+* **Para qué:** Ideal para acceder a `@ViewChild`.
+* **Zona:** Se ejecuta una vez.
+
+```ts
+@ViewChild('inputRef') input!: ElementRef;
+
+ngAfterViewInit() {
+  this.input.nativeElement.focus();
+}
+```
+
+#### `ngAfterViewChecked()`
+
+* **Cuándo:** Cada vez que la vista (o sus hijos) es verificada.
+* **Para qué:** Actualizar UI después de renderizado.
+* **Zona:** Cada ciclo de verificación.
+
+---
+
+### 🔹 **Rendering (Standalone Signals Only)**
+
+#### `afterNextRender`
+
+* **Cuándo:** Después del siguiente render completo de la vista.
+* **Zona:** Signals / Zoneless.
+
+#### `afterEveryRender`
+
+* **Cuándo:** En cada render completo.
+* **Zona:** Signals / Zoneless.
+
+---
+
+### 🔹 **Destruction Phase**
+
+#### `ngOnDestroy()`
+
+* **Cuándo:** Justo antes de que el componente/directiva sea destruido.
+* **Para qué:** Cancelar suscripciones, limpiar timers, destruir observables.
+* **Zona:** Final del ciclo de vida.
+
+```ts
+subscription!: Subscription;
+
+ngOnInit() {
+  this.subscription = this.service.getData().subscribe();
+}
+
+ngOnDestroy() {
+  this.subscription.unsubscribe();
+  console.log('Componente destruido');
+}
+```
+
+---
+
+## ✅ Recomendaciones:
+
+* Usa `constructor` solo para inyecciones.
+* Inicializa lógica en `ngOnInit`.
+* Controla recursos en `ngOnDestroy`.
+* Usa `ngOnChanges` si dependes de `@Input()`.
+* No abuses de `ngDoCheck`, puede afectar rendimiento.
+
+¿Quieres que te genere una plantilla base con todos estos hooks listos para usar?
+
+# Constructor
+Se ejecuta al crear la instancia del componente/directiva. Ideal para inyectar dependencias.
+
+
+Ejecuion:
+
+* HomePageComponent initialized and created constructor() home-page.component.ts:12:12
+* HomePageComponent ngOnInit() called home-page.component.ts:18:12
+* ngDoCheck called home-page.component.ts:27:12
+* ngAfterContentInit called home-page.component.ts:32:12
+* ngAfterContentChecked called home-page.component.ts:37:12
+* ngAfterViewInit called home-page.component.ts:42:12
+* ngAfterViewChecked called home-page.component.ts:47:12
