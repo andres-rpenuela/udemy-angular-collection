@@ -57,3 +57,33 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+
+## Como obtener el titulo de la pagina que se navega
+
+1º Crear un observador que se encargue de obtener el titulo de la pagina que se navega, utilizano el Router de Angular y los eventos de navegación.
+
+```typescript
+ // Inject the Router service to access routing events
+  router = inject(Router);
+
+  // observable for the current page title, using NavigationEnd events
+  pageTitle$ = this.router.events.pipe(
+    filter(event => event instanceof NavigationEnd),
+    tap( event => {console.log('Router event:', event); }),
+    map( event => event.url),
+    map( url => {
+      console.log('Current URL in NavigationEnd:',url);
+      return routes.find(route => `/${route.path}` === url )?.title || 'Unknown Page: Maps App';
+    } )
+  );
+```
+
+2º Subcribirse al observable mediante el async pipe en el template
+
+```html
+  <h1 class="text-2xl font-bold mb-4">
+    {{ pageTitle$ | async }}
+  </h1>
+```

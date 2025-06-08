@@ -33,6 +33,9 @@
         "@schematics/angular:service": {
           "skipTests": true,
           "type": "service"
+        },
+        "@schematics/angular:interface": {
+          "type": "interface"
         }
       },
       "root": "",
