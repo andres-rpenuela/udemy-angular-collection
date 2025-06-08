@@ -80,10 +80,27 @@ For more information on using the Angular CLI, including detailed command refere
   );
 ```
 
-2º Subcribirse al observable mediante el async pipe en el template
+2º Para que funcione el observable, hay que **subcribirse** al observable, para el caso se puede usar **async pipe** en el template
 
 ```html
   <h1 class="text-2xl font-bold mb-4">
     {{ pageTitle$ | async }}
   </h1>
 ```
+
+3º Opcionalmente, se puede convertir el observable en una señal, que gestiona la subripción automáticamente y permite un uso más sencillo en los templates.
+
+```typescript
+  // Convert the observable to a signal for easier use in templates
+  pageTitleSignal = toSignal(this.pageTitle$, { initialValue: 'Loading...' });
+```
+
+3.1. En el template se puede usar la señal directamente
+
+```html
+  <h1 class="text-2xl font-bold mb-4">
+    {{ pageTitleSignal() }}
+  </h1>
+```
+
+> Ambas opciones son válidas, pero el uso de señales es más moderno y recomendado en Angular.

@@ -3,6 +3,7 @@ import {routes} from '../../app.routes';
 import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {filter, map, tap} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-navbar',
@@ -42,6 +43,10 @@ export class NavbarComponent {
       return routes.find(route => `/${route.path}` === url )?.title || 'Unknown Page: Maps App';
     } )
   );
+
+  // convert el observable to a single value, and magnanment the subcription
+  pageTitle = toSignal(this.pageTitle$, {initialValue: 'Maps App'});
+
 
   constructor() {
     // Initialization logic can go here if needed

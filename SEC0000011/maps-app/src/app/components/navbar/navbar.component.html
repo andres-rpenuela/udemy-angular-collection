@@ -17,7 +17,9 @@
   </div>
   <div class="navbar-center">
     <!-- subscribe to pageTitle$ observable and async close the subscription automatic when component is destroyed-->
-    <a class="btn btn-ghost text-xl">{{  pageTitle$ | async }}</a>
+    <!--    <a class="btn btn-ghost text-xl">{{  pageTitle$ | async }}</a>-->
+    <!-- or convert the pageTitle$ to singal with 'toSingal()', also, managment the subcription automatic  -->
+    <a>{{pageTitle()}}</a>
   </div>
   <div class="navbar-end">
     <button class="btn btn-ghost btn-circle">
