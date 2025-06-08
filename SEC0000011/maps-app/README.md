@@ -104,3 +104,81 @@ For more information on using the Angular CLI, including detailed command refere
 ```
 
 > Ambas opciones son válidas, pero el uso de señales es más moderno y recomendado en Angular.
+
+
+--
+
+# Variables de entonro
+
+Levnatar proyecto en Dev
+
+1. clonar repositorio
+2. instalar dependencias
+3. generar el .evn basado en el .env.template
+4. ejecutar el comando `npm run set-envs` para generar los archivos de entorno `environment.ts` y `environment.development.ts`
+
+Este comando lanza un un script que genera el environment.ts y enviroment.development.ts automáticamente a partir de las variables de entorno definidas en el archivo `.env`.
+
+En el git no manejar el control de versión de
+* .env, pero si el .env.template,
+* ni los enviroments, pero si el script
+
+Importatne instalar la depedencia de desarrollo `dotenv`
+
+```bash
+npm install -D dotenv
+```
+
+Script para generar los environment.ts
+
+```bash
+const { writeFileSync, mkdirSync } = require( 'fs');
+
+// reuqeire dotenv to load environment variables from .env file
+
+require( 'dotenv' ).config();
+
+
+const targetPath = './src/environments/environment.ts';
+const targetPathDev = './src/environments/environment.development.ts';
+
+// contenido del fichero de entorno
+const mapboxKey = process.env['MAPBOX_KEY'];
+
+
+if( !mapboxKey ) { //if( !process.env['MAPBOX_KEY']) {
+  throw new Error( 'MAPBOX_KEY is not set in .env file' );
+}
+
+const envFileContent = `
+export const environment = {
+  mapboxKey:"${mapboxKey}"
+};
+`;
+
+// se crea el fichero de entorno (si no existe tambien)
+mkdirSync('./src/environments', { recursive: true });
+
+// se escribe el fichero de entorno
+writeFileSync(targetPath, envFileContent, { encoding: 'utf8' });
+writeFileSync(targetPathDev, envFileContent, { encoding: 'utf8' });
+```
+
+Ejecutar el script
+
+```bash
+...\SEC0000011\maps-app> node .\scripts\set-envs.js
+```
+
+Opcionalmente, se puede crear un script en package.json para ejecutar el script de generación de entornos:
+
+```json
+"scripts": {
+  "set-envs": "node ./scripts/set-envs.js"
+}
+```
+Luego, se puede ejecutar el script con el comando:
+
+```bash
+npm run set-envs
+```
