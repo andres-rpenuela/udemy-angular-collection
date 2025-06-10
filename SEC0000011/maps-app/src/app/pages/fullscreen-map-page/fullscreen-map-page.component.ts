@@ -1,12 +1,13 @@
 import {AfterViewInit, Component, effect, ElementRef, linkedSignal, signal, viewChild} from '@angular/core';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, {LngLat} from 'mapbox-gl';
 import {environment} from '../../../environments/environment';
-import {DecimalPipe} from '@angular/common';
+import {DecimalPipe, JsonPipe} from '@angular/common';
 
 @Component({
   selector: 'app-fullscreen-map-page',
   imports: [
-    DecimalPipe
+    DecimalPipe,
+    JsonPipe
   ],
   templateUrl: './fullscreen-map-page.component.html',
   styleUrl: './fullscreen-map-page.component.css'
@@ -18,6 +19,9 @@ export class FullscreenMapPageComponent implements AfterViewInit {
   protected map = signal<mapboxgl.Map|null>(null);
   // Signal to hold the map instance, initially null
   protected zoom = linkedSignal( () => this.map()?.getZoom() || 14 );
+
+  protected coordinates = linkedSignal( () => this.map()?.getCenter() ||   { lng: -74.5, lat: 40 } );
+
 
   private zoomEffect = effect(() => {
     if( !this.map() || !this.map()?.getZoom() ) return;
@@ -52,16 +56,20 @@ export class FullscreenMapPageComponent implements AfterViewInit {
     //   center: [30, 15]
     // });
 
+    const {lng, lat} = this.coordinates(); // destructure the coordinates signal to get the initial center position
     // Create a new Mapbox map instance, for show streets
     const map = new mapboxgl.Map({
       container: element, // Use the viewChild to get the map container
       style: 'mapbox://styles/mapbox/streets-v12',
       zoom: this.zoom(),
-      center: [-74.5, 40]
+      center: [lng,lat] //[-74.5, 40]
     });
 
-    //this.map.set(map)
+    // Add navigation controls to the map
     this.listenZoomIn(map);
+    this.listenPosition(map);
+    // Set the map instance to the signal
+    this.map.set(map)
   }
 
   // Method to handle zoom in
@@ -73,8 +81,17 @@ export class FullscreenMapPageComponent implements AfterViewInit {
       const newZoom = map.getZoom();
       this.zoom.set(newZoom); // Update the zoom signal with the new zoom level
     });
+  }
 
-    // Set the map instance to the signal
-    this.map.set(map)
+  // Method to listen for map position changes
+  private listenPosition(map: mapboxgl.Map) {
+    if( !map ) return;
+
+    // Listen for move events and log the current center position
+    map.on('moveend', () => {
+      const center: LngLat = map.getCenter();
+      console.log(`Current center: ${center.lng}, ${center.lat}`);
+      this.coordinates.set(center); // Update the coordinates signal with the new center position
+    });
   }
 }
