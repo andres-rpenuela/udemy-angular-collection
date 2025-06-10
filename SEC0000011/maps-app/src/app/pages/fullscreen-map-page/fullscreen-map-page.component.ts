@@ -66,12 +66,26 @@ export class FullscreenMapPageComponent implements AfterViewInit {
     });
 
     // Add navigation controls to the map
+    this.listenLoad(map)
     this.listenZoomIn(map);
     this.listenPosition(map);
     // Set the map instance to the signal
     this.map.set(map)
   }
 
+  private listenLoad(map: mapboxgl.Map) {
+    if( !map ) return;
+
+    // Listen for the 'load' event to ensure the map is fully loaded before adding controls
+    map.on('load', () => {
+      // Add navigation controls to the map
+      map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      map.addControl(new mapboxgl.ScaleControl(), 'bottom-left');
+      console.log('Map loaded and navigation controls added');
+    });
+
+  }
   // Method to handle zoom in
   private listenZoomIn(map: mapboxgl.Map) {
     if( !map ) return;
@@ -94,4 +108,5 @@ export class FullscreenMapPageComponent implements AfterViewInit {
       this.coordinates.set(center); // Update the coordinates signal with the new center position
     });
   }
+
 }
