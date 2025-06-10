@@ -182,3 +182,39 @@ Luego, se puede ejecutar el script con el comando:
 ```bash
 npm run set-envs
 ```
+
+## Uso de Mapbox GL JS
+
+Para utilizar Mapbox GL JS en tu proyecto Angular, sigue estos pasos:
+
+1. Ar a https://www.mapbox.com/ y crear una cuenta gratuita para obtener una clave de acceso (Access Token).
+2. Ir la sección de "Docs" y buscar la sección de "Mapbox GL JS": https://docs.mapbox.com/ 
+3. Instalar el bundler con la librería de Mapbox GL JS: (https://docs.mapbox.com/mapbox-gl-js/guides), opcionalmente se puede usar Mapbox CDN.
+
+```bash
+npm install --save mapbox-gl
+```
+
+4. Incluir el ficheor de CSS eh el head de tu `index.html` o importar el CCS en tu `styles.css`:
+```html
+<link href='https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.css' rel='stylesheet' />
+```
+-- o --
+```css
+/* import 'mapbox-gl/dist/mapbox-gl.css'; */
+@import 'mapbox-gl/dist/mapbox-gl.css';
+```
+
+5. Se imparta y configura el tocken de acceso en el archivo `environment.ts`:
+
+```typescript
+import mapboxgl from 'mapbox-gl'; // or "const mapboxgl = require('mapbox-gl');"
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiYW5kcmVzcnBlbnVlbGEiLCJhIjoiY21ibnAxejVoMWt6azJqcXRmM2FyeTZhMiJ9.hC8rHY-n_unF5FcJchEoRQ';
+const map = new mapboxgl.Map({
+	container: 'map', // container ID
+	style: 'mapbox://styles/mapbox/streets-v12', // style URL
+	center: [-74.5, 40], // starting position [lng, lat]
+	zoom: 9, // starting zoom
+});
+```
