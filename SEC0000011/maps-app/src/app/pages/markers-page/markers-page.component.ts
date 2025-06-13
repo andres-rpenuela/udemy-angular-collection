@@ -2,9 +2,12 @@ import {AfterViewInit, Component, effect, ElementRef, linkedSignal, signal, view
 import mapboxgl from 'mapbox-gl';
 import {environment} from '../../../environments/environment';
 import {DecimalPipe, JsonPipe} from '@angular/common';
+import { v4 as uuid } from 'uuid'; // Import the uuid library to generate unique IDs
 
-
-
+interface Marker{
+  id: string;
+  marker: mapboxgl.Marker;
+}
 @Component({
   selector: 'app-markers-page',
   imports: [
@@ -21,10 +24,16 @@ export class MarkersPageComponent implements AfterViewInit {
   protected zoom = linkedSignal( () => this.map()?.getZoom() || 9) // Signal to hold the zoom level, initially 9
   protected coordinates = linkedSignal( () => this.map()?.getCenter() || { lng: -4.64, lat: 37.19 } ); // Signal to hold the map center coordinates
 
+  //protected markers = signal<mapboxgl.Marker[]>([]); // Signal to hold the markers on the map, initially an empty array
+  protected markers = signal<Marker[]>([]); // Signal to hold the markers on the map, initially an empty array
 
   private zoomEffect = effect(() => {
     if( !this.map() || !this.map()?.getZoom() ) return;
     this.map()!.setZoom(this.zoom()); // Update the map zoom level when the zoom signal changes
+  });
+
+  private markersEffect = effect(() => {
+    console.log('Markers updated:', this.markers());
   });
 
   ngAfterViewInit(): void {
@@ -51,11 +60,6 @@ export class MarkersPageComponent implements AfterViewInit {
       //console.log('Mouse moved:', this.coordinates());
     });
 
-    // Add a click event listener to the map
-    mapView.on("click", (e) => {
-      this.mapClick(e)
-    });
-
     // Add a marker to the map at the initial coordinates
     // https://docs.mapbox.com/mapbox-gl-js/example/add-a-marker/
     const marker1 = new mapboxgl.Marker(
@@ -68,10 +72,19 @@ export class MarkersPageComponent implements AfterViewInit {
       .setLngLat(this.coordinates()) // Use the coordinates signal to set the marker position
       .addTo(mapView);
 
+    // Add the marker to the markers signal
+    this.markers.update(markers => [{ id: uuid(), marker: marker1 },...markers]); // Add the marker to the markers signal
+
     // Add a dragend event listener to the marker, (info cuando el evento deja de moverse
     marker1.on('dragend', (event) => {
       console.log('Marker dragend event data:', event);
     });
+
+    // Add a click event listener to the map
+    mapView.on("click", (e) => {
+      this.mapClick(e)
+    });
+
 
     // Set the map instance to the signal
     this.map.set(mapView); // Set the map instance to the signal
@@ -94,6 +107,8 @@ export class MarkersPageComponent implements AfterViewInit {
     })
       .setLngLat(this.coordinates()) // Use the coordinates signal to set the marker position
       .addTo(this.map()!); // Use the map signal to add the marker to the map
+
+    this.markers.update(markers => [{ id: uuid(), marker: marker1 },...markers]); // Add the marker to the markers signal
 
   }
 

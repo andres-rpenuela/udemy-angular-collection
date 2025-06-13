@@ -218,3 +218,18 @@ const map = new mapboxgl.Map({
 	zoom: 9, // starting zoom
 });
 ```
+
+
+# UUID
+
+Para generar un UUID en Angular, puedes utilizar la librería `uuid`. Esta librería proporciona una forma sencilla de generar identificadores únicos universales (UUIDs).
+
+```shell
+npm install uuid
+```
+
+Uso:
+
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+```
