@@ -4,6 +4,7 @@ import {environment} from '../../../environments/environment';
 import {DecimalPipe, JsonPipe} from '@angular/common';
 
 
+
 @Component({
   selector: 'app-markers-page',
   imports: [
@@ -52,10 +53,7 @@ export class MarkersPageComponent implements AfterViewInit {
 
     // Add a click event listener to the map
     mapView.on("click", (e) => {
-      console.log('Map clicked event data:', e);
-      const marker1 = new mapboxgl.Marker()
-        .setLngLat(this.coordinates()) // Use the coordinates signal to set the marker position
-        .addTo(mapView);
+      this.mapClick(e)
     });
 
     // Add a marker to the map at the initial coordinates
@@ -73,9 +71,32 @@ export class MarkersPageComponent implements AfterViewInit {
     // Add a dragend event listener to the marker, (info cuando el evento deja de moverse
     marker1.on('dragend', (event) => {
       console.log('Marker dragend event data:', event);
-    })
+    });
+
     // Set the map instance to the signal
     this.map.set(mapView); // Set the map instance to the signal
   }
+
+  // Method to handle map click events
+  private mapClick(event: mapboxgl.MapMouseEvent) {
+    if( !this.map() ) return; // Ensure the map instance is available
+
+    console.log('Map clicked event data:', event);
+
+
+    // Method to generate a random hexadecimal color for the marker
+    const color = '#xxxxxx'.replace(/x/g, (y) =>
+      ((Math.random() * 16) | 0).toString(16)
+    );
+
+    const marker1 = new mapboxgl.Marker({
+      color: color, // Use the random color generated for the marker
+    })
+      .setLngLat(this.coordinates()) // Use the coordinates signal to set the marker position
+      .addTo(this.map()!); // Use the map signal to add the marker to the map
+
+  }
+
+
 
 }
