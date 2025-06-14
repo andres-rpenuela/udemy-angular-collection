@@ -7,7 +7,7 @@
 
   @for ( house of houses(); track house.id; let i = $index){
     <!-- card -->
-    <div class="card bg-base-100 shadow-sm">
+    <div class="card bg-base-100 shadow-xl rounded-t-md overflow-hidden">
       <!-- si se marca dentro de <figura/> no se visualiza el mapa del componente <app-min-map> -->
       <app-mini-map [point]=" house.lngLat " [zoom]="14"/>
       <div class="card-body">
