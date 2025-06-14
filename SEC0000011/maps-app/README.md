@@ -233,3 +233,171 @@ Uso:
 ```typescript
 import { v4 as uuidv4 } from 'uuid';
 ```
+
+# Genear build
+
+Compilar
+
+```shell
+
+PS C:\Users\andre\Documents\SourceTree\UdemyAngularCollection\SEC0000011\maps-app> npm i uuid
+
+added 1 package, and audited 600 packages in 28s
+
+105 packages are looking for funding
+  run `npm fund` for details
+
+1 low severity vulnerability
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+PS C:\Users\andre\Documents\SourceTree\UdemyAngularCollection\SEC0000011\maps-app> ng build  
+
+/*! 🌼 daisyUI 5.0.43 */
+Initial chunk files | Names         | Raw size | Estimated transfer size
+main-LDOYZS7W.js    | main          |  1.79 MB |               417.50 kB
+styles-MVGCENXU.css | styles        | 78.93 kB |                10.83 kB
+
+                    | Initial total |  1.86 MB |               428.33 kB
+
+Application bundle generation failed. [47.782 seconds]
+
+▲ [WARNING] TS-998113: AsyncPipe is not used within the template of NavbarComponent [plugin angular-compiler]
+
+    src/app/components/navbar/navbar.component.ts:11:4:
+      11 │     AsyncPipe,
+         ╵     ~~~~~~~~~
+
+
+▲ [WARNING] bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 1.36 MB with a total of 1.86 MB.
+
+
+▲ [WARNING] Module 'mapbox-gl' used by 'src/app/pages/fullscreen-map-page/fullscreen-map-page.component.ts' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+X [ERROR] bundle initial exceeded maximum budget. Budget 1.00 MB was not met by 864.23 kB with a total of 1.86 MB.
+
+
+PS C:\Users\andre\Documents\SourceTree\UdemyAngularCollection\SEC0000011\maps-app> 
+
+```
+
+Esto no indica que hay imports que no se estan usando, que la libreria o modulo 'mapbox-gl" no sigue el estanda que espera Angula y que ocupa mucho, para
+solventar lo de la libreria, se va al 'angular.json' y permitir la libreria
+
+```json
+...
+"architect": {
+  "build": {
+  "builder": "@angular/build:application",
+  "options": {
+    "allowedCommonJsDependencies": [
+      "mapbox-gl"
+    ],
+  "browser": "src/main.ts",
+...
+```
+
+Si volvemos a generar la build, ya no aparece el problmea del estandar de la librería
+
+```shell
+> ng build
+
+
+▲ [WARNING] bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 1.36 MB with a total of 1.86 MB.
+
+
+X [ERROR] bundle initial exceeded maximum budget. Budget 1.00 MB was not met by 864.23 kB with a total of 1.86 MB.
+```
+
+Incrementamos el tamaño, en `angular.json`
+
+```json
+...
+"configurations": {
+  "production": {
+    "budgets": [
+    {
+      "type": "initial",
+      "maximumWarning": "500kB",
+      "maximumError": "1MB"
+    },
+    {
+      "type": "anyComponentStyle",
+      "maximumWarning": "4kB",
+      "maximumError": "8kB"
+    }
+    ],
+    "outputHashing": "all"
+  },
+...
+```
+en conreto
+```json
+  // aumentar los parametros 
+  {
+      "type": "initial",
+      "maximumWarning": "500kB",
+      "maximumError": "1MB"
+    },
+```
+
+Y se segenera la build, ya solo muestraría warngins
+
+```shell
+PS C:\Users\andre\Documents\SourceTree\UdemyAngularCollection\SEC0000011\maps-app> ng build
+
+/*! 🌼 daisyUI 5.0.43 */
+Initial chunk files | Names         | Raw size | Estimated transfer size
+main-LDOYZS7W.js    | main          |  1.79 MB |               417.50 kB
+styles-MVGCENXU.css | styles        | 78.93 kB |                10.83 kB
+
+                    | Initial total |  1.86 MB |               428.33 kB
+
+Application bundle generation complete. [8.277 seconds]
+
+▲ [WARNING] TS-998113: AsyncPipe is not used within the template of NavbarComponent [plugin angular-compiler]
+
+    src/app/components/navbar/navbar.component.ts:11:4:
+      11 │     AsyncPipe,
+         ╵     ~~~~~~~~~
+
+
+▲ [WARNING] bundle initial exceeded maximum budget. Budget 1.00 MB was not met by 864.23 kB with a total of 1.86 MB.
+
+
+Output location: C:\Users\andre\Documents\SourceTree\UdemyAngularCollection\SEC0000011\maps-app\dist\maps-app
+
+```
+
+Desplegar en [netlify](https://www.netlify.com/)
+
+1º Importar manaulmente
+2º Cargar la carpeta browers (dentro de: ...SEC0000011\maps-app\dist\maps-app)
+
+Para solvertar el error de recargar en **netflify**, basta con añadir el `#` en las routas
+
+
+```ts
+//app.config.ts 
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
+    provideRouter(routes),
+
+    // HashStrategy
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
+    }
+  ]
+};
+```
+
+Generar de nuevo la app, y arrastarlo en `Deploys` situado el nav lateral del proyecto, la carpeta 'browser'
