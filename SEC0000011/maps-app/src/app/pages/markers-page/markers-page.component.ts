@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, effect, ElementRef, linkedSignal, signal, viewChild} from '@angular/core';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, {LngLatLike} from 'mapbox-gl';
 import {environment} from '../../../environments/environment';
 import {DecimalPipe, JsonPipe} from '@angular/common';
 import { v4 as uuid } from 'uuid'; // Import the uuid library to generate unique IDs
@@ -112,6 +112,13 @@ export class MarkersPageComponent implements AfterViewInit {
 
   }
 
+  // Method that move the center map to the marker position selected
+  protected flyToMarker(lngLat: LngLatLike) {
+    if( !this.map() ) return; // Ensure the map instance is available
 
+    this.map()!.flyTo({
+        center: lngLat, // Use the provided lngLat to fly to the marker position
+    });
+  }
 
 }
