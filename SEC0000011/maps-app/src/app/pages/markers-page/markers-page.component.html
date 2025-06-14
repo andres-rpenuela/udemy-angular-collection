@@ -1,7 +1,7 @@
-<div #map class="h-[calc(100vh-64px)] w-full">
+<div #map class="h-[60vh] sm:h-[calc(100vh-64px)] ">
 </div>
 
-<div class="zoom-view">
+<div class="hidden sm:block zoom-view ">
   <div class="zoom-view-content">
     <h2 class="text-2xl font-bold text-black mb-2">Zoom Level
       <small class="text-gray-500 font-normal"> {{ zoom() | number:'1.0-2' }}</small>
@@ -22,34 +22,33 @@
         } | json }}
     </pre>
   </div>
+</div>
 
-  <section class="fixed w-[260px] bg-white rounded top-20 left-20 p-5">
-    <h2 class="text-2xl font-bold text-black mb-2">Markers</h2>
-    <div class="flex flex-col gap-2">
-      @for(marker of markers(); track marker.id) {
-        <div class="form-control"
-             (click)="flyToMarker( marker.marker.getLngLat() )"
-             (dblclick)="deleteMarker( marker )">
-          <label class="label cursor-pointer">
+<section class="h-[40vh] sm:fixed sm:w-[260px] bg-white sm:rounded sm:top-20 sm:left-20 p-5 overflow-y-scroll">
+  <h2 class="text-2xl font-bold text-black mb-2">Markers</h2>
+  <div class="flex flex-col gap-2">
+    @for(marker of markers(); track marker.id) {
+      <div class="form-control"
+           (click)="flyToMarker( marker.marker.getLngLat() )"
+           (dblclick)="deleteMarker( marker )">
+        <label class="label cursor-pointer">
               <span class="label-text text-black text-xs">{{
                   {
                     Lat: marker.marker.getLngLat().lat | number:'1.4',
                     Long: marker.marker.getLngLat().lng | number:'1.4'
                   } | json
                 }}</span>
-            <!-- se usa un stilo dinamico, ya que tailwind no permite estilos dinamicos -->
-            <input
-              type="radio" name="radio-10" checked="checked"
-              class="radio"
-              [style]="{ backgroundColor: marker.marker._color }"
-            />
-          </label>
-        </div>
-      }
-      @empty {
-        <div class="flex justify-center items-center-100 bg-blue-200 rounded py-5"><p class="text-xs text-secondary">No markers available</p></div>
-      }
-    </div>
-  </section>
-
-</div>
+          <!-- se usa un stilo dinamico, ya que tailwind no permite estilos dinamicos -->
+          <input
+            type="radio" name="radio-10" checked="checked"
+            class="radio"
+            [style]="{ backgroundColor: marker.marker._color }"
+          />
+        </label>
+      </div>
+    }
+    @empty {
+      <div class="flex justify-center items-center-100 bg-blue-200 rounded py-5"><p class="text-xs text-secondary">No markers available</p></div>
+    }
+  </div>
+</section>
