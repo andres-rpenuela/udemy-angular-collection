@@ -121,4 +121,17 @@ export class MarkersPageComponent implements AfterViewInit {
     });
   }
 
+
+  // this removed markes
+  protected deleteMarker(marker: Marker){
+    if( !this.map() ) return;
+    const map = this.map()!;
+
+    // this remove marker of map automatic
+    marker.marker.remove();
+
+    // update list
+    const markers : Marker[] = this.markers().filter( m => m.id != marker.id ) ?? [];
+    this.markers.set( markers );
+  }
 }
