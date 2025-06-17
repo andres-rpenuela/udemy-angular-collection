@@ -337,3 +337,156 @@ Si las rutas que renderiza, tienen rutas anidadas (hijas), entonces, en el templ
 3. Se resuelve app.routes.ts, carga store-front.routes.ts.
 4. Dentro de StoreFrontLayoutComponent, se usa otro <router-outlet>.
 5. Ahí se renderiza el componente correspondiente (home, gender, product...).
+
+
+## 🔗 Angular RouterLink y clases activas
+
+Un ejemplo de como crear un enlace con estiloscuando este activo:
+
+```angular181html
+<a [routerLink]="routesNav()[navKey][0].path"
+   routerLinkActive="text-secondary"
+   [routerLinkActiveOptions]="{ exact: true }">
+  {{ routesNav()[navKey][0].title | titlecase }}
+</a>
+```
+Donde:
+
+* **[routerLink]**:
+Enlaza dinámicamente a la ruta especificada.
+En este caso, accede a la primera ruta del grupo:
+routesNav()[navKey][0].path.
+* **routerLinkActive="text-secondary"**:
+Aplica la clase "text-secondary" automáticamente cuando la ruta está activa (coincide con la ruta actual del navegador).
+* **[routerLinkActiveOptions]="{ exact: true }"**:
+Controla cómo se evalúa si la ruta está activa.
+  * exact: true → solo aplica la clase si la ruta coincide exactamente con routerLink.
+* **{{ routesNav()[navKey][0].title | titlecase }}**:
+Muestra el título en formato "Capitalizado" (primera letra mayúscula de cada palabra).
+
+### Ejemplo de comparacion
+
+| Ruta actual | routerLink | `exact: true` | ¿Clase activa? |
+| ----------- | ---------- | ------------- | -------------- |
+| `/home`     | `/home`    | ✅             | ✅ Aplica clase |
+| `/home/1`   | `/home`    | ✅             | ❌ No aplica    |
+| `/home`     | `/home`    | ❌ (false)     | ✅ Aplica clase |
+
+
+
+---
+# Anexo
+# Usar Fonts de Google
+[Link](https://fonts.google.com/specimen/Montserrat)
+# Record en TypeScript (y Angular)
+
+**Record<K, T>** es un tipo genérico que representa un objeto con claves del tipo K y valores del tipo T.
+
+```typescript
+Record<Keys, Type>
+```
+Donde
+* **Keys**: el tipo de las claves (por ejemplo string, 'admin' | 'user', etc.)
+* **Type**: el tipo de los valores que almacena cada clave
+
+## Ejemplo práctico
+
+```typescript
+interface StoreRoute {
+  title: string;
+  path: string;
+}
+
+const routesNav: Record<string, StoreRoute[]> = {
+  general: [
+    { title: 'Home', path: '/' }
+  ],
+  gender: [
+    { title: 'Hombres', path: '/gender/men' },
+    { title: 'Mujeres', path: '/gender/woman' },
+    { title: 'Niños', path: '/gender/kids' }
+  ]
+};
+
+// 👨‍💻  En componentes Angular con signals
+public routesNav: InputSignal<Record<string, StoreRoute[]>> = input.required();
+
+public getRoutesNavKeys(): string[] {
+  return Object.keys(routesNav());
+}
+```
+
+```angular181html
+// 🔁 Iterar un Record en plantillas (Angular 20)
+@for (navKey of Object.keys(routesNav()); track navKey) {
+@for (route of routesNav()[navKey]; track route.title) {
+    <a [routerLink]="route.path">{{ route.title }}</a>
+  }
+}
+```
+
+# 📥 @Input() y 📤 @Output() en Angular
+Estas decoraciones permiten comunicación entre componentes:
+
+* @Input() → Permite que un componente hijo reciba datos desde su componente padre.
+* @Output() → Permite que un componente hijo emita eventos hacia su componente padre.
+
+## 📥 @Input() – recibir datos (✅ Uso básico)
+
+```typescript
+// hijo.component.ts
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-hijo',
+  template: `<p>Nombre: {{ nombre }}</p>`
+})
+export class HijoComponent {
+  @Input() nombre: string = '';
+}
+
+```
+
+```angular181html
+<!-- padre.component.html -->
+<app-hijo [nombre]="'Juan'"></app-hijo>
+```
+
+## 📤 @Output() – emitir eventos (✅ Uso básico)
+
+```typescript
+// hijo.component.ts
+import { Component, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-hijo',
+  template: `<button (click)="enviar()">Enviar</button>`
+})
+export class HijoComponent {
+  @Output() mensaje = new EventEmitter<string>();
+
+  enviar() {
+    this.mensaje.emit('Hola desde el hijo!');
+  }
+}
+
+```
+```angular181html
+<!-- padre.component.html -->
+<app-hijo (mensaje)="mostrarMensaje($event)"></app-hijo>
+```
+
+```typescript
+// padre.component.ts
+mostrarMensaje(mensaje: string) {
+  console.log(mensaje);
+}
+```
+
+### 📘 Tips
+* @Input() puede usarse con valores primitivos, objetos, arrays o signals.
+* @Output() debe usar EventEmitter<T>.
+* Los nombres pueden cambiar con alias:
+```typescript
+@Input('nombreAlias') nombreReal: string;
+```
