@@ -225,4 +225,115 @@ npm install daisyui@latest tailwindcss@latest @tailwindcss/postcss@latest postcs
   themes: light --default, dark --prefersdark;
 }
 ```
-7. s
+## Routas
+
+### Estructura de rutas hijas con carga perezosa
+
+```typescript
+import { Routes } from '@angular/router';
+import { StoreFrontLayoutComponent } from './layouts/store-front-layout/store-front-layout.component';
+
+export const storeFrontRoutes: Routes = [
+  {
+    path: '',
+    component: StoreFrontLayoutComponent,
+    children: [
+      {
+        path: '',
+        title: 'Store - Home',
+        loadComponent: () =>
+          import('./pages/home-page/home-page.component').then(m => m.HomePageComponent)
+      },
+      {
+        path: 'gender/:gender',
+        loadComponent: () =>
+          import('./pages/gender-page/gender-page.component').then(m => m.GenderPageComponent)
+      },
+      {
+        path: 'product/:idSlug',
+        loadComponent: () =>
+          import('./pages/product-page/product-page.component').then(m => m.ProductPageComponent)
+      },
+      {
+        path: '**',
+        loadComponent: () =>
+          import('./pages/not-found-page/not-found-page.component').then(m => m.NotFoundPageComponent)
+      }
+    ]
+  },
+  {
+    path: '**',
+    redirectTo: ''
+  }
+];
+
+export default storeFrontRoutes;
+```
+
+### 📌 Importación en las rutas principales (app.routes.ts)
+
+```typescript
+export const routes: Routes = [
+  {
+    path: '',
+    title: 'Store',
+    loadChildren: () => import('./store-front/store-front.routes')
+  }
+];
+```
+
+* **loadChildren** permite cargar el archivo de rutas hijas perezosamente (lazy loading).
+
+### 🔍 Parámetros dinámicos en rutas
+
+Ejemplo: _prodcut/:idSlug_
+* Define un parámetro de ruta llamado idSlug.
+* Permite acceder a productos por ID o slug en la URL.
+
+````typescript
+{
+  path: 'product/:idSlug',
+  loadComponent: () => import('./pages/product-page/product-page.component').then(m => m.ProductPageComponent)
+}
+````
+
+### Acceso al parámetro en el componente (básico)
+
+```typescript
+import { ActivatedRoute } from '@angular/router';
+
+export class ProductPageComponent {
+  idSlug = this.route.snapshot.paramMap.get('idSlug');
+  
+  constructor(private route: ActivatedRoute) {
+    console.log('ID del producto:', this.idSlug);
+  }
+}
+```
+> **Nota**: También puedes usar this.route.paramMap.subscribe(...) para escuchar cambios si la ruta puede cambiar sin recargar el componente.
+### Visualizar el contenido de las rutas
+
+Rendira las rutas princiaples definidias en `app.routes.ts`:
+```angular181html
+<!-- app.html -->
+<!-- Punto de entrada de rutas principales -->
+<router-outlet/>
+
+```
+Si las rutas que renderiza, tienen rutas anidadas (hijas), entonces, en el template del componente que carga las rutas hijas, debe tener también `<router-outlet></router-outlet>` (_así, sucesivamente_), es decir, para renderizar las rutas hijas anidadas al componente y defindias en `store-front.routes.ts`
+```angular181html
+<!-- store-front-layout.component.ts -->
+
+<!-- Layout del storefront con navbar, footer, etc. -->
+<!-- Sección para renderizar rutas hijas (home, gender, product, etc.) -->
+<section>
+  <router-outlet/>
+</section>
+```
+#### 🔄 Flujo de carga de rutas
+
+1. Usuario entra a /.
+2. Se carga AppComponent → renderiza <router-outlet>.
+3. Se resuelve app.routes.ts, carga store-front.routes.ts.
+4. Dentro de StoreFrontLayoutComponent, se usa otro <router-outlet>.
+5. Ahí se renderiza el componente correspondiente (home, gender, product...).
