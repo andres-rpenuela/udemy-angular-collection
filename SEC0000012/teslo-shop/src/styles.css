@@ -4,3 +4,26 @@
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark;
 }
+
+/** carga local de fonts **/
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../public/assets/fonts/montserrat-alternates/montserratAlternates-medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Robot';
+  src: url('../public/assets/fonts/roboto/Roboto_Condensed-Regular.ttf') format('truetype');
+}
+
+/** usar fonts en tailwindcss **/
+@theme {
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-roboto: "Robot", sans-serif;
+
+}
+
+/** definir por defecto un font **/
+body {
+  font-family: sans-serif, 'Montserrat', "Robot";
+}

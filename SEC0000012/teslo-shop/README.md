@@ -378,6 +378,153 @@ Muestra el título en formato "Capitalizado" (primera letra mayúscula de cada p
 # Anexo
 # Usar Fonts de Google
 [Link](https://fonts.google.com/specimen/Montserrat)
+
+## Opción 1: CND
+
+Solo usa angular.json para hojas de estilos locales como styles.css.
+Incluir fuentes externas como Google Fonts es más limpio y claro desde index.html.
+
+[Link](https://fonts.google.com/selection/embed)
+### Usando el angular.json
+1. Agrega el link en angular.json
+> Busca la sección "styles" y agrega el enlace a la fuente de Google.
+```json
+/* esto incluye solo la fuente */
+"styles": [
+  "src/styles.css",
+  "https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+]
+```
+
+2. En styles.css o styles.scss:
+```css
+body {
+  font-family: 'Roboto', sans-serif;
+}
+```
+
+### De forma embebida (mas eficiente)
+1. Agrega preconnect y la fuente en index.html
+> Esto ayuda a que el navegador comience a descargar la fuente más rápido, lo que mejora el tiempo de carga.
+> Abre src/index.html y agrega esto dentro del <head>
+```html
+<!-- Preconexión para mejorar rendimiento -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- Fuente Roboto desde Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+```
+2. Define la fuente en styles.css o styles.scss
+> En src/styles.css:
+
+```css
+body {
+font-family: 'Roboto', sans-serif;
+}
+```
+Puedes también especificar pesos si los necesitas:
+```html
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+```
+
+## Opción 2: Usar fuentes locales (.woff/.ttf,...)
+1. Descargar la fuente que se quiera utilizar.
+2. Peger en la carpeta `public/assets/fonts/[fuente]`
+3. Declarar la fuente en tu css
+```css
+@font-face {
+  font-family: 'MiFuentePersonalizada';
+  src: url('/assets/fonts/MiFuente.woff2') format('woff2'),
+       url('/assets/fonts/MiFuente.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'MiFuentePersonalizada', sans-serif;
+}
+```
+
+## Opción 3: Importar en SCSS directaemnte
+Si se usa `style.scss`, se peude importar directamente:
+```scss
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+```
+
+## Opcion 4: Cargar fonts locales en tailwindcss (Ejemplo)
+> Enalces de interés:
+> * [Link Tailswindcss - FontFamily](https://tailwindcss.com/docs/font-family)
+> * [Link Fonts - Goole](https://fonts.google.com/?preview.layout=grid)
+
+1. Descargar los fonts (_*.ttf_)
+2. Pegar en `public/assets/fonts/[fuente-name]/file.ttf` 
+3. En el `styles.css`, agregar:
+```css
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+/*@plugin "daisyui";*/
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+/** carga local de fonts **/
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../public/assets/fonts/montserrat/montserrat-blackItalic.ttf') format('truetype');
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../public/assets/fonts/montserrat/Montserrat-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../public/assets/fonts/montserrat/montserrat-medium.ttf') format('truetype');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Robot';
+  src: url('../public/assets/fonts/roboto/Roboto_Condensed-Regular.ttf') format('truetype');
+}
+
+/** usar fonts en tailwindcss **/
+@theme {
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-roboto: "Robot", sans-serif;
+
+}
+
+/** definir por defecto un font **/
+body {
+  font-family: sans-serif, 'Montserrat', "Robot";
+}
+```
+> Nota: 
+> * Todos los @font-face comparten el mismo font-family ('Montserrat'), pero se diferencian por font-weight y font-style.
+> * Asegúrate de usar rutas absolutas a partir de /assets/, no ../public/, ya que Angular no usa public/, sino src/assets/.
+
+Uso especifico de fuentes en elementos html:
+
+```html
+<p class="font-montserrat font-bold">
+  Esto usará font-montserrat con font-weight de 700
+</p>
+
+<p class="font-montserrat">
+  Esto usará Montserrat normal, con font-weight 400 por defecto 
+</p>
+```
+
 # Record en TypeScript (y Angular)
 
 **Record<K, T>** es un tipo genérico que representa un objeto con claves del tipo K y valores del tipo T.
