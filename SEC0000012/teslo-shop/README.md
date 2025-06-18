@@ -225,6 +225,35 @@ npm install daisyui@latest tailwindcss@latest @tailwindcss/postcss@latest postcs
   themes: light --default, dark --prefersdark;
 }
 ```
+
+## Tailwindcss - FadeIn (animations)
+[Link](https://tailwindcss.com/docs/animation)
+
+Con Tailwindcss instalado y configurado, basta con añadir lo siguiente en `style.css` y luego nombarlo en elemento donde usar la animacion
+
+```css
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+@theme {
+  --animate-wiggle: wiggle 1s ease-in-out infinite;
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
+}
+```
+
+```html
+<div class="animate-wiggle">
+  <!-- ... -->
+</div>
+```
 ## Routas
 
 ### Estructura de rutas hijas con carga perezosa
@@ -350,6 +379,14 @@ Un ejemplo de como crear un enlace con estiloscuando este activo:
   {{ routesNav()[navKey][0].title | titlecase }}
 </a>
 ```
+> **Nota**: RouterLink con parámetros
+> 
+> ```angular181html
+> <a class="btn btn-primary" [routerLink]="['/product','t-shirt']">
+>     Buy Now
+> </a>
+>```
+>
 Donde:
 
 * **[routerLink]**:
