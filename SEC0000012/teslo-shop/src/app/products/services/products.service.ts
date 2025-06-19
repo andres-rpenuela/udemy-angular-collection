@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ProductResponse} from '@products/interfaces/product.interface';
-import {catchError, Observable, tap, throwError} from 'rxjs';
+import {catchError, delay, Observable, tap, throwError} from 'rxjs';
 import {BASE_URL} from '@products/utils/product.util';
 import {ProductRequestParams} from '@products/interfaces/product-request-params.interface';
 
@@ -31,6 +31,7 @@ export class ProductsService {
         }
       })
       .pipe(
+        delay(1000), // Espera la cantidad de milisegundos
         // mostrar respuesta
         tap( (resp) => console.log(resp) ),
         catchError(err => { // en Angular 16+, capturar error y personalizado, es opcional esta opcion

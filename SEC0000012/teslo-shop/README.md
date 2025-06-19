@@ -914,3 +914,23 @@ Uso en html
 > ```
 > Si no tiene parametros y se pone `param:() ...`, no se lanza de forma automatica al crear el componente,
 > por lo que se recomienda no ponerlo
+
+
+## Pipes
+
+```typescript
+@Pipe({
+  name: 'truncate'
+})
+export class TruncatePipe implements PipeTransform {
+
+  transform(value: string, limit:number=70): unknown {
+    return value.substring(0,limit);
+  }
+
+}
+```
+
+```angular181html
+    {{description() | truncate }}
+```

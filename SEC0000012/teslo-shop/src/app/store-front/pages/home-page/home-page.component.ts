@@ -6,11 +6,13 @@ import {ProductsService} from '@products/services/products.service';
 
 import { rxResource } from '@angular/core/rxjs-interop';
 import {ProductResponse} from '@products/interfaces/product.interface';
+import {JsonPipe} from '@angular/common';
 
 @Component({
   selector: 'app-home-page',
   imports: [
-    ProductCardComponent
+    ProductCardComponent,
+    JsonPipe
   ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css'

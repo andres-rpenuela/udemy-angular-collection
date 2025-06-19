@@ -5,10 +5,10 @@
       alt="Shoes" />
   </figure>
   <div class="card-body">
-    <h2 class="card-title">Card Title</h2>
-    <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
+    <h2 class="card-title"> {{title()}}</h2>
+    {{description() | truncate }}
     <div class="card-actions justify-end">
-      <a class="btn btn-primary animate-wiggle" [routerLink]="['/product','t-shirt']">Buy Now</a>
+      <a class="btn btn-primary animate-wiggle" [routerLink]="['/product',id()]">Buy Now</a>
     </div>
   </div>
 </div>
