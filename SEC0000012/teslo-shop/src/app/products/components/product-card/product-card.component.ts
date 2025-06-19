@@ -16,6 +16,9 @@ export class ProductCardComponent {
   product : InputSignal<Product> = input.required<Product>();
 
   imageUrl = computed( () =>{
+    if(  this.product().images.length === 0){
+      return './assets/images/no-image.jpg'
+    }
     return `http://localhost:3000/api/files/product/${ this.product().images[0] }`
   })
 }
