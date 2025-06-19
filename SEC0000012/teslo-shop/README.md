@@ -674,3 +674,39 @@ mostrarMensaje(mensaje: string) {
 ```typescript
 @Input('nombreAlias') nombreReal: string;
 ```
+
+## Path Alias - TypScripts
+
+Permite definir alias de las rutas para importar elmentos de angulas. 
+
+1. Ir al tsconfing.js.
+2. En el parámetro de `compilerOptions`, añadir la opción `baseUrl` y poner la ruta de donde partirán toods los paths
+3. Añadir el alias y la ruta relativa del emento ne la opción `paths`del pámetro `compilerOptions`
+
+```typescript
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/app/*"],
+      "@auth/*": ["./src/app/auth/*"],
+      "@products/*": ["./src/app/products/*"],
+      "@shared/*": ["./src/app/shared/*"],
+      "@store-front/*": ["./src/app/store-front/*"],
+      "@dashboard/*": ["./src/app/admin-dashboard/*"]
+    },
+/*....*/
+}
+```
+> **Nota**: Un alias global `"@/*": ["./src/app/*"]`, es opcional, y el resto de alias, corresponde uno para cada _feature module_
+Esto permitiriá cambiar los imports
+```typescript
+// sin alias
+import {ProductCardComponent} from '../../../products/components/product-card/product-card.component';
+// por el alias del feature module
+import {ProductCardComponent} from '@products/components/product-card/product-card.component';
+// o, por el path alias global (eso sería válido también)
+import {ProductCardComponent} from '@/products/components/product-card/product-card.component';
+
+```
