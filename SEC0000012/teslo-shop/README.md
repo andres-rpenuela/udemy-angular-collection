@@ -722,3 +722,167 @@ import {ProductCardComponent} from '@/products/components/product-card/product-c
 3. Copiar el codigo que ha generado y pegar en la interfaz `product.interface.json`
 
 > **Nota**: Se puede adpatar el codigo generado en nuestra interfaz, solo es un squema para empezar.
+
+
+## Peticiones HTTP (_en Angular 20+_)
+> **Nota**: Visto en la sección de `country-app`
+
+1. Añadir el proveedor de `HttpClient` en el fichero de configuracion, y además, que para indicar que siga el estnadar **fetch**, idnicar como argumento `withFecth`, cuando se provee (_recomendable para interceptores_).
+```typescript
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideHttpClient( withFetch() ),
+  ]
+};
+```
+Al proveer `HttpCleint`, permitirá realizar pticiones http y trabajar con observables.
+
+### Petición HTTP
+Ejemplo de una peticón Http que devuelve un observable:
+
+```typescript
+this.http.get<RestCountry[]>(`${ API_URL}/v3.1/alpha/${ lowerCaseQuery }`)
+  .pipe(
+    map(CountryMappers.restCountriesToCountries),
+    map(country => country.at(0)), // si no encuentra, devuelve undefine
+    delay(3000),
+    catchError( err => {
+      console.error('Error al buscar paises: ', err);
+      return throwError( () => new Error("No se puede obtener el pai con esa query"));
+    })
+  );
+```
+La respuesta se puede manejar:
+* Subcripción: Requiere desuscribirse
+* `Resocurce`: Coniverte el observalbe a promesa y la maneja automaticamente
+* `rxResource`: Gestiona automaticamente la subcripcion (_de rjx_)
+
+| Método                                        | ¿Se desuscribe automáticamente?                                                   | Simplicidad de uso | Estado gestionado                   | Compatible con Angular                               | Notas clave                                                                     |
+| --------------------------------------------- | --------------------------------------------------------------------------------- | ------------------ | ----------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **`Subscription`**                            | ❌ No, requiere desuscripción manual (por ejemplo con `ngOnDestroy` o `takeUntil`) | 🟡 Media           | ❌ No                                | ✅ Todos (RxJS base)                                  | Flexible, pero propenso a fugas de memoria si no se desuscribe correctamente    |
+| **`Resource`** (`@angular/core/rxjs-interop`) | ✅ Sí                                                                              | 🟢 Alta            | ✅ Opcional (con `inject(Resource)`) | ✅ Angular 17+ (experimental en 17, estable en 18/19) | Sintaxis moderna con `async()` en plantillas, ideal para componentes standalone |
+| **`rxResource`** (`@rx-angular/state`)        | ✅ Sí                                                                              | 🟢 Alta            | ✅ Sí (gestión eficiente del estado) | ✅ Angular 13+ (mejor con 15+)                        | Solución de alto rendimiento, ideal para UIs reactivas complejas                |
+
+#### Subcripción a la Petición
+
+Para manejar la resuesta Http, se recomienda subcribirse a la petición, esto se lanzará cada vez que se resuelva el observable, si no se cancela la subcripción.
+
+```typescript
+this.countryService.searchByCapital( this.capitalSng() )
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),// cancela automáticamente la suscripción al destruir el componente.
+        // catchError(err => {
+        //   console.error('Error al buscar países:', err);
+        //   this.hasError.set(`Error al buscar países: CODE:  ${err.error.code},MESSAGE: ${err.error.message}`);
+        //   this.bodyTable.set([]);
+        //   return of([]);
+        // }),
+        delay(100)
+      )
+      .subscribe( {
+        next: countries => {
+
+          if( countries.length > 0 && this.hasError() != null ){
+            this.hasError.set( null );
+          }
+
+          console.log(countries)
+          this.bodyTable.set( countries );
+          this.isLoading.set(false);
+        },
+        error: ( err ) => {
+          //console.error('Error al buscar países:', err);
+          this.hasError.set(`${err}`);
+          this.bodyTable.set([]);
+          this.isLoading.set(false);
+        }
+      } );
+```
+### Resoruce (promesa)
+Para Angular 19+ Experimental, en lugar de subcribirse, se convierte la respuesta a una promesa (eso no hace falta destruir la subcripción), pero debe ser asincorno y esperar a que se reuselva la petición (observable)
+```typescript
+public countryResource = resource({ // resource trabaja con promesas
+    request: () => ({  query: this.capitalSng() }),
+    loader: async( { request, previous, abortSignal} ) => {
+      if( !this.capitalSng()?.trim()) return []; // si no hay valor, se devuelve un valor vacio
+
+      //return this.countryService.searchByCapital(request.query) // esto devuelve un observable
+      // convertimos el observable en una promesa con `firstValueFrom`, que espera a que el observable emita un valor
+      // y esta se resuelve con el primer valor emitido con "await" o si ocurre un error
+      // alternativa al await, se puede suar then y cath de firstValueFrom( obsrrvable )
+      return await firstValueFrom( this.countryService.searchByCapital(request.query) );
+    }
+  })
+```
+Uso en html
+
+```angular181html
+<div class="mt-5">
+  <app-shared-table
+    [headTable]="headTable"
+    [bodyTable]="countryResource.value() ?? []"
+    [isEmpty]="countryResource.value()?.length === 0"
+    [isLoading]="countryResource.isLoading()"
+    [messageError]="countryResource.error()">
+  </app-shared-table>
+</div>
+```
+### rxResource (_observable_)
+Para Angular 19+, y alternativa a `resource`, para trabajar con observables
+
+```typescript
+public countryResource = rxResource({ // rxResource trabaja con observable
+  request: () => ({query: this.capitalSng() }),
+  loader: ( { request }) => {
+    if( !request.query?.trim()) return of([]); //return EMPTY;
+    return this.countryService.searchByCapital( request.query )
+  }
+});
+```
+
+Uso en html
+
+```angular181html
+<div class="mt-5">
+  <app-shared-table
+    [headTable]="headTable"
+    [bodyTable]="countryResource.value() ?? []"
+    [isEmpty]="countryResource.value()?.length === 0"
+    [isLoading]="countryResource.isLoading()"
+    [messageError]="countryResource.error()">
+  </app-shared-table>
+</div>
+```
+> **Importante**: Basado en la documentación y artículos recientes:
+> * `request` ahora se llama `params`
+> * `loader` ahora se llama `stream` para flujos de datos basados en RxJS
+> 
+> [Link](https://angular.dev/api/core/rxjs-interop/rxResource)
+> 
+>  ```typescript
+> // En Angular 20
+> 
+> productsResource = rxResource({
+>    stream: () => { return this.productsService.getProducts() }
+> });
+> 
+> // o, con paraemtors en la url
+> private categorySignal = signal<string>('all');
+>
+> productResource: ResourceRef<Product[]> = rxResource({
+>   params: () => this.categorySignal(),
+>   stream: ({ params: category }) =>
+>   this.productsService.getProductsByCategory(category),
+>   defaultValue: [],
+> });
+>
+>  updateCategory(cat: string) {
+>   // para lanzar le peticion
+>   this.categorySignal.set(cat);
+> }
+> ```
+> Si no tiene parametros y se pone `param:() ...`, no se lanza de forma automatica al crear el componente,
+> por lo que se recomienda no ponerlo
