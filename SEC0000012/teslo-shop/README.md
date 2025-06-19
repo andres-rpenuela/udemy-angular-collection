@@ -710,3 +710,15 @@ import {ProductCardComponent} from '@products/components/product-card/product-ca
 import {ProductCardComponent} from '@/products/components/product-card/product-card.component';
 
 ```
+
+## Convertir json to typescrit
+
+
+
+1. Copiar la respuesta JSON de `http://localhost:3000/api/products?limit=52`
+2. Ir [Link](https://quicktype.io/typescript),  pegar la respuesta, nombrarlo como `ProductResponse` y:
+   1. Source: Json
+   2. Target: Typescript
+3. Copiar el codigo que ha generado y pegar en la interfaz `product.interface.json`
+
+> **Nota**: Se puede adpatar el codigo generado en nuestra interfaz, solo es un squema para empezar.
