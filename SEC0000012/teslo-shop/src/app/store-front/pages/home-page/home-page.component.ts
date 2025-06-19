@@ -24,6 +24,6 @@ export class HomePageComponent {
   //   stream: () => { return this.productsService.getProducts() }
   // });
   public productResource: ResourceRef<ProductResponse | undefined> = rxResource({
-    stream: ({}) => this.productsService.getProducts()
+    stream: ({}) => this.productsService.getProducts( {} )
   });
 }

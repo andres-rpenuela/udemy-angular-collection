@@ -120,11 +120,16 @@ Ir a `package.json`, y en la propiedad de `start`, modificar por:
 
 ## Instalar variables de entorno
 
+```shell
+# Genera las variables de entorno por defecto, pero se hará un script que generé el fichero
+ng g enviroments 
+```
 > **Nota**: En el git no manejar el control de versión de
 > * `.env`, pero si el `.env.template`,
 > * Se debe crear el `.env` basado en `.env.template`
 > * ni los **enviroments**, pero si el **script**
 > 
+> ````
 > /project-root/
 >   ├── index.js
 >   └── envs/
@@ -140,6 +145,7 @@ Ir a `package.json`, y en la propiedad de `start`, modificar por:
 >      └── styles.ts
 >   └── angular.js
 >   └── angular.js
+> ````
 
 1. Instalar la dependecia de desarrollo 
 
@@ -198,6 +204,24 @@ writeFileSync(targetPathDev, envFileContent, { encoding: 'utf8' });
 ```bash
 npm run set-envs
 ```
+
+5. Adicionalmente, se puede añadir la 'path', en el tsconfing.json
+```json
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@env/*": ["./src/environments/*"]
+    },
+```
+7. Una clase de typescript para leer las variables y exportarlas
+
+```typescript
+import {environment} from '@env/environment';
+
+export const BASE_URL = environment.baseUrl;
+```
+> _Nota_: En angular no se puede usar `dotenv`.
 
 ## Instalar Tailwind CSS, PostCSS, and daisyUI
 
@@ -867,6 +891,10 @@ Uso en html
 > 
 > productsResource = rxResource({
 >    stream: () => { return this.productsService.getProducts() }
+>    // con un objeto como pametro
+>    //stream: () => { return this.productsService.getProducts( {} ) }
+>    // con una propiedad de un objeto
+>    //stream: () => { return this.productsService.getProducts( { limit=1 } ) }
 > });
 > 
 > // o, con paraemtors en la url
