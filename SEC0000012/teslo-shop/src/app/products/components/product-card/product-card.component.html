@@ -1,14 +1,18 @@
 <div class="card card-compact bg-base-100 shadow-xl p-2 animate-fadeIn">
   <figure>
+<!--    <img-->
+<!--      [src]="'http://localhost:3000/api/files/product/'+product().images[1] "-->
+<!--      [alt]="product().title" />-->
     <img
-      src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-      alt="Shoes" />
+      [src]=" imageUrl() "
+      [alt]="product().title" />
   </figure>
   <div class="card-body">
-    <h2 class="card-title"> {{title()}}</h2>
-    {{description() | truncate }}
+    <h2 class="card-title font-montserrat text-accent text-xl"> {{product().title}}</h2>
+<!--    {{product().description | slice: 0 : 70 }} ...-->
+    {{product().description | truncate }}
     <div class="card-actions justify-end">
-      <a class="btn btn-primary animate-wiggle" [routerLink]="['/product',id()]">Buy Now</a>
+      <a class="btn btn-primary animate-wiggle" [routerLink]="['/product',product().slug]">Buy Now</a>
     </div>
   </div>
 </div>

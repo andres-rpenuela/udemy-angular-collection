@@ -1,6 +1,7 @@
-import {Component, input, InputSignal} from '@angular/core';
+import {Component, computed, input, InputSignal} from '@angular/core';
 import {RouterLink} from '@angular/router';
-import {TruncatePipe} from '../../../pipes/truncate-pipe';
+import {TruncatePipe} from '@pipe/truncate-pipe';
+import {Product} from '@products/interfaces/product.interface';
 
 @Component({
   selector: 'product-card',
@@ -12,8 +13,9 @@ import {TruncatePipe} from '../../../pipes/truncate-pipe';
   styleUrl: './product-card.component.css'
 })
 export class ProductCardComponent {
-  title : InputSignal<string> = input.required<string>();
-  description : InputSignal<string> = input.required<string>();
-  images : InputSignal<string[]> = input<string[]>([]);
-  id: InputSignal<string> = input.required<string>();
+  product : InputSignal<Product> = input.required<Product>();
+
+  imageUrl = computed( () =>{
+    return `http://localhost:3000/api/files/product/${ this.product().images[0] }`
+  })
 }

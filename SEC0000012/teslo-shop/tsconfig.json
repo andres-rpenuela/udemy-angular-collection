@@ -11,7 +11,8 @@
       "@shared/*": ["./src/app/shared/*"],
       "@store-front/*": ["./src/app/store-front/*"],
       "@dashboard/*": ["./src/app/admin-dashboard/*"],
-      "@env/*": ["./src/environments/*"]
+      "@env/*": ["./src/environments/*"],
+      "@pipe/*": ["./src/app/pipes/*"]
     },
     "strict": true,
     "noImplicitOverride": true,
