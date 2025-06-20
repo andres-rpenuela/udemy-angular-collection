@@ -2,12 +2,14 @@ import {Component, computed, input, InputSignal} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {TruncatePipe} from '@pipe/truncate-pipe';
 import {Product} from '@products/interfaces/product.interface';
+import {ProductImagePipe} from '@pipe/product-image-pipe';
 
 @Component({
   selector: 'product-card',
   imports: [
     RouterLink,
-    TruncatePipe
+    TruncatePipe,
+    ProductImagePipe
   ],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css'

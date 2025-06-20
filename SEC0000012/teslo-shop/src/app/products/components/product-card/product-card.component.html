@@ -3,8 +3,11 @@
 <!--    <img-->
 <!--      [src]="'http://localhost:3000/api/files/product/'+product().images[1] "-->
 <!--      [alt]="product().title" />-->
-    <img
+<!--    <img
       [src]=" imageUrl() "
+      [alt]="product().title" />-->
+    <img
+      [src]="product().images | productImage "
       [alt]="product().title" />
   </figure>
   <div class="card-body">
