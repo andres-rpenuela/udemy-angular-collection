@@ -1,1 +1,11 @@
-<p>product-page works!</p>
+@if(rxProduct.isLoading() ){
+  <div class=" w-full h-64 flex justify-center items-center border rounded">
+    <div class="flex items-center">
+      <p class="mr-2">Cargando</p>
+      <span class="loading loading-spinner text-accent"></span>
+    </div>
+  </div>
+} @else {
+  <h1>{{rxProduct.value()?.title}}</h1>
+
+}

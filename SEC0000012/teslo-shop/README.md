@@ -434,6 +434,51 @@ Muestra el título en formato "Capitalizado" (primera letra mayúscula de cada p
 | `/home`     | `/home`    | ❌ (false)     | ✅ Aplica clase |
 
 
+## Redirect con parametro dinamico
+
+```typescript
+// patch
+{
+  path: 'product/:idSlug', 
+  title: 'Store - Product',
+  loadComponent: () => import('./pages/product-page/product-page.component').then(m => m.ProductPageComponent)
+}
+```
+* Ejemplo con `routerLink`
+```angular181html
+ <a class="btn btn-primary animate-wiggle" [routerLink]="['/product',product().slug]">Buy Now</a>
+```
+* Ejemplo con `roouter.navigate[...]`
+```typescript
+
+private router = inject(Router);
+
+// redirect to page prodcut
+public redirectToProduct(idSlug : string){
+  // redirect get /product;idSLug=xxxx
+  //this.router.navigate(['/product',{idSlug}])
+
+  // redirect get /product/idSlug
+  this.router.navigate([`/product/${idSlug}`])
+}
+```
+
+## Leer el parametro de la ruta activa + rxResoruce
+```typescript
+private activatedRoute = inject(ActivatedRoute);
+private productsService = inject(ProductsService);
+
+// obtener param de la ruta activa
+private idSlug = linkedSignal( () => this.activatedRoute.snapshot.paramMap.get('idSlug') ?? '' );
+
+// rxResource prodcutsServices.getProductByIdSlug(idSlug:string):Observable<Product>
+// http://localhost:3000/api/products/chill_pullover_hoodie
+public rxProduct= rxResource({
+  params: () => this.idSlug(),
+  stream: ( { params: idSlug }) => this.productsService.getProductByIdSlug( idSlug )
+});
+```
+
 
 ---
 # Anexo

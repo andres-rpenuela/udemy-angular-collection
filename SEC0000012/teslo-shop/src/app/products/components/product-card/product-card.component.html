@@ -16,6 +16,7 @@
     {{product().description | truncate }}
     <div class="card-actions justify-end">
       <a class="btn btn-primary animate-wiggle" [routerLink]="['/product',product().slug]">Buy Now</a>
+<!--      <a class="btn btn-primary animate-wiggle" (click)="getProductByIdSlug()">Buy Now</a>-->
     </div>
   </div>
 </div>
