@@ -979,3 +979,138 @@ export class TruncatePipe implements PipeTransform {
 ```angular181html
     {{description() | truncate }}
 ```
+
+## Carousel swiperjs
+
+[Instalacion](https://swiperjs.com/get-started)
+
+1. Instalación para JavaScript (no da soporte para angular)
+```shell
+npm install swiper
+```
+
+2. Importar las dependencias, en el componente donde se utiliza la libreria
+
+```typescript
+// import Swiper JS
+import Swiper from 'swiper';
+// import Swiper styles
+import 'swiper/css';
+```
+
+> Nota: se peuden cargar algunos plugins:
+>```typescript
+> // core version + navigation, pagination modules:
+> import Swiper from 'swiper';
+> import { Navigation, Pagination } from 'swiper/modules';
+> // import Swiper and modules styles
+> import 'swiper/css';
+> import 'swiper/css/navigation';
+> import 'swiper/css/pagination';
+>```
+
+3. Crear una instancia
+
+
+```typescript
+// core version + navigation, pagination modules:
+import Swiper from 'swiper';
+import { Navigation, Pagination } from 'swiper/modules';
+// import Swiper and modules styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+@Component({
+  selector: 'product-carousel',
+  imports: [],
+  templateUrl: './product-carousel.component.html',
+  styleUrl: './product-carousel.component.css'
+})
+export class ProductCarouselComponent implements AfterViewInit{
+  images = input.required<string[]>();
+  swiperDiv = viewChild.required<ElementRef>('swiperDiv');
+
+  ngAfterViewInit() {
+    const element = this.swiperDiv().nativeElement;
+
+    // si no exite
+    if( !element) return;
+
+    console.log({ element });
+    
+    const swiper = new Swiper(element, {
+      // Optional parameters
+      direction: 'horizontal',
+      loop: true,
+
+      // If we need pagination
+      pagination: {
+        el: '.swiper-pagination',
+      },
+
+      // Navigation arrows
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+
+      // And if we need scrollbar
+      scrollbar: {
+        el: '.swiper-scrollbar',
+      },
+    });
+  }
+}
+```
+
+> Nota: En JavaScript, utiliza un selector CSS '.swiper'
+>
+>```angular181html
+><!-- Slider main container -->
+><div class="swiper" #swiperDiv>
+>  <!-- Additional required wrapper -->
+>  <div class="swiper-wrapper">
+>    <!-- Slides -->
+>    @for ( image of images(); track $index){
+>      <img class="swiper-slide" [src]="image | productImage"/>
+>    }
+>  </div>
+>  <!-- If we need pagination -->
+>  <div class="swiper-pagination"></div>
+>
+>  <!-- If we need navigation buttons -->
+>  <div class="swiper-button-prev"></div>
+>  <div class="swiper-button-next"></div>
+>
+>  <!-- If we need scrollbar -->
+>  <div class="swiper-scrollbar"></div>
+></div>
+>```
+>
+>En Angular se puede crear una refencia al elemento html e iniciar el objeto a esta refencia
+>
+>```angular181html
+><div class="swiper" #swiperDiv>
+><!-- ... -->
+></div>
+>```
+>
+> ```typescript
+>   // permite, cambiar esto que solo afectara a los elementos que contenga esa clase
+>   // por defecto (sin plugins...)
+>   const swiper = new Swiper(...);
+>   
+>   // con plugins de navegacion / paginacion...
+>   // init Swiper:
+>   const swiper = new Swiper('.swiper', {
+>   // configure Swiper to use modules
+>   modules: [Navigation, Pagination],
+>   ...
+>   });
+> 
+>   // por esto, que afectara a todos los elementos que contenga esa referencia
+>   swiperDiv = viewChild.required<ElementRef>('swiperDiv');
+>   const swiper = new Swiper(element,  { //.... });
+>```
+
