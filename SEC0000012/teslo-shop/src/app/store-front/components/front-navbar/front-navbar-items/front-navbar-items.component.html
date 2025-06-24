@@ -1,0 +1,85 @@
+<!-- Si estamos en modo responsivo (por ejemplo, móvil) -->
+@if( isButtonResponsive() ){
+  <ul
+    tabindex="0"
+    class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+
+    <!-- Recorremos las claves del objeto routesNav -->
+    @for (navKey of routesNavKeys(); track navKey) {
+
+      <!-- Si solo hay una ruta en ese grupo -->
+      @if (routesNav()[navKey].length === 1) {
+        <li>
+          <!-- Renderiza un solo enlace -->
+          <a [routerLink]="routesNav()[navKey][0].path"
+             routerLinkActive="text-secondary"
+             [routerLinkActiveOptions]="{ exact: true }">
+            {{ routesNav()[navKey][0].title | titlecase }}
+          </a>
+        </li>
+
+      } @else {
+        <!-- Si hay varias rutas, se trata como un grupo -->
+        <li>
+          <!-- Título del grupo -->
+          <span class="font-semibold" [class.text-secondary]="isGroupActive(navKey)">
+            {{ navKey | titlecase }}
+          </span>
+
+          <!-- Submenú con las rutas hijas -->
+          <ul class="p-2 pl-4 space-y-1 gender-btn">
+            @for (route of routesNav()[navKey]; track route.title) {
+              <li>
+                <a [routerLink]="route.path"
+                   routerLinkActive="text-secondary"
+                   [routerLinkActiveOptions]="{ exact: true }">
+                  {{ route.title | titlecase }}
+                </a>
+              </li>
+            }
+          </ul>
+        </li>
+      }
+    }
+  </ul>
+
+  <!-- Si estamos en modo escritorio -->
+} @else {
+
+  <ul class="menu menu-horizontal px-1  ">
+    @for (navKey of routesNavKeys(); track navKey) {
+
+      <!-- Igual que arriba, si es una sola ruta -->
+      @if (routesNav()[navKey].length === 1) {
+        <li>
+          <a [routerLink]="routesNav()[navKey][0].path"
+             routerLinkActive="text-secondary"
+             [routerLinkActiveOptions]="{ exact: true }">
+            {{ routesNav()[navKey][0].title | titlecase }}
+          </a>
+        </li>
+
+      } @else {
+        <!-- Grupo de rutas: se despliega como un <details> con <summary> -->
+        <li>
+          <details>
+            <summary class="font-semibold" [class.text-secondary]="isGroupActive(navKey)">
+              {{ navKey | titlecase }}
+            </summary>
+            <ul class="p-2 pl-4 space-y-1 gender-btn">
+              @for (route of routesNav()[navKey]; track route.title) {
+                <li>
+                  <a [routerLink]="route.path"
+                     routerLinkActive="text-secondary"
+                     [routerLinkActiveOptions]="{ exact: true }">
+                    {{ route.title | titlecase }}
+                  </a>
+                </li>
+              }
+            </ul>
+          </details>
+        </li>
+      }
+    }
+  </ul>
+}

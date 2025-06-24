@@ -1,0 +1,24 @@
+@if(rxProduct.isLoading() ){
+  <div class=" w-full h-64 flex justify-center items-center border rounded">
+    <div class="flex items-center">
+      <p class="mr-2">Cargando</p>
+      <span class="loading loading-spinner text-accent"></span>
+    </div>
+  </div>
+}
+
+@if( rxProduct.hasValue() ){
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <!-- images -->
+    <product-carousel [images]="rxProduct.value()?.images ?? [] "/>
+    <!-- data -->
+    <div>
+      <h2 class="text-2xl font-bold font-montserrat">
+        {{ rxProduct.value()?.title }}
+      </h2>
+      <p>
+        {{ rxProduct.value()?.description }}
+      </p>
+    </div>
+  </div>
+}

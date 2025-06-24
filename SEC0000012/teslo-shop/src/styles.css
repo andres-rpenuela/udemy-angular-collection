@@ -1,0 +1,50 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+/*@plugin "daisyui";*/
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+/** carga local de fonts **/
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../public/assets/fonts/montserrat-alternates/montserratAlternates-medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Robot';
+  src: url('../public/assets/fonts/roboto/Roboto_Condensed-Regular.ttf') format('truetype');
+}
+
+@theme {
+  /** usar fonts en tailwindcss **/
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-roboto: "Robot", sans-serif;
+
+  /** usar animaciones **/
+  --animate-fadeIn: fadeIn 0.3s ease-in-out;
+  @keyframes fadeIn {
+    0% { opacity: 0;}
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  };
+  --animate-wiggle: wiggle 1.5s ease-in-out;
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  };
+}
+
+/** definir por defecto un font **/
+body {
+  font-family: sans-serif, 'Montserrat', "Robot";
+}

@@ -1,0 +1,42 @@
+<!-- Contenedor principal de la barra de navegación -->
+<div class="navbar bg-base-100 shadow-sm">
+
+  <!-- Sección izquierda (inicio) del navbar -->
+  <div class="navbar-start">
+
+    <!-- Menú desplegable (visible solo en pantallas pequeñas: lg:hidden) -->
+    <div class="dropdown">
+
+      <!-- Botón tipo hamburguesa que abre el menú (solo visible en móvil) -->
+      <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+        <!-- Icono SVG del menú hamburguesa -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+        </svg>
+      </div>
+
+      <!-- Componente de navegación personalizado para el menú móvil -->
+      <!-- isButtonResponsive = true indica modo responsivo (móvil) -->
+      <front-navbar-items [isButtonResponsive]="true" [routesNav]="storeRoutes"/>
+    </div>
+
+    <!-- Logo/nombre del sitio con navegación a la raíz ('') -->
+    <a class="btn btn-ghost text-xl font-montserrat" routerLink="">
+      Teslo <span class="text-xl text-secondary">Shop</span>
+    </a>
+  </div>
+
+  <!-- Sección central del navbar, visible solo en pantallas grandes -->
+  <div class="navbar-center hidden lg:flex">
+    <!-- Componente de navegación principal (modo escritorio) -->
+    <front-navbar-items [routesNav]="storeRoutes"/>
+  </div>
+
+  <!-- Sección derecha del navbar (por ejemplo: botones de acción, login, carrito, etc.) -->
+  <div class="navbar-end">
+    <a class="btn">Button</a> <!-- Botón genérico, puedes reemplazarlo por login/cart/etc -->
+  </div>
+
+</div>

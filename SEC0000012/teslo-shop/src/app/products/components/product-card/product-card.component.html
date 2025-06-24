@@ -1,0 +1,23 @@
+<div class="card card-compact bg-base-100 shadow-xl p-2 animate-fadeIn">
+  <figure>
+<!--    <img-->
+<!--      [src]="'http://localhost:3000/api/files/product/'+product().images[1] "-->
+<!--      [alt]="product().title" />-->
+<!--    <img
+      [src]=" imageUrl() "
+      [alt]="product().title" />-->
+    <img
+      [src]="product().images | productImage "
+      [alt]="product().title" />
+  </figure>
+  <div class="card-body">
+    <h2 class="card-title font-montserrat text-accent text-xl hover:underline cursor-pointer"
+        [routerLink]="['/product',product().slug]"> {{product().title}} </h2>
+<!--    {{product().description | slice: 0 : 70 }} ...-->
+    {{product().description | truncate }}
+    <div class="card-actions justify-end">
+<!--      <a class="btn btn-primary animate-wiggle" [routerLink]="['/product',product().slug]">Buy Now</a>-->
+      <a class="btn btn-primary animate-wiggle" (click)="getProductByIdSlug()">Buy Now</a>
+    </div>
+  </div>
+</div>
