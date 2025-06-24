@@ -16,6 +16,7 @@ export class ProductsService {
   constructor() { }
 
   public getProducts(options:ProductRequestParams) : Observable<ProductResponse>{
+    console.log("Get Products, params: "+options)
     //const urlRequest= `${this.PATH_BASE}/products`
     const urlRequest= `${BASE_URL}/products`
 
