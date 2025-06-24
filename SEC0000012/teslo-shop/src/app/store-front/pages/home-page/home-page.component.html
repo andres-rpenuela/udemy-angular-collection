@@ -1,5 +1,8 @@
 <h1 class="text-3xl font-bold font-montserrat">Todos los productos</h1>
 <h2 class="text-xl mb-5">Pata todos los gastos</h2>
+
+<shared-pagination [pages]="productResource.value()?.pages || 0"></shared-pagination>
+
 @if( productResource.isLoading() ){
   <div class=" w-full h-64 flex justify-center items-center border rounded">
     <div class="flex items-center">

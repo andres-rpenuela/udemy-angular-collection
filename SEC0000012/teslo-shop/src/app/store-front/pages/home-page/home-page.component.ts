@@ -8,12 +8,14 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import {ProductResponse} from '@products/interfaces/product.interface';
 import {JsonPipe} from '@angular/common';
 import {Router} from '@angular/router';
+import {PaginationComponent} from "@shared/components/pagination/pagination.component";
 
 @Component({
   selector: 'app-home-page',
   imports: [
     ProductCardComponent,
-    JsonPipe
+    JsonPipe,
+    PaginationComponent
   ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css'
