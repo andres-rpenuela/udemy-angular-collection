@@ -479,7 +479,26 @@ public rxProduct= rxResource({
 });
 ```
 
+### Convertir el parmatro de ruta en una señal 
 
+```typescript
+private activatedRoute = inject(ActivatedRoute);
+
+// Opcion A
+// read param `gender' of path as signal
+public gender = toSignal( this.activatedRoute.params.pipe( map( ( { gender }) => gender )) );
+
+// Opcion B
+// Convert paramMap observable to signal
+private paramMapSignal = toSignal(this.activatedRoute.paramMap);
+
+// Create a signal for gender, porque el componente no se destruye, si no el parametro cambia
+public gender = computed(() => this.paramMapSignal()?.get('gender') ??  Gender.Men);
+
+// Al ternativa
+// Si el valor del parámetro no va a cambiar mientras el componente esté activo
+/ublic gender = this.activatedRoute.snapshot.params['gender'];
+```
 ---
 # Anexo
 # Usar Fonts de Google
