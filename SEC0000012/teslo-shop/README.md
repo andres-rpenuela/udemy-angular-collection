@@ -463,6 +463,29 @@ public redirectToProduct(idSlug : string){
 }
 ```
 
+## Redirecciona una paginación
+
+```angular181html
+@for( page of getPagesList(); track page){
+    <button class="join-item btn"
+            [class.btn-primary]="page === currentPage()"
+            [routerLink]="[]"
+            [queryParams]="{page: page}"
+    >
+        {{page}}
+    </button>
+} @empty {
+    <p>No hay páginas</p>
+}
+```
+
+Donde:
+* `[routerLink]="[]"`, redirigue a la misma página
+* `[queryParams]="{page: page}"`, agrega un parametro en la query
+
+```shell 
+http://localhost:4200/?page=5
+```
 ## Leer el parametro de la ruta activa + rxResoruce
 ```typescript
 private activatedRoute = inject(ActivatedRoute);
