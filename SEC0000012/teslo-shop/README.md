@@ -463,6 +463,29 @@ public redirectToProduct(idSlug : string){
 }
 ```
 
+## Redirecciona una paginación
+
+```angular181html
+@for( page of getPagesList(); track page){
+    <button class="join-item btn"
+            [class.btn-primary]="page === currentPage()"
+            [routerLink]="[]"
+            [queryParams]="{page: page}"
+    >
+        {{page}}
+    </button>
+} @empty {
+    <p>No hay páginas</p>
+}
+```
+
+Donde:
+* `[routerLink]="[]"`, redirigue a la misma página
+* `[queryParams]="{page: page}"`, agrega un parametro en la query
+
+```shell 
+http://localhost:4200/?page=5
+```
 ## Leer el parametro de la ruta activa + rxResoruce
 ```typescript
 private activatedRoute = inject(ActivatedRoute);
@@ -476,6 +499,19 @@ private idSlug = linkedSignal( () => this.activatedRoute.snapshot.paramMap.get('
 public rxProduct= rxResource({
   params: () => this.idSlug(),
   stream: ( { params: idSlug }) => this.productsService.getProductByIdSlug( idSlug )
+});
+```
+
+### Consulta get con dos parametos (rxResoruce)
+
+```typescript
+productResource = rxResource({
+  params: () => ({
+    gender: this.gender(),
+    page: this.paginationService.currentPage() - 1
+  }),
+  stream: ( { params: {gender, page } } ) =>
+    this.productsService.getProducts( {offset: page,gender: gender!})
 });
 ```
 

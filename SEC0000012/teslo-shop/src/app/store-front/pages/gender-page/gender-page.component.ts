@@ -5,11 +5,14 @@ import {rxResource, toSignal} from '@angular/core/rxjs-interop';
 import {ProductsService} from '@products/services/products.service';
 import {ProductCardComponent} from '@products/components/product-card/product-card.component';
 import {Observable} from 'rxjs';
+import {PaginationComponent} from "@shared/components/pagination/pagination.component";
+import {PaginationService} from "@shared/components/pagination/pagination.service";
 
 @Component({
   selector: 'app-gender-page',
   imports: [
-    ProductCardComponent
+    ProductCardComponent,
+    PaginationComponent
   ],
   templateUrl: './gender-page.component.html',
   styleUrl: './gender-page.component.css'
@@ -32,7 +35,8 @@ export default class GenderPageComponent {
   // Si el valor del parámetro no va a cambiar mientras el componente esté activo
   //public gender = this.activatedRoute.snapshot.params['gender'];
 
-
+  //
+  protected paginationService = inject(PaginationService);
 
   // redirect to page prodcut
   public redirectToProduct(idSlug : string){
@@ -43,8 +47,11 @@ export default class GenderPageComponent {
   }
 
   productResource = rxResource({
-    params: () => this.gender(),
-    stream: ( { params: gender } ) =>
-      this.productsService.getProducts( {gender: gender!})
+    params: () => ({
+      gender: this.gender(),
+      page: this.paginationService.currentPage() - 1
+    }),
+    stream: ( { params: {gender, page } } ) =>
+      this.productsService.getProducts( {offset: page,gender: gender!})
   });
 }
