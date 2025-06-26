@@ -1,12 +1,3 @@
-# Autenticacion + Autorización
-
->_Nota_: El Layout, es un componente basico que va a contener el `roter-outlet`, paara mostrar las rutas (paginas) hijas.
-
-## Rutas y paginas de autenticacion
-
-Rutas de `auth.routes.ts`:
-
-```typescript
 import {Routes} from '@angular/router';
 import {AuthLayoutComponent} from '@auth/layout/auth-layout/auth-layout.component';
 
@@ -36,31 +27,3 @@ export const authRoutes:Routes = [
 ];
 // facilita su importacion como rutas hijas
 export default authRoutes;
-```
-
-Cargar rutas en `app.roters.ts`
-
-```typescript
-import { Routes } from '@angular/router';
-
-export const routes: Routes = [
-  {
-    // Carga perezosa, de routas hijas
-    path: 'auth',
-    title: 'Auth',
-    loadChildren: () => import('./auth/auth.router')
-    // TODO Guards
-  },
-  {
-    // Carga perezosa, de routas hijas
-    path: '',
-    title: 'Store',
-    loadChildren: () => import('./store-front/store-front.routes')
-  }
-];
-```
-## Formulario reactivo de authenticacion
-
-## Servicio de autenticacion
-
-### Menjo de excepciones
