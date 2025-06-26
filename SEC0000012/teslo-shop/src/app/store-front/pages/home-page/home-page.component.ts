@@ -10,6 +10,7 @@ import {JsonPipe} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PaginationComponent} from "@shared/components/pagination/pagination.component";
 import {map} from "rxjs";
+import {PaginationService} from "@shared/components/pagination/pagination.service";
 
 @Component({
   selector: 'app-home-page',
@@ -26,19 +27,20 @@ export class HomePageComponent {
   private productsService = inject(ProductsService);
   private router = inject(Router);
 
-  private activateRoute = inject(ActivatedRoute);
-  // convierte un observable a una señal
-  public currentPage = toSignal( this.activateRoute.queryParamMap
-    .pipe(
-      // comvierte a numero o devuelve 1 si es undefined
-      map( params => params.get('page') ? +params.get('page')!:  1 ),
-      // comprueba que page sea un numero (devuelv nan, si no es un numero)
-      map( page => isNaN(page) ? 1 : page)
-    ),
-    {
-      initialValue: 1
-    }
-  )
+  // private activateRoute = inject(ActivatedRoute);
+  // // convierte un observable a una señal
+  // public currentPage = toSignal( this.activateRoute.queryParamMap
+  //   .pipe(
+  //     // comvierte a numero o devuelve 1 si es undefined
+  //     map( params => params.get('page') ? +params.get('page')!:  1 ),
+  //     // comprueba que page sea un numero (devuelv nan, si no es un numero)
+  //     map( page => isNaN(page) ? 1 : page)
+  //   ),
+  //   {
+  //     initialValue: 1
+  //   }
+  // )
+  private  paginationService = inject(PaginationService);
 
 
   // En Angular 20
@@ -51,7 +53,7 @@ export class HomePageComponent {
   // });
   // Paginacion
   public productResource: ResourceRef<ProductResponse | undefined> = rxResource({
-    params: () => this.currentPage() -1,
+    params: () => this.paginationService.currentPage() -1,
     stream: ({params: currentPage}) => this.productsService.getProducts( {offset: currentPage*9} )
   });
 
