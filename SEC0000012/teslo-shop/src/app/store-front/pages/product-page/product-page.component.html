@@ -7,17 +7,17 @@
   </div>
 }
 
-@if( rxProduct.hasValue() ){
+@if( rxProduct.hasValue() && !rxProduct.value() ){
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
     <!-- images -->
-    <product-carousel [images]="rxProduct.value()?.images ?? [] "/>
+    <product-carousel [images]=" (!rxProduct.value()) ? rxProduct.value()!.images : [] "/>
     <!-- data -->
     <div>
       <h2 class="text-2xl font-bold font-montserrat">
-        {{ rxProduct.value()?.title }}
+        {{ rxProduct.value()!.title }}
       </h2>
       <p>
-        {{ rxProduct.value()?.description }}
+        {{ rxProduct.value()!.description }}
       </p>
     </div>
   </div>
