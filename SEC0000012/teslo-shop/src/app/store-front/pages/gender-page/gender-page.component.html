@@ -24,8 +24,9 @@
           (idSlugOut)="redirectToProduct($event)"></product-card>
       }
     }
-
   </div>
+    <shared-pagination [pages]="productResource.value()?.pages ?? 0" [currentPage]="paginationService.currentPage()"></shared-pagination>
+
 }
 
 

@@ -502,6 +502,19 @@ public rxProduct= rxResource({
 });
 ```
 
+### Consulta get con dos parametos (rxResoruce)
+
+```typescript
+productResource = rxResource({
+  params: () => ({
+    gender: this.gender(),
+    page: this.paginationService.currentPage() - 1
+  }),
+  stream: ( { params: {gender, page } } ) =>
+    this.productsService.getProducts( {offset: page,gender: gender!})
+});
+```
+
 ### Convertir el parmatro de ruta en una señal 
 
 ```typescript
