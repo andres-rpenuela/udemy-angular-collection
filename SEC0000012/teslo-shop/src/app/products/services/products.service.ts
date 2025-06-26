@@ -14,7 +14,8 @@ export class ProductsService {
   private http = inject(HttpClient);
 
   // simulaion de cache
-  productMap = new Map<string,ProductResponse>;
+  productsMap = new Map<string,ProductResponse>;
+  productMap = new Map<string,Product>;
 
   constructor() { }
 
@@ -27,8 +28,8 @@ export class ProductsService {
     const  { limit = 9, offset = 0, gender = '' } = options;
 
     const key = `${limit}-${offset}-${gender}`;
-    if( this.productMap.has(key) ){
-      return of( this.productMap.get(key)! )
+    if( this.productsMap.has(key) ){
+      return of( this.productsMap.get(key)! )
     }
     return this.http.get<ProductResponse>(urlRequest,
       {
@@ -42,7 +43,7 @@ export class ProductsService {
         delay(1000), // Espera la cantidad de milisegundos
         // mostrar respuesta
         tap( (resp) => console.log(resp) ),
-        tap( (resp) => this.productMap.set(key,resp)),
+        tap( (resp) => this.productsMap.set(key,resp)),
         catchError(err => { // en Angular 16+, capturar error y personalizado, es opcional esta opcion
           console.error('Error al buscar productos:', err);
           return throwError( () => new Error("'Error al buscar productos",err));
@@ -53,12 +54,16 @@ export class ProductsService {
   public getProductByIdSlug(idSlug:string|null):Observable<Product>{
     if(!idSlug) return of();
 
+    if( this.productMap.has( idSlug) ){
+      return of(this.productMap.get(idSlug)!);
+    }
     const urlRequest= `${BASE_URL}/products/${idSlug}`
 
     return this.http.get<Product>(urlRequest).pipe(
       delay(1000), // Espera la cantidad de milisegundos
       // mostrar respuesta
       tap( (resp) => console.log(resp) ),
+      tap( (resp) => this.productMap.set(idSlug,resp)),
       catchError(err => { // en Angular 16+, capturar error y personalizado, es opcional esta opcion
         console.error('Error al buscar producto:', err);
         return throwError( () => new Error("'Error al buscar producto",err));
