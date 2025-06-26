@@ -13,6 +13,9 @@ export class ProductsService {
 
   private http = inject(HttpClient);
 
+  // simulaion de cache
+  productMap = new Map<string,ProductResponse>;
+
   constructor() { }
 
   public getProducts(options:ProductRequestParams) : Observable<ProductResponse>{
@@ -23,6 +26,10 @@ export class ProductsService {
     // desuctucutra, y si no esta asigna un valor por defecto
     const  { limit = 9, offset = 0, gender = '' } = options;
 
+    const key = `${limit}-${offset}-${gender}`;
+    if( this.productMap.has(key) ){
+      return of( this.productMap.get(key)! )
+    }
     return this.http.get<ProductResponse>(urlRequest,
       {
         params:{
@@ -35,6 +42,7 @@ export class ProductsService {
         delay(1000), // Espera la cantidad de milisegundos
         // mostrar respuesta
         tap( (resp) => console.log(resp) ),
+        tap( (resp) => this.productMap.set(key,resp)),
         catchError(err => { // en Angular 16+, capturar error y personalizado, es opcional esta opcion
           console.error('Error al buscar productos:', err);
           return throwError( () => new Error("'Error al buscar productos",err));
