@@ -39,4 +39,12 @@
   <div class="text-center text-sm text-gray-500 mt-2">
     <a href="#" class="link">Forgot password?</a> · <a routerLink="/auth/register" class="link">Sign up</a>
   </div>
+
+  @if( isLoading() ){
+    <div class="text-center text-sm text-gray-500 mt-2">
+      <span class="loading loading-spinner text-accent"></span>
+    </div>
+  }
 </form>
+
+
