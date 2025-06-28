@@ -5,7 +5,7 @@ import {AuthStatus} from '@auth/interfaces/auth.interface';
 import {UserResponse} from '@auth/interfaces/user-response.interface';
 import {User} from '@auth/interfaces/user.interface';
 import {UserLogin} from '@auth/interfaces/user-request.interface';
-import {catchError, of, tap, throwError} from 'rxjs';
+import {catchError, map, Observable, of, tap, throwError} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -55,7 +55,7 @@ export class AuthService {
 
   // Desestructuración de objetos en los parámetros de la función
   // Extrayendo directamente las propiedades email y password del objeto UserLogin.
-  public login( {email , password}:UserLogin){
+  public login( {email , password}:UserLogin) : Observable<boolean>{
     console.log('Login: '+email.substring(0,4)+'....');
 
     return this.httpClient.post<UserResponse>(this.endpointLogin,
@@ -77,12 +77,22 @@ export class AuthService {
 
         localStorage.setItem('token', this.token()! )
       }),
-      catchError( (error)=> {
+      // si esta bien develve un true
+      map(()=> true),
+      catchError( error=> {
         // Si llegas aquí, el servidor respondió con 4xx/5xx o hubo un problema de red.
 
         console.error('Error al hacer login:', error);
-        //return throwError( () => new Error("Error al hacer login",error));
-        return of(); // emite un Observable vacío para que tu stream no se rompa, no entra ni en 'next' ni en 'error' de la subcripcion
+
+        // limpiar parmas
+        this._user.set(null);
+        this._token.set(null);
+        localStorage.removeItem('token');
+        this._authStatus.set("not-authenticated");
+
+        //return throwError( () => new Error("Error al hacer login",error)); // estor emite un Observalbe que entra en 'error' del a subscipcion
+        //return of(); // emite un Observable vacío para que tu stream no se rompa, no entra ni en 'next' ni en 'error' de la subcripcion
+        return of(false); // emite un Observable con false, esto entra en 'next' de la subcripcion
       })
     )
   }

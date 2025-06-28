@@ -120,5 +120,58 @@ public onSubmit(){
 </form>
 ```
 ## Servicio de autenticacion
+Se define variables de tipo signal privadas, para manejar el flujo de la autenticación, con sus respectivos métodos getters para acceder a la información de forma segura
+
+```typescript
+protected _authStatus = signal<AuthStatus>('checking');
+protected _user = signal<User|null>(null);
+protected _token = signal<string|null>(null);
+
+public authStatus = computed<AuthStatus>( () =>{
+  if (this._authStatus() === 'checking') return this._authStatus();
+
+  if(this._user() ){
+    return 'authenticated';
+  }
+
+  return 'not-authenticated';
+});
+
+public user = computed<User | null>( () => this._user() );
+public token = computed<string | null>( () => this._token() );
+```
 
 ### Menjo de excepciones
+
+El manejo de errores en una petición HTTP, consiste en añadir al Obserfable, la propiedad 'catchError'
+
+```typescript
+public login( {email , password}:UserLogin) : Observable<boolean>{
+  console.log('Login: '+email.substring(0,4)+'....');
+
+  return this.httpClient.post<UserResponse>(this.endpointLogin,
+    {
+      email: email,
+      password: password,
+    },
+    { observe: 'response' }      // 🚩 le pides la respuesta completa
+  ).pipe(
+    tap( (response) => {
+      // Si llegas aquí, ¡el servidor respondió con un 2xx!
+      // logica...
+    }),
+    // si esta bien, develve un true
+    map(()=> true),
+    catchError( error=> {
+      // Si llegas aquí, el servidor respondió con 4xx/5xx o hubo un problema de red.
+
+      console.error('Error al hacer login:', error);
+      // logica...
+      
+      //return throwError( () => new Error("Error al hacer login",error)); // estor emite un Observalbe que entra en 'error' del a subscipcion
+      //return of(); // emite un Observable vacío para que tu stream no se rompa, no entra ni en 'next' ni en 'error' de la subcripcion
+      return of(false); // emite un Observable con false, esto entra en 'next' de la subcripcion
+    })
+  )
+}
+```
