@@ -5,7 +5,8 @@ import {AuthStatus} from '@auth/interfaces/auth.interface';
 import {UserResponse} from '@auth/interfaces/user-response.interface';
 import {User} from '@auth/interfaces/user.interface';
 import {UserLogin} from '@auth/interfaces/user-request.interface';
-import {catchError, map, Observable, of, tap, throwError} from 'rxjs';
+import {catchError, map, Observable, of, tap} from 'rxjs';
+import {rxResource} from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +50,10 @@ export class AuthService {
   public user = computed<User | null>( () => this._user() );
   public token = computed<string | null>( () => this._token() );
 
+  // se dispara tan pronto se inyecte el servicio por primera vez
+  checkStatusResource = rxResource({
+    stream: () => this.checkStatus()   // <-- devuelve Observable<StatusResponse>
+  });
 
   constructor() { }
 
@@ -95,5 +100,49 @@ export class AuthService {
         return of(false); // emite un Observable con false, esto entra en 'next' de la subcripcion
       })
     )
+  }
+
+  public checkStatus():Observable<boolean>{
+    console.log('check status ....')
+    const token:string | null = localStorage.getItem('token');
+
+    if( !token ){
+      return of(false);
+    }
+
+    return this.httpClient.get<UserResponse>(this.endpointCheckStatus,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      },
+      observe: 'response'
+    }).pipe(
+      tap( (response) => {
+        // Si llegas aquí, ¡el servidor respondió con un 2xx!
+        //this._authStatus.set('authenticated'); // opcional, la señal computed lo cambiara si el user no es nulo
+
+        console.log('Status code:', response.status);        // p.ej. 200
+        console.log('Full headers:', response.headers);
+        const body = response.body!;            // tu UserResponse
+        this._user.set(body.user);
+        this._token.set(body.token);
+
+        localStorage.setItem('token', this.token()! )
+      }),
+      // si esta bien develve un true
+      map(()=> true),
+      catchError( error=> {
+        // Si llegas aquí, el servidor respondió con 4xx/5xx o hubo un problema de red.
+
+        console.error('Error al hacer login:', error);
+
+        // limpiar params
+        this._user.set(null);
+        this._token.set(null);
+        localStorage.removeItem('token');
+        this._authStatus.set("not-authenticated");
+
+        return of(false); // emite un Observable con false, esto entra en 'next' de la subcripcion
+      })
+    );
   }
 }

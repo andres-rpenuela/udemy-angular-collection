@@ -82,3 +82,54 @@ this.authService.login(userLogin)
 > **Nota**: Redirección con 'rotuer'
 > * Básica: `this.router.navigateByUrl('/');`
 > * Sin historial: `this.router.navigateByUrl('/',{ replaceUrl:true });`
+
+
+# Verificar estado de autenticación
+
+Basta con hacer una petición con el token al servidor para comprobar su estada, nada más se crea el componente o servicio por ejemplo
+
+```typescript
+public checkStatus():Observable<boolean>{
+  console.log('check status ....')
+  const token:string | null = localStorage.getItem('token');
+
+if( !token ){
+  return of(false);
+}
+
+return this.httpClient.get<UserResponse>(this.endpointCheckStatus,{
+  headers:{
+    Authorization: `Bearer ${token}`
+  },
+  observe: 'response'
+}).pipe(
+  tap( (response) => {
+    // Si llegas aquí, ¡el servidor respondió con un 2xx!
+    //..
+  }),
+  // si esta bien develve un true
+  map(()=> true),
+  catchError( error=> {
+    // Si llegas aquí, el servidor respondió con 4xx/5xx o hubo un problema de red.
+
+    console.error('Error al hacer login:', error);
+
+    // limpiar params...
+    
+    return of(false); // emite un Observable con false, esto entra en 'next' de la subcripcion
+  })
+);
+}
+```
+
+
+Lanza la petición al crear el componente (Angular 20+ con rxResource):
+
+```typescript
+// se dispara tan pronto se inyecte el servicio por primera vez
+checkStatusResource = rxResource({
+  stream: () => this.checkStatus()   // <-- devuelve Observable<StatusResponse>
+});
+```
+
+> _Nota_ en Angular 19, se utiliza `loader`
