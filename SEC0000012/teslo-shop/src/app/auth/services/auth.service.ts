@@ -38,7 +38,7 @@ export class AuthService {
    *  Nota: Al ser computed, es solo lectura.
    */
   public authStatus = computed<AuthStatus>( () =>{
-    if (this._authStatus() === 'checking') return this._authStatus();
+    if (this._authStatus() === 'checking') return 'checking';
 
     if(this._user() ){
       return 'authenticated';
@@ -156,6 +156,7 @@ export class AuthService {
 
     this._user.set(user); //body.user
     this._token.set(token); //body.token
+    this._authStatus.set('authenticated');
 
     localStorage.setItem('token', this.token()!)
 
