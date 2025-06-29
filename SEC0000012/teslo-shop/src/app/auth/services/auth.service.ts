@@ -1,5 +1,5 @@
 import {computed, inject, Injectable, signal} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {environment} from '@env/environment.development';
 import {AuthStatus} from '@auth/interfaces/auth.interface';
 import {UserResponse} from '@auth/interfaces/user-response.interface';
@@ -74,13 +74,14 @@ export class AuthService {
         // Si llegas aquí, ¡el servidor respondió con un 2xx!
         //this._authStatus.set('authenticated'); // opcional, la señal computed lo cambiara si el user no es nulo
 
-        console.log('Status code:', response.status);        // p.ej. 200
-        console.log('Full headers:', response.headers);
-        const body = response.body!;            // tu UserResponse
-        this._user.set(body.user);
-        this._token.set(body.token);
-
-        localStorage.setItem('token', this.token()! )
+        // console.log('Status code:', response.status);        // p.ej. 200
+        // console.log('Full headers:', response.headers);
+        // const body = response.body!;            // tu UserResponse
+        // this._user.set(body.user);
+        // this._token.set(body.token);
+        //
+        // localStorage.setItem('token', this.token()! )
+        this.handleAuthSuccess(response);
       }),
       // si esta bien develve un true
       map(()=> true),
@@ -90,14 +91,15 @@ export class AuthService {
         console.error('Error al hacer login:', error);
 
         // limpiar parmas
-        this._user.set(null);
-        this._token.set(null);
-        localStorage.removeItem('token');
-        this._authStatus.set("not-authenticated");
-
-        //return throwError( () => new Error("Error al hacer login",error)); // estor emite un Observalbe que entra en 'error' del a subscipcion
-        //return of(); // emite un Observable vacío para que tu stream no se rompa, no entra ni en 'next' ni en 'error' de la subcripcion
-        return of(false); // emite un Observable con false, esto entra en 'next' de la subcripcion
+        // this._user.set(null);
+        // this._token.set(null);
+        // localStorage.removeItem('token');
+        // this._authStatus.set("not-authenticated");
+        //
+        // //return throwError( () => new Error("Error al hacer login",error)); // estor emite un Observalbe que entra en 'error' del a subscipcion
+        // //return of(); // emite un Observable vacío para que tu stream no se rompa, no entra ni en 'next' ni en 'error' de la subcripcion
+        // return of(false); // emite un Observable con false, esto entra en 'next' de la subcripcion
+        return this.handleAuthError(error);
       })
     )
   }
@@ -107,6 +109,7 @@ export class AuthService {
     const token:string | null = localStorage.getItem('token');
 
     if( !token ){
+      this.logout();
       return of(false);
     }
 
@@ -120,13 +123,7 @@ export class AuthService {
         // Si llegas aquí, ¡el servidor respondió con un 2xx!
         //this._authStatus.set('authenticated'); // opcional, la señal computed lo cambiara si el user no es nulo
 
-        console.log('Status code:', response.status);        // p.ej. 200
-        console.log('Full headers:', response.headers);
-        const body = response.body!;            // tu UserResponse
-        this._user.set(body.user);
-        this._token.set(body.token);
-
-        localStorage.setItem('token', this.token()! )
+        this.handleAuthSuccess(response);
       }),
       // si esta bien develve un true
       map(()=> true),
@@ -135,14 +132,36 @@ export class AuthService {
 
         console.error('Error al hacer login:', error);
 
-        // limpiar params
-        this._user.set(null);
-        this._token.set(null);
-        localStorage.removeItem('token');
-        this._authStatus.set("not-authenticated");
-
-        return of(false); // emite un Observable con false, esto entra en 'next' de la subcripcion
+        return this.handleAuthError(error);
       })
     );
   }
+
+  public logout(){
+    // limpiar params
+    this._user.set(null);
+    this._token.set(null);
+    this._authStatus.set("not-authenticated");
+
+    localStorage.removeItem('token');
+  }
+
+  private handleAuthSuccess(response: HttpResponse<UserResponse>) {
+    console.log('Status code:', response.status);        // p.ej. 200
+    console.log('Full headers:', response.headers);
+    // const body = response.body!;            // tu UserResponse
+    const {user,token} = response.body!;        // tu UserResponse desectructurado
+
+    this._user.set(user); //body.user
+    this._token.set(token); //body.token
+
+    localStorage.setItem('token', this.token()!)
+  }
+
+  private handleAuthError(error:any):Observable<boolean> {
+    // limpiar params
+    this.logout();
+    return of(false); // emite un Observable con false, esto entra en 'next' de la subcripcion
+  }
+
 }
