@@ -70,21 +70,22 @@ export class AuthService {
       },
       { observe: 'response' }      // 🚩 le pides la respuesta completa
     ).pipe(
-      tap( (response) => {
-        // Si llegas aquí, ¡el servidor respondió con un 2xx!
-        //this._authStatus.set('authenticated'); // opcional, la señal computed lo cambiara si el user no es nulo
-
-        // console.log('Status code:', response.status);        // p.ej. 200
-        // console.log('Full headers:', response.headers);
-        // const body = response.body!;            // tu UserResponse
-        // this._user.set(body.user);
-        // this._token.set(body.token);
-        //
-        // localStorage.setItem('token', this.token()! )
-        this.handleAuthSuccess(response);
-      }),
+      // tap( (response) => {
+      //   // Si llegas aquí, ¡el servidor respondió con un 2xx!
+      //   //this._authStatus.set('authenticated'); // opcional, la señal computed lo cambiara si el user no es nulo
+      //
+      //   // console.log('Status code:', response.status);        // p.ej. 200
+      //   // console.log('Full headers:', response.headers);
+      //   // const body = response.body!;            // tu UserResponse
+      //   // this._user.set(body.user);
+      //   // this._token.set(body.token);
+      //   //
+      //   // localStorage.setItem('token', this.token()! )
+      //   this.handleAuthSuccess(response); // si no devuelve true
+      // }),
       // si esta bien develve un true
-      map(()=> true),
+      //map(()=> true),
+      map( (response)=> this.handleAuthSuccess(response) ),
       catchError( error=> {
         // Si llegas aquí, el servidor respondió con 4xx/5xx o hubo un problema de red.
 
@@ -119,14 +120,15 @@ export class AuthService {
       },
       observe: 'response'
     }).pipe(
-      tap( (response) => {
-        // Si llegas aquí, ¡el servidor respondió con un 2xx!
-        //this._authStatus.set('authenticated'); // opcional, la señal computed lo cambiara si el user no es nulo
-
-        this.handleAuthSuccess(response);
-      }),
-      // si esta bien develve un true
-      map(()=> true),
+      // tap( (response) => {
+      //   // Si llegas aquí, ¡el servidor respondió con un 2xx!
+      //   //this._authStatus.set('authenticated'); // opcional, la señal computed lo cambiara si el user no es nulo
+      //
+      //   this.handleAuthSuccess(response);
+      // }),
+      // // si esta bien develve un true
+      // map(()=> true),
+      map( (response) => this.handleAuthSuccess(response)),
       catchError( error=> {
         // Si llegas aquí, el servidor respondió con 4xx/5xx o hubo un problema de red.
 
@@ -156,6 +158,8 @@ export class AuthService {
     this._token.set(token); //body.token
 
     localStorage.setItem('token', this.token()!)
+
+    return true;
   }
 
   private handleAuthError(error:any):Observable<boolean> {
