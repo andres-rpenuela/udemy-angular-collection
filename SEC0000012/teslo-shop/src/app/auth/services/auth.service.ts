@@ -21,7 +21,7 @@ export class AuthService {
 
   protected _authStatus = signal<AuthStatus>('checking');
   protected _user = signal<User|null>(null);
-  protected _token = signal<string|null>(null);
+  protected _token = signal<string|null>( localStorage.getItem('token') );
 
   // Getters de señales
   /**
@@ -147,7 +147,7 @@ export class AuthService {
     this._authStatus.set("not-authenticated");
 
     // TODO comentamos para que no se borre el token del local store mientras se desarrolla
-    //localStorage.removeItem('token');
+    localStorage.removeItem('token');
   }
 
   private handleAuthSuccess(response: HttpResponse<UserResponse>) {
