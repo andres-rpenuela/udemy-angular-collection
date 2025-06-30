@@ -115,9 +115,10 @@ export class AuthService {
     }
 
     return this.httpClient.get<UserResponse>(this.endpointCheckStatus,{
-      headers:{
-        Authorization: `Bearer ${token}`
-      },
+      // se añade mediente interceptor
+      // headers:{
+      //   Authorization: `Bearer ${token}`
+      // },
       observe: 'response'
     }).pipe(
       // tap( (response) => {
@@ -145,7 +146,8 @@ export class AuthService {
     this._token.set(null);
     this._authStatus.set("not-authenticated");
 
-    localStorage.removeItem('token');
+    // TODO comentamos para que no se borre el token del local store mientras se desarrolla
+    //localStorage.removeItem('token');
   }
 
   private handleAuthSuccess(response: HttpResponse<UserResponse>) {
