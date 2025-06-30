@@ -55,3 +55,13 @@ export const appConfig: ApplicationConfig = {
   ]
 };
 ```
+
+Los interceptores se ejecutan en el orden en que se registran, por lo que si tienes varios interceptores, el primero que se registre será el primero en ejecutarse.
+
+Para realizar una modificacón en la petición, se debe clonar el objeto `HttpRequest` y devolver el nuevo objeto modificado. Esto es necesario porque los objetos `HttpRequest` son inmutables. Sucede lo mismo con los objetos `HttpResponse`, que también son inmutables.
+
+```typescript
+const clonedReq = req.clone({
+  headers: req.headers.set('Authorization', `Bearer ${authToken}`)
+});
+```
