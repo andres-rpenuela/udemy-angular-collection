@@ -1,0 +1,97 @@
+<form class="space-y-4 w-full max-w-md mx-auto mt-10" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+  <!-- Nombre de usuario -->
+  <div class="mt-1 space-y-1">
+  <label class="input input-bordered flex items-center gap-2">
+    <svg class="h-[1em] w-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5.121 17.804A9.001 9.001 0 0112 15c2.21 0 4.22.805 5.879 2.137M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+    <input type="text" placeholder="Username" class="grow" required formControlName="name"/>
+    @if( registerForm.get('name')?.invalid && registerForm.get('name')?.touched) {
+      <small class="text-red-500">Username is required</small>
+    }
+  </label>
+<!--  @if(  !validatorHelper.isValidFieldForm(registerForm,'name') && !registerForm.untouched ) {-->
+    @if(  validatorHelper.isNonValidFieldForm(registerForm,'name') ) {
+    <div class="alert alert-error flex flex-col space-y-1 items-right gap-1">
+      @for (msg of validatorHelper.getMessagesError(registerForm,'name'); track $index) {
+        <p class="text-black-500 block" > {{ msg }} </p>
+      }
+    </div>
+  }
+  </div>
+  <!-- Email -->
+  <label class="input input-bordered flex items-center gap-2">
+    <svg class="h-[1em] w-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M16 12l-4-4-4 4m0 0l4 4m-4-4h8" />
+    </svg>
+    <input type="email" placeholder="Email" class="grow" required formControlName="email"/>
+    @if( registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+      <small class="text-red-500"> {{ validatorHelper.getFirstMessagesError(registerForm,'email') }} </small>
+<!--      <small class="text-red-500"> {{ registerForm.get('email')?.errors?.['email'] }} </small>-->
+    }
+  </label>
+
+
+  <!-- Contraseña -->
+  <label class="input input-bordered flex items-center gap-2">
+    <svg class="h-[1em] w-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 15v2m0 4h.01M17 8a5 5 0 00-10 0v4H5a2 2 0 002 2h10a2 2 0 002-2h-2V8z" />
+    </svg>
+    <input type="password" placeholder="Password" class="grow" required formControlName="password"/>
+    @if( registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+      <small class="text-red-500"> {{ validatorHelper.getFirstMessagesError(registerForm,'password') }} </small>
+      <!--      <small class="text-red-500"> {{ registerForm.get('email')?.errors?.['email'] }} </small>-->
+    }
+  </label>
+
+  <!-- Confirmar Contraseña -->
+  <label class="input input-bordered flex items-center gap-2">
+    <svg class="h-[1em] w-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 15v2m0 4h.01M17 8a5 5 0 00-10 0v4H5a2 2 0 002 2h10a2 2 0 002-2h-2V8z" />
+    </svg>
+    <input type="password" placeholder="Confirm Password" class="grow" required formControlName="password2"/>
+    @if( registerForm.get('password2')?.invalid && registerForm.get('password2')?.touched) {
+      <small class="text-red-500"> {{ validatorHelper.getFirstMessagesError(registerForm,'password2') }} </small>
+      <!--      <small class="text-red-500"> {{ registerForm.get('email')?.errors?.['email'] }} </small>-->
+    }
+  </label>
+  <small class="text-red-500">{{ registerForm.errors?.['passwordsNotMatch'] }}</small>
+
+  <!-- After the two password inputs -->
+  @if(registerForm.errors?.['passwordsMismatch']
+  && (registerForm.touched || registerForm.dirty)) {
+    <div class="text-red-500 mt-1">
+      Las contraseñas no coinciden.
+    </div>
+  }
+
+
+  <!-- Botón -->
+  <button type="submit" class="btn btn-primary w-full"
+          [ngClass]="{'opacity-50 pointer-events-none cursor-not-allowed': registerForm.invalid }"
+          >
+    Create Account
+  </button>
+
+  <!-- Link alternativo -->
+  <div class="text-center text-sm text-gray-500 mt-2">
+    Already have an account? <a routerLink="/auth" class="link">Login</a>
+  </div>
+</form>
+@if(this.hasError()){
+  <div role="alert" class="alert alert-error animate-wiggle fixed bottom-5 right-5 w-52">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>Por favor, revise la información.</span>
+  </div>
+}

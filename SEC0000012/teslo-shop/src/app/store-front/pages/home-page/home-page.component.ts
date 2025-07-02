@@ -4,19 +4,16 @@ import {ProductCardComponent} from '@products/components/product-card/product-ca
 import {ProductsService} from '@products/services/products.service';
 // import {ProductCardComponent} from '../../../products/components/product-card/product-card.component';
 
-import {rxResource, toSignal} from '@angular/core/rxjs-interop';
+import {rxResource} from '@angular/core/rxjs-interop';
 import {ProductResponse} from '@products/interfaces/product.interface';
-import {JsonPipe} from '@angular/common';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {PaginationComponent} from "@shared/components/pagination/pagination.component";
-import {map} from "rxjs";
 import {PaginationService} from "@shared/components/pagination/pagination.service";
 
 @Component({
   selector: 'app-home-page',
   imports: [
     ProductCardComponent,
-    JsonPipe,
     PaginationComponent
   ],
   templateUrl: './home-page.component.html',
