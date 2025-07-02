@@ -1,4 +1,4 @@
-import {computed, inject, Injectable, signal} from '@angular/core';
+import {computed, effect, inject, Injectable, signal} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {environment} from '@env/environment.development';
 import {AuthStatus} from '@auth/interfaces/auth.interface';
@@ -22,6 +22,8 @@ export class AuthService {
   protected _authStatus = signal<AuthStatus>('checking');
   protected _user = signal<User|null>(null);
   protected _token = signal<string|null>( localStorage.getItem('token') );
+
+  productsMap = new Map<string,UserResponse>;
 
   // Getters de señales
   /**
@@ -114,6 +116,27 @@ export class AuthService {
       return of(false);
     }
 
+    // evitar peticion http
+    const storedSession = localStorage.getItem('userSession');
+
+    if (storedSession) {
+      const parsed: UserSession = JSON.parse(storedSession);
+      console.log(parsed.userResponse);
+      console.log(new Date(parsed.timestamp)); // Opcional: convertir timestamp a fecha legible
+
+      const expirationTime = parsed.timestamp + (1 * 60 * 60 * 1000); // 1 hora en ms
+      const isExpired = Date.now() > expirationTime;
+      if( !isExpired ) {
+        console.log("Cargando el usuario de la cache...")
+        this._user.set(parsed.userResponse.user); // Cargar el usuario desde la sesión guardada
+        this._token.set(token); // Cargar el token desde el localStorage
+        this._authStatus.set('authenticated');
+
+        return of( true );
+      }
+    }
+
+    console.log("Realizando petición al servidor para verificar el estado de autenticación...");
     return this.httpClient.get<UserResponse>(this.endpointCheckStatus,{
       // se añade mediente interceptor
       // headers:{
@@ -161,6 +184,7 @@ export class AuthService {
   }
 
   public logout(){
+    console.log('Logout');
     // limpiar params
     this._user.set(null);
     this._token.set(null);
@@ -168,6 +192,8 @@ export class AuthService {
 
     // TODO comentamos para que no se borre el token del local store mientras se desarrolla
     localStorage.removeItem('token');
+    localStorage.removeItem('userSession');
+
   }
 
   private handleAuthSuccess(response: HttpResponse<UserResponse>) {
@@ -180,7 +206,7 @@ export class AuthService {
     this._token.set(token); //body.token
     this._authStatus.set('authenticated');
 
-    localStorage.setItem('token', this.token()!)
+
 
     return true;
   }
@@ -191,4 +217,29 @@ export class AuthService {
     return of(false); // emite un Observable con false, esto entra en 'next' de la subcripcion
   }
 
+  userSessionSaveEffect = effect(() => {
+    console.log('userSessionSaveEffect called: { user: '+this._user()?.fullName.substring(0,3) + 'xxxx, token: ' + this._token()?.substring(0,3) + 'xxxx }');
+    if (!this._user()) {
+      return;
+    };
+
+    const userResponse:UserResponse = {
+      user: this._user() as User, // Asegúrate de que `user` esté definido
+      token: this._token() as string // Asegúrate de que `token` esté definido
+    };
+
+    const userSession: UserSession = {
+      userResponse: userResponse,               // Asegúrate de que `user` esté definido
+      timestamp: new Date(Date.now()).getTime() // Timestamp de cuando se guardó la sesión, puedes ajustar el tiempo según tus necesidades
+    };
+
+    localStorage.setItem('token', this._token()!); // Guardar el token en localStorage
+    localStorage.setItem('userSession', JSON.stringify(userSession));
+  });
+
+}
+
+export interface UserSession {
+  userResponse: UserResponse
+  timestamp: number; // Timestamp de cuando se guardó la sesión
 }
