@@ -1,5 +1,5 @@
 import {Component, computed, inject} from '@angular/core';
-import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {AuthService} from '@auth/services/auth.service';
 
 @Component({
@@ -15,7 +15,12 @@ import {AuthService} from '@auth/services/auth.service';
 export class AdminLayoutComponent {
 
   protected authService = inject(AuthService);
+  private router = inject(Router);
 
   protected user = computed(() => this.authService.user() );
 
+  logout() {
+    this.authService.logout()
+    this.router.navigateByUrl('/', { replaceUrl: true });
+  }
 }
