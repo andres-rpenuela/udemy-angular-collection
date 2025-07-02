@@ -4,8 +4,8 @@ import {environment} from '@env/environment.development';
 import {AuthStatus} from '@auth/interfaces/auth.interface';
 import {UserResponse} from '@auth/interfaces/user-response.interface';
 import {User} from '@auth/interfaces/user.interface';
-import {UserLogin} from '@auth/interfaces/user-request.interface';
-import {catchError, map, Observable, of, tap} from 'rxjs';
+import {UserLogin, UserRegister} from '@auth/interfaces/user-request.interface';
+import {catchError, map, Observable, of} from 'rxjs';
 import {rxResource} from '@angular/core/rxjs-interop';
 
 @Injectable({
@@ -134,6 +134,26 @@ export class AuthService {
         // Si llegas aquí, el servidor respondió con 4xx/5xx o hubo un problema de red.
 
         console.error('Error al hacer login:', error);
+
+        return this.handleAuthError(error);
+      })
+    );
+  }
+
+  public register({password,email,fullName}:UserRegister ):Observable<boolean>{
+    console.log('Register: '+email.substring(0,4)+'....');
+
+    const payload = {password,email,fullName};
+
+    return this.httpClient.post<UserResponse>(this.endpointRegister,
+      payload,
+      { observe: 'response' }      // 🚩 le pides la respuesta completa
+    ).pipe( // devuelve la misma respuesta que el login, es decir, cuando se registre un usuario, se autentica automáticamente
+      map( (response) => this.handleAuthSuccess(response) ),
+      catchError( error=> {
+        // Si llegas aquí, el servidor respondió con 4xx/5xx o hubo un problema de red.
+
+        console.error('Error al hacer register:', error);
 
         return this.handleAuthError(error);
       })
