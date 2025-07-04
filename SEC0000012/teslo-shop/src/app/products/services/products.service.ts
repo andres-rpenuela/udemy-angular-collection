@@ -72,7 +72,18 @@ export class ProductsService {
 
   }
 
-  public updatedProduct(productLike: Partial<Product>) {
+  public updatedProduct(id: string, productLike: Partial<Product>): Observable<Product> {
     console.log('Actualizando producto:', productLike);
+
+    const urlRequest= `${BASE_URL}/products/${id}`;
+
+    // esto permite actualizar el producto o parte del producto
+    return this.http.patch<Product>( urlRequest, productLike )
+      .pipe(
+        catchError(err => {
+          console.error('Error al actualizar producto:', err);
+          return of();
+        }
+      ));
   }
 }

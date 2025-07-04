@@ -7,6 +7,8 @@ import {
   FormErrorLabelComponent
 } from '@dashboard/pages/product-admin-page/product-details/form-error-label/form-error-label.component';
 import {ProductsService} from '@products/services/products.service';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {take, takeUntil} from 'rxjs';
 
 
 @Component({
@@ -26,7 +28,7 @@ export class ProductDetailsComponent implements OnInit {
   private productsService = inject(ProductsService)
 
   protected fb = inject(FormBuilder);
-  ;
+
   public productForm = this.fb.group({
     title: ['',Validators.required ],
     description: ['',Validators.required ],
@@ -53,15 +55,26 @@ export class ProductDetailsComponent implements OnInit {
     // si el formulario es válido, se perpara la data
     // poductLike es un objeto parcial de Product, porque luce como un prodcuto
     // - En este caso: En el formulario los tags es un string, y en el Product es un array de string
+    // - En este caso: En el formulario los size es un array de string, y en el Product es un array de string que se llama sizes
+    const sizes = formValue.size || [] ; // as string[] para que no de error de tipos
+    delete formValue.size;
+
     const productLike : Partial<Product> = {
       ...(formValue as any), // as any para evitar errores de tipos
       tags: formValue.tags?.toLowerCase()
         .split(',')
-        .map(tag => tag.trim()) ?? [] // convierte el string a un array de string
+        .map(tag => tag.trim()) ?? [], // convierte el string a un array de string
+      sizes: sizes, // si size es un array, lo deja como está, si no, lo convierte a un array
     }
 
     console.log('Producto preparado para enviar:', productLike);
-    this.productsService.updatedProduct( productLike );
+    this.productsService.updatedProduct( this.product().id!, productLike )
+      .pipe(
+        take(1)
+      )
+      .subscribe(
+        product => console.log('Producto actualizado:', product),
+      );
   }
 
   // inicializa el formulario con los valores del producto
@@ -84,6 +97,7 @@ export class ProductDetailsComponent implements OnInit {
 
     // si tags es un array, lo convierte a string y los une por comas
     this.productForm.patchValue( {tags: formLike.tags?.join(', ')} );
+    this.productForm.patchValue( {size: formLike.sizes} );
   }
 
   onSizeClick(size: string) {
