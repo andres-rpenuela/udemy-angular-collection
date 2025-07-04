@@ -30,7 +30,7 @@ export class ProductDetailsComponent implements OnInit {
     size: [ [''] ],
     images: this.fb.array([ this.fb.control('')] ), //igual a:  this.fb.array([ this.fb.control('', Validators.required) ]), this.fb.array([ '' ] o ['']
     tags: [''],
-    gender: [ 'men', [Validators.required, Validators.pattern(/men|women|unisex/)] ],
+    gender: [ 'men', [Validators.required, Validators.pattern(/men|women|kid|unisex/)] ],
   });
 
   public onSubmit() {
@@ -57,5 +57,20 @@ export class ProductDetailsComponent implements OnInit {
 
     // si tags es un array, lo convierte a string y los une por comas
     this.productForm.patchValue( {tags: formLike.tags?.join(', ')} );
+  }
+
+  onSizeClick(size: string) {
+    // const currentSizes = this.productForm.get('size')?.value || [];
+    const currentSizes = this.productForm.value.size || [];
+
+    if(currentSizes.includes(size)) {
+      // Si el tamaño ya está seleccionado, lo eliminamos
+      currentSizes.splice(currentSizes.indexOf(size), 1);
+    }else{
+      // Si el tamaño no está seleccionado, lo agregamos
+      currentSizes.push(size);
+    }
+
+    this.productForm.patchValue({ size: currentSizes });
   }
 }
