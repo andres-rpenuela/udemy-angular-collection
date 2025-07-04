@@ -4,10 +4,13 @@ import {rxResource, toSignal} from '@angular/core/rxjs-interop';
 import {map} from 'rxjs';
 import {ProductsService} from '@products/services/products.service';
 import {Product} from '@products/interfaces/product.interface';
+import {ProductDetailsComponent} from '@dashboard/pages/product-admin-page/product-details/product-details.component';
 
 @Component({
   selector: 'app-product-admin-page',
-  imports: [],
+  imports: [
+    ProductDetailsComponent
+  ],
   templateUrl: './product-admin-page.component.html',
   styleUrl: './product-admin-page.component.css'
 })
