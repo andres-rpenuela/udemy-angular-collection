@@ -1,4 +1,4 @@
-import {Component, inject, linkedSignal, signal} from '@angular/core';
+import {Component, effect, inject, linkedSignal, signal} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import {ProductTableComponent} from '@products/components/product-table/product-table.component';
 import { ProductsService } from '@products/services/products.service';
@@ -20,6 +20,8 @@ export class ProductsAdminPageComponent {
   private productService = inject(ProductsService);
   protected paginationService = inject(PaginationService);
   protected productsPerPage = signal<number>(10);
+
+  effectivePage = effect( () => console.log(this.productsPerPage()));
 
   productsResource = rxResource({
     params: () => ({

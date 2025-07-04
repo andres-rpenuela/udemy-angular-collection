@@ -15,22 +15,22 @@
 @else {
   <div class="flex flex-col md:flex-row w-full justify-between gap-4 h-20">
     <!-- Div izquierdo: paginación -->
-    <div class="justify-start w-full ">
+    <div class="justify-start  flex flex-col md:flex-row w-full gap-4">
       <shared-pagination
         [pages]="productsResource.value()?.pages ?? 0"
         [currentPage]="paginationService.currentPage()"
       ></shared-pagination>
 
-      <select class="select select-bordered w-full md:w-auto " (change)="productsPerPage.set(+selectLimit.value)" #selectLimit>
-        <option value="10" selected>10 por página</option>
-        <option value="20">20 por página</option>
-        <option value="50">50 por página</option>
-        <option value="100">100 por página</option>
+      <select class="select select-bordered" (change)="productsPerPage.set(+selectLimit.value)" #selectLimit>
+        <option value="10" [selected]="productsPerPage()==10">10 por página</option>
+        <option value="20" [selected]="productsPerPage()==20">20 por página</option>
+        <option value="50" [selected]="productsPerPage()==50">50 por página</option>
+        <option value="100" [selected]="productsPerPage()==1000">100 por página</option>
       </select>
     </div>
 
     <!-- Div derecho: botón -->
-    <div class="flex w-full justify-end md:justify-end  mt-4 mb-10">
+    <div class="flex w-full justify-end md:justify-end">
       <a class="btn btn-primary w-full md:w-auto text-center" routerLink="/admin/product/new">
         Nuevo producto
       </a>
