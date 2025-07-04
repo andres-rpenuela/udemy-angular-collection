@@ -1,7 +1,7 @@
 <h1 class="text-2xl font-bold">Listado de productos</h1>
 <h3 clas="text-lg">
     Todos los productos
-    <span class="text-accent">10</span>
+    <span class="text-accent">{{ productsPerPage() }}</span>
 </h3>
 
 <div class="divider"></div>
@@ -13,13 +13,20 @@
 }
 <!-- -->
 @else {
-  <div class="flex flex-col md:flex-row w-full justify-between gap-4">
+  <div class="flex flex-col md:flex-row w-full justify-between gap-4 h-20">
     <!-- Div izquierdo: paginación -->
     <div class="justify-start w-full ">
       <shared-pagination
         [pages]="productsResource.value()?.pages ?? 0"
         [currentPage]="paginationService.currentPage()"
       ></shared-pagination>
+
+      <select class="select select-bordered w-full md:w-auto " (change)="productsPerPage.set(+selectLimit.value)" #selectLimit>
+        <option value="10" selected>10 por página</option>
+        <option value="20">20 por página</option>
+        <option value="50">50 por página</option>
+        <option value="100">100 por página</option>
+      </select>
     </div>
 
     <!-- Div derecho: botón -->
