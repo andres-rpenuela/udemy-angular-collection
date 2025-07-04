@@ -6,6 +6,7 @@ import {FormUtils} from '@utils/form-utils';
 import {
   FormErrorLabelComponent
 } from '@dashboard/pages/product-admin-page/product-details/form-error-label/form-error-label.component';
+import {ProductsService} from '@products/services/products.service';
 
 
 @Component({
@@ -22,9 +23,10 @@ export class ProductDetailsComponent implements OnInit {
   public readonly sizes: string[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
   public product = input.required<Product>();
+  private productsService = inject(ProductsService)
 
   protected fb = inject(FormBuilder);
-
+  ;
   public productForm = this.fb.group({
     title: ['',Validators.required ],
     description: ['',Validators.required ],
@@ -59,6 +61,7 @@ export class ProductDetailsComponent implements OnInit {
     }
 
     console.log('Producto preparado para enviar:', productLike);
+    this.productsService.updatedProduct( productLike );
   }
 
   // inicializa el formulario con los valores del producto

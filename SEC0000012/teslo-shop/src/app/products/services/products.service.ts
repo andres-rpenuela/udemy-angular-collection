@@ -71,4 +71,8 @@ export class ProductsService {
     );
 
   }
+
+  public updatedProduct(productLike: Partial<Product>) {
+    console.log('Actualizando producto:', productLike);
+  }
 }
