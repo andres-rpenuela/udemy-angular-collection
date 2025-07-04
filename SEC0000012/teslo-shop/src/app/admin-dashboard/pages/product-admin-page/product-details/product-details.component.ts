@@ -39,8 +39,26 @@ export class ProductDetailsComponent implements OnInit {
 
   public onSubmit() {
     const isValid = this.productForm.valid;
-
     console.log('Formulario enviado', this.productForm.value, {isValid});
+
+    // si el formulario no es válido, no se envía
+    if (!isValid) {
+      this.productForm.markAllAsTouched(); // marca todos los campos como tocados para mostrar los errores
+      return;
+    }
+    const formValue = this.productForm.value;
+
+    // si el formulario es válido, se perpara la data
+    // poductLike es un objeto parcial de Product, porque luce como un prodcuto
+    // - En este caso: En el formulario los tags es un string, y en el Product es un array de string
+    const productLike : Partial<Product> = {
+      ...(formValue as any), // as any para evitar errores de tipos
+      tags: formValue.tags?.toLowerCase()
+        .split(',')
+        .map(tag => tag.trim()) ?? [] // convierte el string a un array de string
+    }
+
+    console.log('Producto preparado para enviar:', productLike);
   }
 
   // inicializa el formulario con los valores del producto
