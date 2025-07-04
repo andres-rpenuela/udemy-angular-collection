@@ -8,7 +8,7 @@ import {
 } from '@dashboard/pages/product-admin-page/product-details/form-error-label/form-error-label.component';
 import {ProductsService} from '@products/services/products.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {take, takeUntil} from 'rxjs';
+import {take, takeUntil, tap} from 'rxjs';
 
 
 @Component({
@@ -70,6 +70,7 @@ export class ProductDetailsComponent implements OnInit {
     console.log('Producto preparado para enviar:', productLike);
     this.productsService.updatedProduct( this.product().id!, productLike )
       .pipe(
+        tap(product => this.productsService.updateProductCache(product)),
         take(1)
       )
       .subscribe(

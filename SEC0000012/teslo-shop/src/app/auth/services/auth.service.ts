@@ -7,6 +7,7 @@ import {User} from '@auth/interfaces/user.interface';
 import {UserLogin, UserRegister} from '@auth/interfaces/user-request.interface';
 import {catchError, map, Observable, of} from 'rxjs';
 import {rxResource} from '@angular/core/rxjs-interop';
+import {Role} from '@auth/interfaces/role.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -237,6 +238,9 @@ export class AuthService {
     localStorage.setItem('userSession', JSON.stringify(userSession));
   });
 
+  public isAdmin(): boolean {
+    return !!this._user()?.roles?.includes(Role.Admin);
+  }
 }
 
 export interface UserSession {

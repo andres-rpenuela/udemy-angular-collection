@@ -86,4 +86,21 @@ export class ProductsService {
         }
       ));
   }
+
+  public updateProductCache( product: Product ) {
+    const id = product.id;
+    // Actualiza el producto en el cache del producto individual
+    this.productMap.set(id, product);
+
+    // Actualiza el producto en el cache de la lista de productos
+    // totalCalls = sum(response.products.length) x productsMap.length
+    this.productsMap.forEach((response: ProductResponse) => {
+      // Reemplaza el producto en la lista de productos en el map
+      // si el id del producto coincide con el id del producto que se esta actualizando
+      // response.products es un array de productos y igual al resutlado del map
+      response.products = response.products.map(currentProduct => {
+        return currentProduct.id === id ? product : currentProduct;
+      });
+    });
+  }
 }
