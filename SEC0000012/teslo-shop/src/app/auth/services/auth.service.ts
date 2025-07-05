@@ -1,6 +1,6 @@
 import {computed, effect, inject, Injectable, signal} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-import {environment} from '@env/environment.development';
+
 import {AuthStatus} from '@auth/interfaces/auth.interface';
 import {UserResponse} from '@auth/interfaces/user-response.interface';
 import {User} from '@auth/interfaces/user.interface';
@@ -8,6 +8,7 @@ import {UserLogin, UserRegister} from '@auth/interfaces/user-request.interface';
 import {catchError, map, Observable, of} from 'rxjs';
 import {rxResource} from '@angular/core/rxjs-interop';
 import {Role} from '@auth/interfaces/role.interface';
+import {environment} from '@env/environment';
 
 @Injectable({
   providedIn: 'root'

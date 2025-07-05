@@ -127,9 +127,17 @@
     </div>
 
     <div>
-      <product-carousel [images]="product().images" />
-      <input type="file" class="file-input file-input-bordered w-full mt-4" />
+<!--      <product-carousel [images]="product().images" />-->
+        <product-carousel [images]="currentImages()" />
+      <input type="file" multiple
+             accept="image/*"
+             (change)="onFilesChanged($event)" class="file-input file-input-bordered w-full mt-4" />
 
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
+        @for( image of imagesTemp(); track $index){
+          <img [src]="image" alt="Image Temporal" class="w-full object-cover rounded-xl">
+        }
+      </div>
     </div>
   </div>
 </form>

@@ -1,4 +1,4 @@
-import {Component, inject, input, OnInit, signal} from '@angular/core';
+import {Component, computed, inject, input, OnInit, signal} from '@angular/core';
 import {Product} from '@products/interfaces/product.interface';
 import {ProductCarouselComponent} from '@products/components/product-carousel/product-carousel.component';
 import {FormArray, FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -7,7 +7,7 @@ import {
   FormErrorLabelComponent
 } from '@dashboard/pages/product-admin-page/product-details/form-error-label/form-error-label.component';
 import {ProductsService} from '@products/services/products.service';
-import {firstValueFrom, take, tap} from 'rxjs';
+import {firstValueFrom, take} from 'rxjs';
 import {Router} from '@angular/router';
 
 
@@ -31,6 +31,9 @@ export class ProductDetailsComponent implements OnInit {
   protected fb = inject(FormBuilder);
 
   protected wasSaved = signal(false);
+
+  private fileList : FileList | undefined;
+  protected imagesTemp = signal([] as string[]);
 
   public productForm = this.fb.group({
     title: ['',Validators.required ],
@@ -67,7 +70,7 @@ export class ProductDetailsComponent implements OnInit {
     if (!imagesArray) {
       console.warn('El campo images no existe en el formulario');
       this.productForm.addControl('images', this.fb.array([this.fb.control('')]));
-    } else {
+    } else if( imagesArray.length == 0 || !imagesArray.at(0)?.value || imagesArray.at(0)?.value?.size == 0 ) {
       imagesArray.clear();
       // Asegúrate de no dejarlo como [null]
       imagesArray.push(this.fb.control('')); // ['']
@@ -76,8 +79,8 @@ export class ProductDetailsComponent implements OnInit {
     const productLike : Partial<Product> = {
       ...(formValue as any), // as any para evitar errores de tipos
       tags: formValue.tags?.toLowerCase()
-        .split(',')
-        .map(tag => tag.trim()) ?? [], // convierte el string a un array de string
+          .split(',')
+          .map(tag => tag.trim()) ?? [], // convierte el string a un array de string
       sizes: sizes, // si size es un array, lo deja como está, si no, lo convierte a un array
     }
 
@@ -98,7 +101,7 @@ export class ProductDetailsComponent implements OnInit {
   // Esto se puede hacer concatentado el observable con otro observable, pero es más sencillo con async/await.
   private async updatedProduct(productLike: Partial<Product>) {
     const product = await firstValueFrom(
-      this.productsService.updatedProduct(this.product().id!, productLike)
+        this.productsService.updatedProduct(this.product().id!, productLike, this.fileList)
     );
     console.log('Producto actualizado:', product);
 
@@ -120,16 +123,16 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   private newProduct(productLike: Partial<Product>) {
-    this.productsService.createProduct(productLike)
-      .pipe(
-        take(1)
-      )
-      .subscribe(
-        product => {
-          console.log('Producto creado:', product);
-          this.router.navigateByUrl(`/admin/product/${product.id}`,{replaceUrl: true});
-        }
-      );
+    this.productsService.createProduct(productLike, this.fileList )
+        .pipe(
+            take(1)
+        )
+        .subscribe(
+            product => {
+              console.log('Producto creado:', product);
+              this.router.navigateByUrl(`/admin/product/${product.id}`,{replaceUrl: true});
+            }
+        );
   }
 
 // inicializa el formulario con los valores del producto
@@ -171,4 +174,23 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   protected readonly FormUtils = FormUtils;
+
+  // Images
+  onFilesChanged(event: Event) {
+    // obtenemos los elementos insertado en el input
+    const files : FileList | null = (event.target as HTMLInputElement).files;
+    this.fileList = files ?? undefined;
+    console.log({files});
+
+    // obtiente una url
+    const imageUrl : string[] = Array.from( files ?? [] ).map( file => URL.createObjectURL(file) );
+    this.imagesTemp.set( imageUrl );
+    console.log({imageUrl});
+  }
+
+
+  currentImages = computed( () =>{
+    return [...this.product().images, ...this.imagesTemp() ];
+  })
+
 }

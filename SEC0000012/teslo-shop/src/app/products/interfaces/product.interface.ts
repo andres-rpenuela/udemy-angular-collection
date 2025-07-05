@@ -44,3 +44,8 @@ export enum Tag {
   Sweatshirt = "sweatshirt",
 }
 
+
+export interface FileResponse {
+  secureUrl: string,
+  fileName: string
+}
