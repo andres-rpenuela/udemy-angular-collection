@@ -35,10 +35,10 @@ export class ProductAdminPageComponent {
 
   productResource: ResourceRef<Product | undefined> = rxResource({
     params: () => ({
-      idSlug: this.idProduct()
+      idSlug: this.idProduct()!
     }),
     stream: ( { params: { idSlug } } ) =>
-      this.productsService.getProductByIdSlug( idSlug )
+      this.productsService.getProductById( idSlug )
   });
 
 }

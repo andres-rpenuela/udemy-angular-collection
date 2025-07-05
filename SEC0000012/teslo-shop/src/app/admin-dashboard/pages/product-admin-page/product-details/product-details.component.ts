@@ -1,7 +1,7 @@
 import {Component, inject, input, OnInit} from '@angular/core';
 import {Product} from '@products/interfaces/product.interface';
 import {ProductCarouselComponent} from '@products/components/product-carousel/product-carousel.component';
-import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {FormUtils} from '@utils/form-utils';
 import {
   FormErrorLabelComponent
@@ -9,6 +9,7 @@ import {
 import {ProductsService} from '@products/services/products.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {take, takeUntil, tap} from 'rxjs';
+import {Router} from '@angular/router';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class ProductDetailsComponent implements OnInit {
 
   public product = input.required<Product>();
   private productsService = inject(ProductsService)
+  private router = inject(Router);
 
   protected fb = inject(FormBuilder);
 
@@ -59,6 +61,17 @@ export class ProductDetailsComponent implements OnInit {
     const sizes = formValue.size || [] ; // as string[] para que no de error de tipos
     delete formValue.size;
 
+    const imagesArray = this.productForm.get('images') as FormArray;
+
+    if (!imagesArray) {
+      console.warn('El campo images no existe en el formulario');
+      this.productForm.addControl('images', this.fb.array([this.fb.control('')]));
+    } else {
+      imagesArray.clear();
+      // Asegúrate de no dejarlo como [null]
+      imagesArray.push(this.fb.control('')); // ['']
+    }
+
     const productLike : Partial<Product> = {
       ...(formValue as any), // as any para evitar errores de tipos
       tags: formValue.tags?.toLowerCase()
@@ -67,8 +80,18 @@ export class ProductDetailsComponent implements OnInit {
       sizes: sizes, // si size es un array, lo deja como está, si no, lo convierte a un array
     }
 
+    // se crea o actualiza el producto
     console.log('Producto preparado para enviar:', productLike);
-    this.productsService.updatedProduct( this.product().id!, productLike )
+    if( this.product().id === 'new' ) {
+      // crear proecuto
+      this.newProduct(productLike);
+    }else{
+      this.updatedProduct(productLike);
+    }
+  }
+
+  private updatedProduct(productLike: Partial<Product>) {
+    this.productsService.updatedProduct(this.product().id!, productLike)
       .pipe(
         tap(product => this.productsService.updateProductCache(product)),
         take(1)
@@ -78,7 +101,20 @@ export class ProductDetailsComponent implements OnInit {
       );
   }
 
-  // inicializa el formulario con los valores del producto
+  private newProduct(productLike: Partial<Product>) {
+    this.productsService.createProduct(productLike)
+      .pipe(
+        take(1)
+      )
+      .subscribe(
+        product => {
+          console.log('Producto creado:', product);
+          this.router.navigateByUrl(`/admin/product/${product.id}`,{replaceUrl: true});
+        }
+      );
+  }
+
+// inicializa el formulario con los valores del producto
   ngOnInit() {
     // this.productForm.reset(
     //   // Inicializa el formulario con los valores del producto, y como son del mismo tipo haz lo que peudas
