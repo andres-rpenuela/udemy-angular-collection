@@ -5,20 +5,17 @@ import {BASE_URL, NO_IMAGE} from '@products/utils/product.util';
   name: 'productImage'
 })
 export class ProductImagePipe implements PipeTransform {
-  transform(value: string | string[] ): string {
+  transform(value: string | string[] | null ): string {
+    const image = Array.isArray(value)
+      ? value[0]
+      : value;
 
-    if( typeof value === 'string'){
-      return `${BASE_URL}/files/product/${ value }`;
-    }
-
-    const image = value.at(0);
-
-    if( !image ){
+    if (!image) {
       return NO_IMAGE;
     }
 
-    return `${BASE_URL}/files/product/${ image }`;
-
+    return `${BASE_URL}/files/product/${image}`;
   }
+
 
 }

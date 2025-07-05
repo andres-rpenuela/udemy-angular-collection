@@ -1,0 +1,46 @@
+<h1 class="text-2xl font-bold">Listado de productos</h1>
+<h3 clas="text-lg">
+    Todos los productos
+    <span class="text-accent">{{ productsPerPage() }}</span>
+</h3>
+
+<div class="divider"></div>
+
+@if( productsResource.isLoading() ){
+  <div class="flex justify-center items-center">
+    <span class="badge badge-secondary text-xs">Cargando....</span>
+  </div>
+}
+<!-- -->
+@else {
+  <div class="flex flex-col md:flex-row w-full justify-between gap-4 h-20">
+    <!-- Div izquierdo: paginación -->
+    <div class="justify-start  flex flex-col md:flex-row w-full gap-4">
+      <shared-pagination
+        [pages]="productsResource.value()?.pages ?? 0"
+        [currentPage]="paginationService.currentPage()"
+      ></shared-pagination>
+
+      <select class="select select-bordered" (change)="productsPerPage.set(+selectLimit.value)" #selectLimit>
+        <option value="10" [selected]="productsPerPage()==10">10 por página</option>
+        <option value="20" [selected]="productsPerPage()==20">20 por página</option>
+        <option value="50" [selected]="productsPerPage()==50">50 por página</option>
+        <option value="100" [selected]="productsPerPage()==1000">100 por página</option>
+      </select>
+    </div>
+
+    <!-- Div derecho: botón -->
+    <div class="flex w-full justify-end md:justify-end">
+      <a class="btn btn-primary w-full md:w-auto text-center" routerLink="/admin/product/new">
+        Nuevo producto
+      </a>
+    </div>
+  </div>
+
+
+
+
+  <!-- Listado -->
+  <product-table [productsInput]="productsResource.value()?.products ?? []"></product-table>
+
+}

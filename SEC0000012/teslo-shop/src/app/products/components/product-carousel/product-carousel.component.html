@@ -5,6 +5,8 @@
     <!-- Slides -->
     @for ( image of images(); track $index){
       <img class="swiper-slide" [src]="image | productImage"/>
+    } @empty {
+      <img class="swiper-slide" [src]="null | productImage"/>
     }
   </div>
   <!-- If we need pagination -->
@@ -16,4 +18,8 @@
 
   <!-- If we need scrollbar -->
   <div class="swiper-scrollbar"></div>
+</div>
+
+<div class="text-sm text-gray-500 mb-2">
+  Las imágenes se remocineda tener un tamaño de 600x600px y un peso máximo de 1MB.
 </div>

@@ -12,7 +12,8 @@
       "@store-front/*": ["./src/app/store-front/*"],
       "@dashboard/*": ["./src/app/admin-dashboard/*"],
       "@env/*": ["./src/environments/*"],
-      "@pipe/*": ["./src/app/pipes/*"]
+      "@pipe/*": ["./src/app/pipes/*"],
+      "@utils/*": ["./src/app/products/utils/*"]
     },
     "strict": true,
     "noImplicitOverride": true,
