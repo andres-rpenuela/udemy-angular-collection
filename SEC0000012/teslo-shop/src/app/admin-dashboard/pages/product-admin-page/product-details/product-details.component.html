@@ -126,14 +126,10 @@
       </button>
     </div>
 
-    <div class="text-sm text-gray-500 mb-2">
-      @if(product().images.length > 0 && product().images[0].trim().length > 0) {
-        <product-carousel [images]="product().images" />
-      } @else {
-        Las imágenes se remocineda tener un tamaño de 600x600px y un peso máximo de 1MB.
-      }
+    <div>
+      <product-carousel [images]="product().images" />
       <input type="file" class="file-input file-input-bordered w-full mt-4" />
-    </div>
 
+    </div>
   </div>
 </form>
