@@ -3,6 +3,7 @@ import {RouterLink} from '@angular/router';
 import {TruncatePipe} from '@pipe/truncate-pipe';
 import {Product} from '@products/interfaces/product.interface';
 import {ProductImagePipe} from '@pipe/product-image-pipe';
+import {environment} from '@env/environment.development';
 
 @Component({
   selector: 'product-card',
@@ -22,7 +23,7 @@ export class ProductCardComponent {
     if(  this.product().images.length === 0){
       return './assets/images/no-image.jpg'
     }
-    return `http://localhost:3000/api/files/product/${ this.product().images[0] }`
+    return `${environment.baseUrl}/api/files/product/${ this.product().images[0] }`
   });
 
 
