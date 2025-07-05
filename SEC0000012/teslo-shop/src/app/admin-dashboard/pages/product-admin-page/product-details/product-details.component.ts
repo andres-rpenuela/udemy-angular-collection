@@ -1,4 +1,4 @@
-import {Component, inject, input, OnInit} from '@angular/core';
+import {Component, inject, input, OnInit, signal} from '@angular/core';
 import {Product} from '@products/interfaces/product.interface';
 import {ProductCarouselComponent} from '@products/components/product-carousel/product-carousel.component';
 import {FormArray, FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -7,8 +7,7 @@ import {
   FormErrorLabelComponent
 } from '@dashboard/pages/product-admin-page/product-details/form-error-label/form-error-label.component';
 import {ProductsService} from '@products/services/products.service';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {take, takeUntil, tap} from 'rxjs';
+import {firstValueFrom, take, tap} from 'rxjs';
 import {Router} from '@angular/router';
 
 
@@ -30,6 +29,8 @@ export class ProductDetailsComponent implements OnInit {
   private router = inject(Router);
 
   protected fb = inject(FormBuilder);
+
+  protected wasSaved = signal(false);
 
   public productForm = this.fb.group({
     title: ['',Validators.required ],
@@ -90,15 +91,32 @@ export class ProductDetailsComponent implements OnInit {
     }
   }
 
-  private updatedProduct(productLike: Partial<Product>) {
+  // se comvierte a promesa el observable para poder usar async/await
+  // y así poder esperar a que se actualice el producto
+  // y mostar el mensaje de guardado 2 segudnos (no se usa effecto porque se peude generar un bucle infinito al camibar el valor de wasSaved)
+  // la porema no hace falta el subcribe, lo hace internamente
+  // Esto se puede hacer concatentado el observable con otro observable, pero es más sencillo con async/await.
+  private async updatedProduct(productLike: Partial<Product>) {
+    const product = await firstValueFrom(
+      this.productsService.updatedProduct(this.product().id!, productLike)
+    );
+    console.log('Producto actualizado:', product);
+
+    this.wasSaved.set(true); // indica que se guardó el producto
+    setTimeout(() => {
+      this.wasSaved.set(false); // indica que se guardó el producto
+    },2000); // espera 2 segundos para que se vea el mensaje de guardado
+    /*
     this.productsService.updatedProduct(this.product().id!, productLike)
       .pipe(
         tap(product => this.productsService.updateProductCache(product)),
         take(1)
       )
       .subscribe(
-        product => console.log('Producto actualizado:', product),
-      );
+        product => {
+          console.log('Producto actualizado:', product);
+        }
+      );*/
   }
 
   private newProduct(productLike: Partial<Product>) {
