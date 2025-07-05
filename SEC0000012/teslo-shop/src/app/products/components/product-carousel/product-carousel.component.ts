@@ -39,7 +39,17 @@ export class ProductCarouselComponent implements AfterViewInit, OnChanges{
 
     // reiniciar el swiper
     this.swiper.destroy(true,true);
-    this.swiperInit();
+    //this.swiperInit();
+    // seguridad para garantizar los puntos opcional del swiper
+    const paginationEl = this.swiperDiv().nativeElement?.querySelector('.swiper-pagination');
+
+    // Limpia completamente el contenido HTML del contenedor de paginación.
+    paginationEl.innerHTML = '';
+
+    // Espera 100ms y luego vuelve a inicializar el slider Swiper
+    setTimeout(() => {
+      this.swiperInit();
+    },100);
   }
 
   ngAfterViewInit() {
