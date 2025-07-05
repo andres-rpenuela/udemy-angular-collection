@@ -70,7 +70,7 @@ export class ProductDetailsComponent implements OnInit {
     if (!imagesArray) {
       console.warn('El campo images no existe en el formulario');
       this.productForm.addControl('images', this.fb.array([this.fb.control('')]));
-    } else {
+    } else if( imagesArray.length == 0 || !imagesArray.at(0)?.value || imagesArray.at(0)?.value?.size == 0 ) {
       imagesArray.clear();
       // Asegúrate de no dejarlo como [null]
       imagesArray.push(this.fb.control('')); // ['']
@@ -101,7 +101,7 @@ export class ProductDetailsComponent implements OnInit {
   // Esto se puede hacer concatentado el observable con otro observable, pero es más sencillo con async/await.
   private async updatedProduct(productLike: Partial<Product>) {
     const product = await firstValueFrom(
-        this.productsService.updatedProduct(this.product().id!, productLike)
+        this.productsService.updatedProduct(this.product().id!, productLike, this.fileList)
     );
     console.log('Producto actualizado:', product);
 
@@ -123,7 +123,7 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   private newProduct(productLike: Partial<Product>) {
-    this.productsService.createProduct(productLike)
+    this.productsService.createProduct(productLike, this.fileList )
         .pipe(
             take(1)
         )

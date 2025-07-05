@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {FileResponse, Product, ProductResponse} from '@products/interfaces/product.interface';
-import {catchError, delay, forkJoin, map, Observable, of, tap, throwError} from 'rxjs';
+import {catchError, delay, forkJoin, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
 import {BASE_URL} from '@products/utils/product.util';
 import {ProductRequestParams} from '@products/interfaces/product-request-params.interface';
 import {productEmpty} from '@products/interfaces/data/product-empty.data';
@@ -95,36 +95,60 @@ export class ProductsService {
   }
 
 
-  public updatedProduct(id: string, productLike: Partial<Product>): Observable<Product> {
+  public updatedProduct(id: string, productLike: Partial<Product>,imageFileList?: FileList): Observable<Product> {
     console.log('Actualizando producto:', productLike);
 
     const urlRequest= `${BASE_URL}/products/${id}`;
 
     // esto permite actualizar el producto o parte del producto
-    return this.http.patch<Product>( urlRequest, productLike )
+    // return this.http.patch<Product>( urlRequest, productLike )
+    //   .pipe(
+    //     catchError(err => {
+    //         console.error('Error al actualizar producto:', err);
+    //         return of();
+    //       }
+    //     ));
+
+    const currentImages = productLike.images ?? [];
+    return this.uploadImages(imageFileList)
       .pipe(
-        catchError(err => {
-            console.error('Error al actualizar producto:', err);
-            return of();
-          }
-        ));
+        // creamos una nueva respuesta como observable of( { product,string[] }
+        // la propiead iamges de `productLike`, se reemplaza por
+        map( imageNames => ({
+          ...productLike,
+          images: [ ... currentImages, ...imageNames ]
+        })),
+        tap( updatedProduct => console.log( { updatedProduct } )),
+        switchMap( updatedProduct => this.http.patch<Product>( urlRequest, updatedProduct )),
+        tap((product) => this.updateProductCache(product) )
+      )
   }
 
-  createProduct(productLike: Partial<Product>) : Observable<Product> {
+  createProduct(productLike: Partial<Product>,imageFileList?: FileList) : Observable<Product> {
     console.log('Creando producto:', productLike);
 
     const urlRequest = `${BASE_URL}/products`;
 
     // esto permite crear el producto o parte del producto
-    return this.http.post<Product>(urlRequest, productLike)
-      .pipe(
-        tap(product => this.updateProductCache(product,false)), // false porque no es una actualización
-        catchError(err => {
-            console.error('Error al crear producto:', err);
-            return of();
-          }
-        )
-      );
+    // return this.http.post<Product>(urlRequest, productLike)
+    //   .pipe(
+    //     tap(product => this.updateProductCache(product,false)), // false porque no es una actualización
+    //     catchError(err => {
+    //         console.error('Error al crear producto:', err);
+    //         return of();
+    //       }
+    //     )
+    //   );
+    const currentImages = productLike.images ?? [];
+
+    return this.uploadImages(imageFileList).pipe(
+      map( imageNames => ({
+        ...productLike,
+        images: [ ... currentImages, ...imageNames ]
+      })),
+      switchMap( newProduct => this.http.post<Product>(urlRequest, newProduct)),
+      tap((product) => this.updateProductCache(product) )
+    );
   }
 
   public updateProductCache( product: Product, isUpdate: boolean = true ): void {

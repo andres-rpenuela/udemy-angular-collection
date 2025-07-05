@@ -183,3 +183,47 @@ public uploadImage ( imageFile : File): Observable<string>{
     );
 }
 ```
+
+
+En el momento que se crea el producto, lo que se utiliza es hacer un join con swithmap de observebables:
+1. Hacer la subida de imagenes.
+2. Transformar el resutlado del observable, a un prudcto con las imanges nuevas
+3. Actualizar o crear produto usando `switcMap`
+
+````typescript
+public updatedProduct(id: string, productLike: Partial<Product>,imageFileList?: FileList): Observable<Product> {
+  console.log('Actualizando producto:', productLike);
+
+  const urlRequest= `${BASE_URL}/products/${id}`;
+  
+  const currentImages = productLike.images ?? [];
+  return this.uploadImages(imageFileList)
+    .pipe(
+      // creamos una nueva respuesta como observable of( { product,string[] }
+      // la propiead iamges de `productLike`, se reemplaza por
+      map( imageNames => ({
+        ...productLike,
+        images: [ ... currentImages, ...imageNames ]
+      })),
+      tap( updatedProduct => console.log( { updatedProduct } )),
+      switchMap( updatedProduct => this.http.patch<Product>( urlRequest, updatedProduct )),
+      tap((product) => this.updateProductCache(product) )
+    )
+}
+
+createProduct(productLike: Partial<Product>,imageFileList?: FileList) : Observable<Product> {
+  console.log('Creando producto:', productLike);
+
+  const urlRequest = `${BASE_URL}/products`;
+  const currentImages = productLike.images ?? [];
+
+  return this.uploadImages(imageFileList).pipe(
+    map( imageNames => ({
+      ...productLike,
+      images: [ ... currentImages, ...imageNames ]
+    })),
+    switchMap( newProduct => this.http.post<Product>(urlRequest, newProduct)),
+    tap((product) => this.updateProductCache(product) )
+  );
+}
+````
