@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Product, ProductResponse} from '@products/interfaces/product.interface';
-import {catchError, delay, Observable, of, tap, throwError} from 'rxjs';
+import {FileResponse, Product, ProductResponse} from '@products/interfaces/product.interface';
+import {catchError, delay, forkJoin, map, Observable, of, tap, throwError} from 'rxjs';
 import {BASE_URL} from '@products/utils/product.util';
 import {ProductRequestParams} from '@products/interfaces/product-request-params.interface';
 import {productEmpty} from '@products/interfaces/data/product-empty.data';
@@ -153,4 +153,36 @@ export class ProductsService {
     }
   }
 
+  // Imagenes
+  public uploadImages(images? : FileList) : Observable<string[]>{
+
+    if( !images ) return of([] as string [] );
+
+    // crea un arreglo de observables
+    const uploadObservables: Observable<string>[] = Array.from( images )
+      .map( imageFile => this.uploadImage( imageFile ) );
+
+    // await Promise.all(...) < si fueran promeas
+    //return forkJoin(uploadObservables); // espera a que emita de forma exitosa todos, su uno falla lanza toda la excepción
+    return forkJoin(uploadObservables).pipe(
+      tap(imageNames => console.log(imageNames))
+    );
+  }
+
+  public uploadImage ( imageFile : File): Observable<string>{
+    const urlRequest = `${BASE_URL}/files/product`;
+
+    // clase nativa de JavaScript usada para construir fácilmente pares clave-valor que se pueden enviar con fetch o HttpClient en peticiones POST
+    const formData = new FormData();
+    formData.append('file', imageFile);
+
+    return this.http.post<FileResponse>(urlRequest, formData)
+      .pipe(
+        map( response => response.fileName ),
+        catchError( error => {
+          console.error("No se pudo cargar la imange ",error);
+          throw Error(error);
+        })
+      );
+  }
 }
