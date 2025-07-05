@@ -1,4 +1,4 @@
-import {Component, inject, input, OnInit, signal} from '@angular/core';
+import {Component, computed, inject, input, OnInit, signal} from '@angular/core';
 import {Product} from '@products/interfaces/product.interface';
 import {ProductCarouselComponent} from '@products/components/product-carousel/product-carousel.component';
 import {FormArray, FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -187,5 +187,10 @@ export class ProductDetailsComponent implements OnInit {
     this.imagesTemp.set( imageUrl );
     console.log({imageUrl});
   }
+
+
+  currentImages = computed( () =>{
+    return [...this.product().images, ...this.imagesTemp() ];
+  })
 
 }

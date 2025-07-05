@@ -31,3 +31,5 @@ onFilesChanged(event: Event) {
   console.log({imageUrl});
 }
 ```
+
+## Añadir las imanges al formulario

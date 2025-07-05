@@ -14,8 +14,8 @@ export class ProductImagePipe implements PipeTransform {
       return NO_IMAGE;
     }
 
-    return `${BASE_URL}/files/product/${image}`;
+    // Nota: Las imagenes blob son las cargads por URL.createObjectURL(file) y no estan en el back
+    return image.startsWith("blob:") ? image : `${BASE_URL}/files/product/${image}`;
   }
-
 
 }

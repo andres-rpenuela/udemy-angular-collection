@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, ElementRef, input, viewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, input, OnChanges, SimpleChanges, viewChild} from '@angular/core';
 
 // core version + navigation, pagination modules:
 import Swiper from 'swiper';
-import { Navigation, Pagination } from 'swiper/modules';
+import {Navigation, Pagination} from 'swiper/modules';
 // import Swiper and modules styles
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -17,19 +17,47 @@ import {ProductImagePipe} from '@pipe/product-image-pipe';
   templateUrl: './product-carousel.component.html',
   styleUrl: './product-carousel.component.css'
 })
-export class ProductCarouselComponent implements AfterViewInit{
+export class ProductCarouselComponent implements AfterViewInit, OnChanges{
   images = input.required<string[]>();
   swiperDiv = viewChild.required<ElementRef>('swiperDiv');
+
+  private swiper: Swiper | undefined = undefined;
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log( changes );
+
+    // si no cmaiba la propiedad images, no hacer nada
+    if( !changes['images']) return;
+
+    // si es el primer cambio (carga), no hacer nada
+    if( changes['images'].firstChange ){
+      return;
+    }
+
+    //this.swiperInit(changes['images'])
+    if( !this.swiper ) return;
+
+    // reiniciar el swiper
+    this.swiper.destroy(true,true);
+    this.swiperInit();
+  }
 
   ngAfterViewInit() {
     const element = this.swiperDiv().nativeElement;
 
     // si no exite
-    if( !element) return;
+    if (!element) return;
 
-    console.log({ element });
+    console.log({element});
+    this.swiperInit();
 
-    const swiper = new Swiper(element, {
+  }
+
+  public swiperInit(){
+    const element = this.swiperDiv().nativeElement;
+
+    // const swiper
+    this.swiper = new Swiper(element, {
       // Optional parameters
       direction: 'horizontal',
       loop: true,
