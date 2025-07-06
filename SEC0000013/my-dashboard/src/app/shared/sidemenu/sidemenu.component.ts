@@ -1,6 +1,6 @@
 import {Component, signal} from '@angular/core';
 import {routes} from '../../app.routes';
-import {Routes} from '@angular/router';
+import {RouterLink, RouterLinkActive, Routes} from '@angular/router';
 
 /**
  * Componente que representa un menú lateral compartido.
@@ -9,7 +9,10 @@ import {Routes} from '@angular/router';
  */
 @Component({
   selector: 'shared-sidemenu', // Selector del componente para usarlo en plantillas.
-  imports: [], // Importaciones necesarias para el componente (vacío en este caso).
+  imports: [
+    RouterLink,
+    RouterLinkActive
+  ], // Importaciones necesarias para el componente (vacío en este caso).
   templateUrl: './sidemenu.component.html', // Ruta al archivo de plantilla HTML.
   styles: `` // Estilos específicos del componente (vacío en este caso).
 })

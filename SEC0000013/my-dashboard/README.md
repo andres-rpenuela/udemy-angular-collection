@@ -63,3 +63,6 @@ For more information on using the Angular CLI, including detailed command refere
 Configuracion en: https://tailwindcss.com/
 
 Componentes disponiblres e tailwindcss: https://www.creative-tim.com/twcomponents/component/dashboard-navigation
+
+
+# Sintaxis de @for - @if
