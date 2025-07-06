@@ -21,4 +21,25 @@
     }
   </div>
 
+  <!-- @switch -->
+  <div class="bg-white rounded shadow p-10">
+
+    <h2 class="text-xl font-bold mb-5">Grade: {{ grade() }}</h2>
+    <input type="text" [maxLength]="1" class="border" (change)="addGrade(gradeInput.value)" #gradeInput>
+
+    @switch ( grade() ){
+      @case ('A') {
+        <p>Arriba de 90</p>
+      }
+      @case ('B') {
+        <p>Arriba de 90</p>
+      }
+      @case ('F') {
+        <p>Reprobado</p>
+      }
+      @default {
+        <p>Unkown</p>
+      }
+    }
+  </div>
 </section>
