@@ -1,1 +1,24 @@
-<p>control-flow works!</p>
+<section class="grid grid-cols-1 md:grid-cols-2 gap-3">
+  <!-- ngInf @if -->
+  <div class="bg-white rounded shadow p-10">
+
+    <h2 class="text-xl font-bold mb-5">if: {{ showContent() }}</h2>
+
+    <button (click)="toggleContent()" class="p-2 bg-blue-500 rounded text-white  hover:bg-sky-700 cursor-pointer">Click me!</button>
+
+    @if( showContent() ){
+      <div class="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert">
+        <div>
+          <span class="font-medium">*******</span>
+        </div>
+      </div>
+    } @else {
+      <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+        <div>
+          <span class="font-medium">*******</span>
+        </div>
+      </div>
+    }
+  </div>
+
+</section>
