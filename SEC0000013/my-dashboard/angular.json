@@ -5,7 +5,39 @@
   "projects": {
     "my-dashboard": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:class": {
+          "skipTests": true,
+          "type": "class"
+        },
+        "@schematics/angular:component": {
+          "skipTests": true,
+          "type": "component"
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true,
+          "type": "directive"
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true,
+          "type": "service"
+        },
+        "@schematics/angular:interface": {
+          "type": "interface"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
