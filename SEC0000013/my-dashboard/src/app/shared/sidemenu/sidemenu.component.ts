@@ -1,6 +1,6 @@
 import {Component, signal} from '@angular/core';
-import {routes} from '../../app.routes';
 import {RouterLink, RouterLinkActive, Routes} from '@angular/router';
+import {routes} from 'app/app.routes';
 
 /**
  * Componente que representa un menú lateral compartido.
