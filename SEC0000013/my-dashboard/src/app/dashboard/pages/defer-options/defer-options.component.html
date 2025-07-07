@@ -1,1 +1,51 @@
-<p>defer-options works!</p>
+<shared-title [title]="'Defer Triggers'"></shared-title>
+
+<section>
+  <h1 class="text-xl">Interacciones</h1>
+  <hr class="py-2">
+
+  <button
+    #btnInteraction
+    class="p-2 bg-blue-500 hover:bg-blue-700 transition-all rounded text-white my-2">
+    Click me!
+  </button>
+
+  @defer ( on interaction( btnInteraction) ){
+    <heavy-loaders-fast [cssClass]="'bg-blue-500 h-20'">
+      <span>On Interaction</span>
+    </heavy-loaders-fast>
+  } @placeholder {
+    <div class="w-full h-20 bg-purple-100">
+      Click en el button.
+    </div>
+  }
+  @defer ( on interaction ){
+    <heavy-loaders-fast [cssClass]="'bg-blue-500 h-20'">
+      <span>On Interaction</span>
+    </heavy-loaders-fast>
+  } @placeholder {
+    <div class="w-full h-20 bg-purple-100">
+      Click en el div.
+    </div>
+  }
+
+  @defer ( on hover( btnInteraction) ){
+    <heavy-loaders-fast [cssClass]="'bg-green-500 h-20'">
+      <span>On Hover</span>
+    </heavy-loaders-fast>
+  } @placeholder {
+    <div class="w-full h-20 bg-purple-100">
+      Hover en el button.
+    </div>
+  }
+
+  @defer ( on hover ){
+    <heavy-loaders-fast [cssClass]="'bg-red-500 h-20'">
+      <span>On Hover</span>
+    </heavy-loaders-fast>
+  } @placeholder {
+    <div class="w-full h-20 bg-purple-100">
+      Hover en el div.
+    </div>
+  }
+</section>

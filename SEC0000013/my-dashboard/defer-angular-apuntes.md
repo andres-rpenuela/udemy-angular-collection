@@ -3,6 +3,7 @@
 
 La directiva `@defer` permite cargar contenido de forma **diferida** (lazy load) en Angular **de forma declarativa**, mejorando el rendimiento de la aplicación sin necesidad de gestionar manualmente `*ngIf`, `ngComponentOutlet`, ni `loadChildren`.
 
+> **Importante**: El componente se crea cuando se muestra, si por lo que fuera muestra primero `placeholder` y después se produce una iteracion y se ejecuta el contendio de `@defer`,  no es hasta el momenot que se ejecuta cuando se crea.
 Las opciones disponibles son:
 ```angular181html
 @defer (
