@@ -20,7 +20,7 @@
     </div>
   }
   @defer ( on interaction ){
-    <heavy-loaders-fast [cssClass]="'bg-blue-500 h-20'">
+    <heavy-loaders-fast [cssClass]="'bg-yellow-500 h-20'">
       <span>On Interaction</span>
     </heavy-loaders-fast>
   } @placeholder {
@@ -46,6 +46,36 @@
   } @placeholder {
     <div class="w-full h-20 bg-purple-100">
       Hover en el div.
+    </div>
+  }
+</section>
+
+<section>
+  <h1 class="text-xl">Timer </h1>
+  <hr class="py-2">
+
+  @defer ( on timer( 2000 ) ){
+    <heavy-loaders-fast [cssClass]="'bg-yellow-500 h-20'">
+      <span>ON timer(x) </span>
+    </heavy-loaders-fast>
+  } @placeholder {
+    <div class="w-full h-20 bg-purple-100">
+      Waiting 2 seconds
+    </div>
+  }
+</section>
+
+<section>
+  <h1 class="text-xl">Timer & Prefetch </h1>
+  <hr class="py-2">
+
+  @defer ( on timer( 2000 ); prefetch on idle){
+    <heavy-loaders-fast [cssClass]="'bg-pink-500 h-20'">
+      <span>ON timer(x) + Indle</span>
+    </heavy-loaders-fast>
+  } @placeholder {
+    <div class="w-full h-20 bg-blue-100">
+      Waiting 2 seconds with <code>prefecth on indle</code>
     </div>
   }
 </section>

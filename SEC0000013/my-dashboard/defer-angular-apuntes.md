@@ -215,6 +215,36 @@ Puedes agregar bloques para controlar el comportamiento durante la carga o si oc
 
 ---
 
+## 📦 Ejemplo de  `prefetch` en `@defer` (Angular 17+)
+
+`prefetch` es una opción que puedes usar dentro del bloque `@defer` para **anticipar la carga** del contenido en segundo plano, **antes** de que el trigger principal (como `when`, `on idle`, etc.) se dispare.
+
+---
+
+## ✅ ¿Qué hace `prefetch`?
+
+- 🔄 Indica a Angular que **pre-cargue** el bloque diferido lo antes posible.
+- 🧠 El componente o recurso es **descargado y preparado** en background.
+- ⏱️ Cuando el trigger (ej. `when`) se activa, el contenido ya está listo para mostrarse.
+
+---
+
+## 🧪 Ejemplo de uso
+
+```html
+@defer (when showChart; prefetch) {
+  <analytics-chart></analytics-chart>
+} @placeholder {
+  <p>Cargando gráfico...</p>
+}
+```
+> Aquí Angular descargará el componente analytics-chart en segundo 
+> plano, incluso antes de que showChart sea true. Al cumplirse 
+> la condición, el componente ya estará disponible.
+> (_carga el js en memoria, pero no lo renderiza_)
+
+--- 
+
 ## 📚 Más info
 
 Consulta la documentación oficial: [https://angular.dev/guide/defer-blocks](https://angular.dev/guide/defer-blocks)
