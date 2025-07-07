@@ -19,7 +19,7 @@ import {TitleComponent} from '@shared/title/title.component';
       />
 
       <div class="bg-blue-500 w-56 h-56"
-           style="view-transition-name:hero2"></div>
+           style="view-transition-name(hero2)"></div>
     </section>
   `,
   styles: ``
