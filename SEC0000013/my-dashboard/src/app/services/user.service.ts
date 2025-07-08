@@ -1,7 +1,10 @@
 import {computed, inject, Injectable, signal} from '@angular/core';
-import {User, UsersResponse} from '@interfaces/req-reponse';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {catchError, delay, take} from 'rxjs';
+import {catchError, delay, map, Observable, of, take} from 'rxjs';
+
+// como son interfaces, poner `type`para que ts no hag ningun tipo de transpilaicon, trascripción
+import type {User, UserResponse, UsersResponse} from '@interfaces/req-reponse';
+
 
 interface State{
   users: User[];
@@ -57,5 +60,21 @@ export class UserService {
           users : res.data
         });
       })
+  }
+
+  public getUserById( id:number) : Observable<User>{
+    const headers = new HttpHeaders({
+      'x-api-key': 'reqres-free-v1'
+    });
+    return this.http.get<UserResponse>('https://reqres.in/api/users/'+id, { headers })
+      .pipe(
+        delay(1500),
+        take(1),
+        map( resp => resp.data ),
+        catchError(err => {
+          console.log('Error get user by id: '+err);
+          return of();
+        })
+      );
   }
 }
