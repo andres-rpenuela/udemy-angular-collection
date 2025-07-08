@@ -1,0 +1,22 @@
+<shared-title title="Dafer Views / Blocks"></shared-title>
+<section class="grid grid-cols-1">
+  <!-- esto mejora la experecnia de compoentes que tardan mucho en cargar... no bloque la navegacion
+  y permite mostrar mensjaes mientras carga -->
+  @defer (){
+    <heavy-loaders-slow [cssClass]="'bg-blue-500'"></heavy-loaders-slow>
+  } @placeholder {
+    <p class="h-[600px] w-full bg-gradient-to-r from-gray-200 to-gray-400 animate-pulse">Cargando...</p>
+  }
+
+  @defer (on idle){
+    <heavy-loaders-slow [cssClass]="'bg-green-500'"></heavy-loaders-slow>
+  } @placeholder {
+    <p class="h-[600px] w-full bg-gradient-to-r from-gray-200 to-gray-400 animate-pulse">Cargando...</p>
+  }
+
+  @defer (on viewport){
+    <heavy-loaders-slow [cssClass]="'bg-purple-500'"></heavy-loaders-slow>
+  } @placeholder {
+    <p class="h-[600px] w-full bg-gradient-to-r from-gray-200 to-gray-400 animate-pulse">Cargando...</p>
+  }
+</section>
