@@ -1,7 +1,13 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  importProvidersFrom,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection
+} from '@angular/core';
 import {provideRouter, ViewTransitionInfo, withViewTransitions} from '@angular/router';
 
 import { routes } from './app.routes';
+import {HttpClient, provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +23,13 @@ export const appConfig: ApplicationConfig = {
       onViewTransitionCreated( transitionInfo : ViewTransitionInfo){
         console.log( transitionInfo);
       }
-    }))
+    })),
+    // Option 1: Importar de forma tradicional todos los modulos
+    //importProvidersFrom(HttpClient),
+    // Option 2: Importa Http Cliente
+    provideHttpClient(
+      //withFetch() // modalidad de funcionaimienot
+      //,withInterceptors( [ loggingInterceptor,authInterceptor ] ) // interceptores
+    ),
   ]
 };
